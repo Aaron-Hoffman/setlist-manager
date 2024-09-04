@@ -1,0 +1,26 @@
+const KEYS = [
+    {label: 'A', value: 'a'},
+    {label: 'B Flat', value: 'b-flat'},
+    {label: 'B', value: 'b'},
+    {label: 'C', value: 'c'},
+    {label: 'D Flat', value: 'd-flat'},
+    {label: 'D', value: 'd'},
+    {label: 'E Flat', value: 'e-flat'},
+    {label: 'F', value: 'f'},
+    {label: 'G Flat', value: 'g-flat'},
+    {label: 'G', value: 'g'},
+    {label: 'A Flat', value: 'a-flat'},
+    {label: 'A Minor', value: 'a-minor'},
+    {label: 'B Flat Minor', value: 'b-flat-minor'},
+    {label: 'B Minor', value: 'b-minor'},
+    {label: 'C Minor', value: 'c-minor'},
+    {label: 'D Flat Minor', value: 'd-flat-minor'},
+    {label: 'D Minor', value: 'd-minor'},
+    {label: 'E Flat Minor', value: 'e-flat-minor'},
+    {label: 'F Minor', value: 'f-minor'},
+    {label: 'G Flat Minor', value: 'g-flat-minor'},
+    {label: 'G Minor', value: 'g-minor'},
+    {label: 'A Flat Minor', value: 'a-flat-minor'},
+]
+
+export default KEYS;
