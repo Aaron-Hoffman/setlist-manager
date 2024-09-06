@@ -1,7 +1,11 @@
+import HeaderNavMenu from "./HeaderNavMenu";
+import Link from "next/link";
+
 const Header = () => {
     return (
-        <header className="flex flex-col columns-2 items-center justify-between p-24">
-            <h1 className="text-4xl">Setlist Manager</h1>
+        <header className="flex justify-between items-end px-24 py-12 bg-slate-400">
+            <Link href="/"><h1 className="text-4xl">Setlist Manager</h1></Link>
+            <HeaderNavMenu />
         </header>    
     )
 }
