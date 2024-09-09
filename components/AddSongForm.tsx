@@ -1,5 +1,4 @@
 import KEYS from "@/constants/KEYS";
-import Song from "@/types/Song";
 import { PrismaClient } from '@prisma/client'
 import { revalidatePath } from 'next/cache'
 
@@ -8,9 +7,9 @@ const prisma = new PrismaClient();
 const AddSongForm = () => {
     const addSong = async (formData: FormData) => {
         'use server'
-        const song: Song = {
-          title: formData.get('title'),
-          key: formData.get('key')
+        const song = {
+          title: formData.get('title') as string,
+          key: formData.get('key') as string
         }
     
        await prisma.song.create({

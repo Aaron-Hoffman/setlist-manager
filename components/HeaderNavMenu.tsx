@@ -1,6 +1,9 @@
 import Link from "next/link";
+import LogoutButton from "@/components/LogoutButton";
+import { getServerSession } from "next-auth";
 
-const HeaderNavMenu = () => {
+const HeaderNavMenu = async () => {
+    const session = await getServerSession();
     return (
         <nav>
             <ul className="flex">
@@ -9,6 +12,9 @@ const HeaderNavMenu = () => {
                 </li>
                 <li>
                     <Link className="px-5" href="/setlists">Set Lists</Link>
+                </li>
+                <li>
+                    {session && <LogoutButton />}
                 </li>
             </ul>
         </nav>

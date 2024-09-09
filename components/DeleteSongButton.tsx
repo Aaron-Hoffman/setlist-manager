@@ -1,7 +1,5 @@
 'use client'
-import Song from "@/types/Song";
 import { PrismaClient } from '@prisma/client'
-import { revalidatePath } from 'next/cache'
 
 const prisma = new PrismaClient();
 

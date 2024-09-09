@@ -1,11 +1,10 @@
 import AddSongForm from "@/components/AddSongForm";
 import SongList from "@/components/SongList";
-import Song from "@/types/Song";
 import { PrismaClient } from '@prisma/client'
 
 const prisma = new PrismaClient();
 
-export default async function Home() {
+const Home = async () => {
   const songs = await prisma.song.findMany()
 
   // const createSetlist = () => {
@@ -23,3 +22,5 @@ export default async function Home() {
     </main>
   );
 }
+
+export default Home;
