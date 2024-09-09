@@ -1,9 +1,10 @@
 import Link from "next/link";
 import LogoutButton from "@/components/LogoutButton";
 import { getServerSession } from "next-auth";
+import { authOptions } from '@/app/api/auth/[...nextauth]/route';
 
 const HeaderNavMenu = async () => {
-    const session = await getServerSession();
+    const session = await getServerSession(authOptions);
     return (
         <nav>
             <ul className="flex">
