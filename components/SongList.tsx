@@ -1,4 +1,3 @@
-import Song from "@/types/Song";
 import DeleteSongButton from "./DeleteSongButton";
 import { PrismaClient } from '@prisma/client'
 import { revalidatePath } from 'next/cache'

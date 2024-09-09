@@ -12,12 +12,6 @@ const AddBandForm = async () => {
         const band = {
           name: formData.get('name') as string,
         }
-
-        const user = await prisma.user.findUnique({
-            where: {
-              email: session?.user.email,
-            },
-          })
     
        await prisma.band.create({
             data: {
