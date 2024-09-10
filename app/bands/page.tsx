@@ -1,18 +1,12 @@
 import AddBandForm from "@/components/AddBandForm";
 import BandList from "@/components/BandList";
+import getUser from "@/utils/getUser";
 import { PrismaClient } from '@prisma/client'
-import { getServerSession } from "next-auth";
-import { authOptions } from "../api/auth/[...nextauth]/route";
 
 const BandsPage = async () => {
-    // Create Utility Function and useMemo to memoize 
     const prisma = new PrismaClient();
-    const session = await getServerSession(authOptions);
-    const user = await prisma.user.findUnique({
-        where: {
-          email: session?.user.email,
-        },
-    })
+
+    const user = await getUser();
 
     const bands = await prisma.band.findMany({
         where: {
@@ -24,7 +18,7 @@ const BandsPage = async () => {
     return (
         <>
             <h2>Bands</h2>
-            <AddBandForm />
+            <AddBandForm user={user}/>
             <BandList bandList={bands} />
         </>
     )

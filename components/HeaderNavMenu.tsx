@@ -15,6 +15,9 @@ const HeaderNavMenu = async () => {
                     <Link className="px-5" href="/setlists">Set Lists</Link>
                 </li>
                 <li>
+                    <Link className="px-5" href="/bands">Bands</Link>
+                </li>
+                <li>
                     {session && <LogoutButton />}
                 </li>
             </ul>

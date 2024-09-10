@@ -1,12 +1,10 @@
 import { PrismaClient } from '@prisma/client'
 import { revalidatePath } from 'next/cache'
-import { getServerSession } from "next-auth";
-import { authOptions } from '@/app/api/auth/[...nextauth]/route';
 
 const prisma = new PrismaClient();
 
-const AddBandForm = async () => {
-    const session = await getServerSession(authOptions);
+const AddBandForm = async ({user}) => {
+
     const addSong = async (formData: FormData) => {
         'use server'
         const band = {
@@ -19,8 +17,7 @@ const AddBandForm = async () => {
                 userId: user.id
             },
         })
-        revalidatePath('/bands')
-        return 
+        return revalidatePath('/bands')
     }
 
     return (
