@@ -12,12 +12,12 @@ const BandsPage = async () => {
         },
     })
 
-    // Message about how to get started if no bands
     return (
         <>
             <h2>Bands</h2>
             <AddBandForm user={user}/>
-            <BandList bandList={bands} />
+            {bands && <BandList bandList={bands} />}
+            {!bands && <p>Add a band to get started.</p>}
         </>
     )
 }
