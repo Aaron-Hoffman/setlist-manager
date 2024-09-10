@@ -1,8 +1,6 @@
 import AddSongForm from "@/components/AddSongForm";
 import SongList from "@/components/SongList";
-import { PrismaClient } from '@prisma/client'
-
-const prisma = new PrismaClient();
+import prisma from "@/utils/db";
 
 const Home = async () => {
   const songs = await prisma.song.findMany()

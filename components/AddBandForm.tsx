@@ -1,7 +1,5 @@
-import { PrismaClient } from '@prisma/client'
+import prisma from '@/utils/db';
 import { revalidatePath } from 'next/cache'
-
-const prisma = new PrismaClient();
 
 const AddBandForm = async ({user}) => {
 

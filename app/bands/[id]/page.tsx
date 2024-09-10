@@ -1,12 +1,10 @@
 import AddSongForm from "@/components/AddSongForm";
 import SongList from "@/components/SongList";
-import { PrismaClient } from '@prisma/client'
+import prisma from "@/utils/db";
 
 
 
 const BandPage = async (context) => {
-  const prisma = new PrismaClient();
-
   const bandId = context.params.id;
 
   // This page should fetch all songs for the selected band and display a song list and also allow adding, updating, deleting songs

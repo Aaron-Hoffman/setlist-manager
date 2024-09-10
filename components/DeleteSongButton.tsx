@@ -1,7 +1,5 @@
 'use client'
-import { PrismaClient } from '@prisma/client'
-
-const prisma = new PrismaClient();
+import prisma from "@/utils/db";
 
 const DeleteSongButton = ({id, deleteSongHandler}) => {
     const deleteSong = async () => {

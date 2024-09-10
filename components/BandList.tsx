@@ -1,9 +1,7 @@
 import DeleteSongButton from "./DeleteSongButton";
-import { PrismaClient } from '@prisma/client'
+import prisma from "@/utils/db";
 import { revalidatePath } from 'next/cache'
 import Link from "next/link";
-
-const prisma = new PrismaClient();
 
 const BandList = ({bandList}) => {
     // const deleteBand = async (id) => {

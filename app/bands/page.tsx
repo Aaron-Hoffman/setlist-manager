@@ -1,11 +1,9 @@
 import AddBandForm from "@/components/AddBandForm";
 import BandList from "@/components/BandList";
 import getUser from "@/utils/getUser";
-import { PrismaClient } from '@prisma/client'
+import prisma from "@/utils/db";
 
 const BandsPage = async () => {
-    const prisma = new PrismaClient();
-
     const user = await getUser();
 
     const bands = await prisma.band.findMany({

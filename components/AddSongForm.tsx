@@ -1,8 +1,6 @@
 import KEYS from "@/constants/KEYS";
-import { PrismaClient } from '@prisma/client'
 import { revalidatePath } from 'next/cache'
-
-const prisma = new PrismaClient();
+import prisma from "@/utils/db";
 
 const AddSongForm = ({bandId}) => {
     const addSong = async (formData: FormData) => {
