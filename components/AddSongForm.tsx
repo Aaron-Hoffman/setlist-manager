@@ -4,7 +4,7 @@ import { revalidatePath } from 'next/cache'
 
 const prisma = new PrismaClient();
 
-const AddSongForm = () => {
+const AddSongForm = ({bandId}) => {
     const addSong = async (formData: FormData) => {
         'use server'
         const song = {
@@ -14,7 +14,8 @@ const AddSongForm = () => {
     
        await prisma.song.create({
             data: {
-             ...song
+             ...song,
+             bandId: Number(bandId)
             },
         })
         revalidatePath('/')

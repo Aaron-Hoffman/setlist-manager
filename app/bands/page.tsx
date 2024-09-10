@@ -5,6 +5,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "../api/auth/[...nextauth]/route";
 
 const BandsPage = async () => {
+    // Create Utility Function and useMemo to memoize 
     const prisma = new PrismaClient();
     const session = await getServerSession(authOptions);
     const user = await prisma.user.findUnique({
@@ -19,8 +20,6 @@ const BandsPage = async () => {
         },
     })
 
-    // Fetch all bands for user and render a menu to navigate to different bands
-    // Should show button to add bands as well
     // Message about how to get started if no bands
     return (
         <>
