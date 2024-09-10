@@ -1,9 +1,14 @@
 import DeleteSongButton from "./DeleteSongButton";
 import prisma from "@/utils/db";
+import { Song } from "@prisma/client";
 import { revalidatePath } from 'next/cache'
 
-const SongList = ({songList}) => {
-    const deleteSong = async (id) => {
+export type SongListProps = {
+    songList: Song[]
+}
+
+const SongList = ({songList}: SongListProps) => {
+    const deleteSong = async (id: number) => {
         'use server'
         await prisma.song.delete({
             where: {

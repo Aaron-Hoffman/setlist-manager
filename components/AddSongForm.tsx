@@ -2,7 +2,11 @@ import KEYS from "@/constants/KEYS";
 import { revalidatePath } from 'next/cache'
 import prisma from "@/utils/db";
 
-const AddSongForm = ({bandId}) => {
+export type AddSongFormProps = {
+    bandId: number,
+}
+
+const AddSongForm = ({bandId}: AddSongFormProps) => {
     const addSong = async (formData: FormData) => {
         'use server'
         const song = {

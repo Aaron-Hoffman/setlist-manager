@@ -1,7 +1,11 @@
 'use client'
-import prisma from "@/utils/db";
 
-const DeleteSongButton = ({id, deleteSongHandler}) => {
+export type DeleteSongButtonProps = {
+    id: number,
+    deleteSongHandler: Function
+}
+
+const DeleteSongButton = ({id, deleteSongHandler}: DeleteSongButtonProps) => {
     const deleteSong = async () => {
         deleteSongHandler(id)
     }

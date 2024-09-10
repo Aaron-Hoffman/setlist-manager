@@ -4,7 +4,7 @@ import prisma from "@/utils/db";
 
 
 
-const BandPage = async (context) => {
+const BandPage = async (context: object) => {
   const bandId = context.params.id;
 
   // This page should fetch all songs for the selected band and display a song list and also allow adding, updating, deleting songs

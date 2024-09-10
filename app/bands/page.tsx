@@ -8,7 +8,7 @@ const BandsPage = async () => {
 
     const bands = await prisma.band.findMany({
         where: {
-            userId: user.id,
+            userId: user?.id,
         },
     })
 

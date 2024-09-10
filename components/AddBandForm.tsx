@@ -1,7 +1,12 @@
 import prisma from '@/utils/db';
+import { User } from '@prisma/client';
 import { revalidatePath } from 'next/cache'
 
-const AddBandForm = async ({user}) => {
+export type AddBandFormProps = {
+    user: User | null
+}
+
+const AddBandForm = async ({user}: AddBandFormProps) => {
 
     const addSong = async (formData: FormData) => {
         'use server'
