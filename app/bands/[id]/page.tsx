@@ -7,9 +7,12 @@ import prisma from "@/utils/db";
 const BandPage = async (context: object) => {
   const bandId = context.params.id;
 
-  // This page should fetch all songs for the selected band and display a song list and also allow adding, updating, deleting songs
-
-  // Update this query to fetch only songs for given bandId
+  const band = await prisma.band.findUnique({
+    where: {
+      id: Number(bandId),
+    },
+  })
+  
   const songs = await prisma.song.findMany({
     where: {
       bandId: Number(bandId)
@@ -22,9 +25,12 @@ const BandPage = async (context: object) => {
   // }
  
   return (
-    <main className="flex flex-row items-start justify-around p-24">
-      <AddSongForm bandId={bandId} />
-      <SongList songList={songs}/>
+    <main className="p-24">
+      <h2 className="text-3xl underline text-center mb-10">{band.name}</h2>
+      <div className="flex flex-row items-start justify-around">
+        <AddSongForm bandId={bandId} />
+        <SongList songList={songs}/>
+      </div>
       {/* <button onClick={createSetlist}>Create Setlist</button> */}
       {/* <h2>SETLIST</h2> */}
       {/* <SongList songList={setlist} /> */}

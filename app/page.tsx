@@ -1,22 +1,11 @@
-import AddSongForm from "@/components/AddSongForm";
-import SongList from "@/components/SongList";
-import prisma from "@/utils/db";
+import Link from "next/link";
 
 const Home = async () => {
-  const songs = await prisma.song.findMany()
-
-  // const createSetlist = () => {
-  //   const setlist = sampleSize(songs, 2);
-  //   return setSetlist(setlist);
-  // }
  
   return (
     <main className="flex flex-row items-start justify-around p-24">
-      <AddSongForm />
-      <SongList songList={songs}/>
-      {/* <button onClick={createSetlist}>Create Setlist</button> */}
-      {/* <h2>SETLIST</h2> */}
-      {/* <SongList songList={setlist} /> */}
+      <p>Welcome to setlist manager. Organize your repertoire and setlists with ease!</p>
+      <Link href="/bands">Add a band to get started!</Link>
     </main>
   );
 }

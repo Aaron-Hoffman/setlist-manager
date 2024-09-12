@@ -8,12 +8,12 @@ const HeaderNavMenu = async () => {
     return (
         <nav>
             <ul className="flex">
-                <li>
+                {/* <li>
                     <Link className="px-5" href="/repertoire">Repertoire</Link>
                 </li>
                 <li>
                     <Link className="px-5" href="/setlists">Set Lists</Link>
-                </li>
+                </li> */}
                 <li>
                     <Link className="px-5" href="/bands">Bands</Link>
                 </li>

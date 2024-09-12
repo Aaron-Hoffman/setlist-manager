@@ -11,7 +11,7 @@ const DeleteBandButton = ({id, deleteBandHandler}: DeleteBandButtonProps) => {
     }
 
     return (
-        <button className="border-slate-400 border-2 p-2 cursor-pointer" onClick={deleteBand}>X</button>
+        <button className="border-slate-400 border-2 p-2 cursor-pointer rounded" onClick={deleteBand}>X</button>
     )
 }
 

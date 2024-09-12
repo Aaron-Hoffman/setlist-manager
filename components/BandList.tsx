@@ -20,11 +20,11 @@ const BandList = ({bandList}: BandListProps) => {
     }
 
     return (
-        <ul>
+        <ul className="pt-5">
             {bandList && bandList.map(band => {
                 return (
-                    <li key={band.id}>
-                        <Link href={`/bands/${band.id}`}>{band.name}</Link>
+                    <li key={band.id} className="py-5">
+                        <Link href={`/bands/${band.id}`} className="pr-5 text-2xl">{band.name}</Link>
                         <DeleteBandButton id={band.id} deleteBandHandler={deleteBand} />
                     </li>
                 )
