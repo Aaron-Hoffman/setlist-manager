@@ -8,16 +8,26 @@ const SetlistPage = async (context: object) => {
     // If it's a new setlist, we should show the full repertoire
     // There should be a button to generate a new setlist
     const bandId = context.params.id;
+    const setId = context.params.setId;
 
     const band = await prisma.band.findUnique({
         where: {
-        id: Number(bandId),
+            id: Number(bandId),
         },
     })
-    
+
+    const setList = await prisma.setList.findUnique({
+        where: {
+            id: Number(setId),
+        },
+        include: {
+            songs: true
+        }
+    })
+
     const songs = await prisma.song.findMany({
         where: {
-        bandId: Number(bandId)
+            bandId: Number(bandId)
         }
     })
 
@@ -31,6 +41,7 @@ const SetlistPage = async (context: object) => {
             <div className="flex flex-row items-start justify-around">
                 <h3>Setlist</h3>
                 <AddSetListForm songs={songs} bandId={bandId}/>
+                {setList && <SongList songList={setList.songs} />}
             </div>
         </main>
     )

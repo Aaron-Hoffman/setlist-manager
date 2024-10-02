@@ -10,8 +10,8 @@ const AddBandForm = async ({user}: AddBandFormProps) => {
 
     const addBand = async (formData: FormData) => {
         'use server'
-        const band = {
-          name: formData.get('name') as string,
+        if (!user) {
+            return "Error must sign in to create a band";
         }
     
        await prisma.band.create({

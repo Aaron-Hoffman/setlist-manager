@@ -11,13 +11,13 @@ const AddSongForm = ({bandId}: AddSongFormProps) => {
         'use server'
         const song = {
           title: formData.get('title') as string,
-          key: formData.get('key') as string
+          key: formData.get('key') as string,
+          bandId: Number(bandId)
         }
     
        await prisma.song.create({
             data: {
              ...song,
-             bandId: Number(bandId)
             },
         })
         revalidatePath('/')

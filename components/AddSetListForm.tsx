@@ -1,29 +1,29 @@
 import prisma from '@/utils/db';
-import { User, Song } from '@prisma/client';
-import { revalidatePath } from 'next/cache'
-import createSetList from '@/utils/createSetlist';
+import { Song } from '@prisma/client';
+import { redirect } from 'next/navigation';
+import createSetList from '@/utils/createSetList';
 
 export type AddSetListFormProps = {
+    bandId: number,
     songs: Song[]
 }
 
-const AddSetListForm = async ({songs}: AddSetListFormProps) => {
+const AddSetListForm = async ({bandId, songs}: AddSetListFormProps) => {
 
     const addSetList = async (formData: FormData) => {
         'use server'
-        const setList = {
-          name: formData.get('name') as string,
-          songs: createSetList(songs, 5)
-        }
-    
-    //    await prisma.setlist.create({
-    //         data: {
-    //             name: formData.get('name') as string,
-    //             userId: user.id
-    //         },
-    //     })
-        console.log(setList)
-        // return revalidatePath('/bands')
+       
+        const newSetList = await prisma.setList.create({
+            data: {
+                name: formData.get('name') as string,
+                songs: {
+                    connect: createSetList(songs, 5),
+                },
+                bandId: Number(bandId)
+            },
+        })
+
+        return redirect(`/bands/${bandId}/setlist/${newSetList.id}`)
     }
 
     return (
