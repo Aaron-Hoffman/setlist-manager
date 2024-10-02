@@ -2,8 +2,6 @@ import AddSongForm from "@/components/AddSongForm";
 import SongList from "@/components/SongList";
 import prisma from "@/utils/db";
 
-
-
 const BandPage = async (context: object) => {
   const bandId = context.params.id;
 
@@ -18,11 +16,6 @@ const BandPage = async (context: object) => {
       bandId: Number(bandId)
     }
   })
-
-  // const createSetlist = () => {
-  //   const setlist = sampleSize(songs, 2);
-  //   return setSetlist(setlist);
-  // }
  
   return (
     <main className="p-24">

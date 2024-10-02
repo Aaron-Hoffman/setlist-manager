@@ -2,6 +2,7 @@ import AddBandForm from "@/components/AddBandForm";
 import BandList from "@/components/BandList";
 import getUser from "@/utils/getUser";
 import prisma from "@/utils/db";
+import { isEmpty } from "lodash";
 
 const BandsPage = async () => {
     const user = await getUser();
@@ -13,12 +14,12 @@ const BandsPage = async () => {
     })
 
     return (
-        <>
+        <div className="mx-10">
             <h2>Bands</h2>
             <AddBandForm user={user}/>
-            {bands && <BandList bandList={bands} />}
-            {!bands && <p>Add a band to get started.</p>}
-        </>
+            {!isEmpty(bands) && <BandList bandList={bands} />}
+            {isEmpty(bands) && <p>Add a band to get started.</p>}
+        </div>
     )
 }
 

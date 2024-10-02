@@ -19,7 +19,7 @@ model Band {
   updatedAt DateTime  @updatedAt
   name      String    @db.VarChar(255)
   songs     Song[]
-  setlists  Setlist[]
+  setLists  SetList[]
   user      User      @relation(fields: [userId], references: [id])
   userId    String
 }
@@ -32,10 +32,10 @@ model Song {
   key       String   @db.VarChar(255)
   band      Band     @relation(fields: [bandId], references: [id])
   bandId    Int
-  setlists  Setlist[]
+  setLists  SetList[]
 }
 
-model Setlist {
+model SetList {
   id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
