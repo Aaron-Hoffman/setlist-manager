@@ -3,21 +3,17 @@ import AddSetListForm from "@/components/AddSetListForm";
 import prisma from "@/utils/db";
 
 const SetlistPage = async (context: object) => {
-    // This page should show the bands' repertoire on one side and a setlist on the other
-    // If a setlist exists already the repertoire should not include songs in the setlist
-    // If it's a new setlist, we should show the full repertoire
-    // There should be a button to generate a new setlist
     const bandId = context.params.id;
 
     const band = await prisma.band.findUnique({
         where: {
-        id: Number(bandId),
+            id: Number(bandId),
         },
     })
     
     const songs = await prisma.song.findMany({
         where: {
-        bandId: Number(bandId)
+            bandId: Number(bandId)
         }
     })
 

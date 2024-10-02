@@ -3,10 +3,6 @@ import AddSetListForm from "@/components/AddSetListForm";
 import prisma from "@/utils/db";
 
 const SetlistPage = async (context: object) => {
-    // This page should show the bands' repertoire on one side and a setlist on the other
-    // If a setlist exists already the repertoire should not include songs in the setlist
-    // If it's a new setlist, we should show the full repertoire
-    // There should be a button to generate a new setlist
     const bandId = context.params.id;
     const setId = context.params.setId;
 
@@ -27,7 +23,10 @@ const SetlistPage = async (context: object) => {
 
     const songs = await prisma.song.findMany({
         where: {
-            bandId: Number(bandId)
+            bandId: Number(bandId),
+            id: {
+                notIn: setList?.songs.map(song => song.id)
+            }
         }
     })
 
@@ -40,7 +39,7 @@ const SetlistPage = async (context: object) => {
             </div>
             <div className="flex flex-row items-start justify-around">
                 <h3>Setlist</h3>
-                <AddSetListForm songs={songs} bandId={bandId}/>
+                {/* <AddSetListForm songs={songs} bandId={bandId}/> */}
                 {setList && <SongList songList={setList.songs} />}
             </div>
         </main>
