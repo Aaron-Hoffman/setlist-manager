@@ -19,8 +19,7 @@ const SongList = ({songList}: SongListProps) => {
     }
 
     return (
-        <div className="flex flex-col w-1/3">
-            <h2 className="text-center text-2xl pb-5">Songs</h2>
+        <div className="flex flex-col">
             <table className="border-slate-400 border-2">
                 <thead>
                     <tr>

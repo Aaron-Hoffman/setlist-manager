@@ -33,14 +33,16 @@ const SetlistPage = async (context: object) => {
     return (
         <main className="p-24">
             <h2 className="text-3xl underline text-center mb-10">{band.name}</h2>
-            <div className="flex flex-row items-start justify-around">
-                <h3>Repertoire</h3>
-                <SongList songList={songs}/>
-            </div>
-            <div className="flex flex-row items-start justify-around">
-                <h3>Setlist</h3>
-                {/* <AddSetListForm songs={songs} bandId={bandId}/> */}
-                {setList && <SongList songList={setList.songs} />}
+            <div className="flex flex-row items-start">
+                <div className="flex flex-col items-start justify-around w-1/2">
+                    <h3 className="text-center text-2xl pb-5">Repertoire</h3>
+                    <SongList songList={songs}/>
+                </div>
+                <div className="flex flex-col items-start justify-around w-1/2">
+                    <h3 className="text-center text-2xl pb-5">Setlist</h3>
+                    {/* <AddSetListForm songs={songs} bandId={bandId}/> */}
+                    {setList && <SongList songList={setList.songs} />}
+                </div>
             </div>
         </main>
     )
