@@ -17,7 +17,7 @@ const AddSetListForm = async ({bandId, songs}: AddSetListFormProps) => {
             data: {
                 name: formData.get('name') as string,
                 songs: {
-                    connect: createSetList(songs, 5),
+                    connect: createSetList(songs, Number(formData.get('number'))),
                 },
                 bandId: Number(bandId)
             },
@@ -33,6 +33,8 @@ const AddSetListForm = async ({bandId, songs}: AddSetListFormProps) => {
                 <div className="p-5">
                     <label htmlFor="name" className="pr-3">Name:</label>
                     <input type="text" name="name" id="name" placeholder="Set list name here..." className="rounded p-2 "/>
+                    <label htmlFor="number" className="pr-3">Number of songs:</label>
+                    <input type="number" name="number" id="number" className="rounded p-2 "/>
                 </div>
                 <button className="p-5 mt-5 bg-blue-400 rounded font-bold text-lg" type='submit'>Create Set List</button>
             </form>
