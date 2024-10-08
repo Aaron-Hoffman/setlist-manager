@@ -1,8 +1,9 @@
+import { PageProps } from "@/.next/types/app/page";
 import SetListList from "@/components/SetListList";
 import prisma from "@/utils/db";
 import { isEmpty } from "lodash";
 
-const BandPage = async (context: object) => {
+const BandPage = async (context: PageProps) => {
   const bandId = context.params.id;
 
   const band = await prisma.band.findUnique({

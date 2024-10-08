@@ -1,8 +1,9 @@
 import SongList from "@/components/SongList";
 import AddSetListForm from "@/components/AddSetListForm";
 import prisma from "@/utils/db";
+import { PageProps } from "@/.next/types/app/page";
 
-const SetlistPage = async (context: object) => {
+const SetlistPage = async (context: PageProps) => {
     const bandId = context.params.id;
     const setId = context.params.setId;
 
@@ -11,6 +12,12 @@ const SetlistPage = async (context: object) => {
             id: Number(bandId),
         },
     })
+
+    if (!band) {
+        return (
+            <p>This band does not exist.</p>
+        )
+    }
 
     const setList = await prisma.setList.findUnique({
         where: {
@@ -40,7 +47,6 @@ const SetlistPage = async (context: object) => {
                 </div>
                 <div className="flex flex-col items-start justify-around w-1/2">
                     <h3 className="text-center text-2xl pb-5">Setlist</h3>
-                    {/* <AddSetListForm songs={songs} bandId={bandId}/> */}
                     {setList && <SongList songList={setList.songs} />}
                 </div>
             </div>

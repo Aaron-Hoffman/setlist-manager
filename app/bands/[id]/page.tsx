@@ -1,8 +1,9 @@
+import { PageProps } from "@/.next/types/app/page";
 import AddSongForm from "@/components/AddSongForm";
 import SongList from "@/components/SongList";
 import prisma from "@/utils/db";
 
-const BandPage = async (context: object) => {
+const BandPage = async (context: PageProps) => {
   const bandId = context.params.id;
 
   const band = await prisma.band.findUnique({
@@ -10,6 +11,12 @@ const BandPage = async (context: object) => {
       id: Number(bandId),
     },
   })
+
+  if (!band) {
+    return (
+      <p>This band does not exist or has been deleted.</p>
+    )
+  }
   
   const songs = await prisma.song.findMany({
     where: {

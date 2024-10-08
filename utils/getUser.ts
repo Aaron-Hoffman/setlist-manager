@@ -1,15 +1,15 @@
 import prisma from "./db";
 import { getServerSession } from "next-auth";
-import { authOptions } from '@/app/api/auth/[...nextauth]/route';
+import { authOptions } from "./auth";
 
 // maybe memoize?
 const getUser = async () => {
     const session = await getServerSession(authOptions);
-    if (!session) return null;
+    if (!session || !session.user?.email) return undefined;
     
     const user = await prisma.user.findUnique({
         where: {
-          email: session?.user.email,
+          email: session.user.email,
         },
     })
 

@@ -1,8 +1,9 @@
 import SongList from "@/components/SongList";
 import AddSetListForm from "@/components/AddSetListForm";
 import prisma from "@/utils/db";
+import { PageProps } from "@/.next/types/app/page";
 
-const SetlistPage = async (context: object) => {
+const SetlistPage = async (context: PageProps) => {
     const bandId = context.params.id;
 
     const band = await prisma.band.findUnique({

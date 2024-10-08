@@ -7,6 +7,12 @@ import { isEmpty } from "lodash";
 const BandsPage = async () => {
     const user = await getUser();
 
+    if (!user) {
+        return (
+            <p>Login to access this page.</p>
+        )
+    }
+
     const bands = await prisma.band.findMany({
         where: {
             userId: user?.id,
