@@ -1,17 +1,14 @@
 'use client'
 
+import { deleteSong } from "@/utils/serverActions"
+
 export type DeleteSongButtonProps = {
     id: number,
-    deleteSongHandler: Function
 }
 
-const DeleteSongButton = ({id, deleteSongHandler}: DeleteSongButtonProps) => {
-    const deleteSong = async () => {
-        deleteSongHandler(id)
-    }
-
+const DeleteSongButton = ({id}: DeleteSongButtonProps) => {
     return (
-        <td className="border-slate-400 border-2 p-2 cursor-pointer" onClick={deleteSong}>X</td>
+        <td className="border-slate-400 border-2 p-2 cursor-pointer" onClick={e => deleteSong(id)}>X</td>
     )
 }
 

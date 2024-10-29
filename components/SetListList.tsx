@@ -1,7 +1,6 @@
 import { SetList} from "@prisma/client";
 import Link from "next/link";
 import DeleteSetListButton from "./DeleteSetListButton";
-import { deleteSetList } from "@/utils/serverActions";
 
 export type SetListListProps = {
     setListList: SetList[],
@@ -15,7 +14,7 @@ const SetListList = ({bandId, setListList}: SetListListProps) => {
                 return (
                     <li key={setList.id} className="py-5">
                         <Link href={`/bands/${bandId}/setlist/${setList.id}`} className="pr-5 text-2xl">{setList.name}</Link>
-                        <DeleteSetListButton id={setList.id} deleteSetListHandler={deleteSetList.bind(null, setList.id)} />
+                        <DeleteSetListButton id={setList.id} />
                     </li>
                 )
             })}

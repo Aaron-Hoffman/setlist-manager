@@ -1,17 +1,14 @@
 'use client'
 
+import { deleteSetList } from "@/utils/serverActions"
+
 export type DeleteSetListButtonProps = {
     id: number,
-    deleteSetListHandler: Function
 }
 
-const DeleteSetListButton = ({id, deleteSetListHandler}: DeleteSetListButtonProps) => {
-    const deleteSetList = async () => {
-        deleteSetListHandler(id)
-    }
-
+const DeleteSetListButton = ({id}: DeleteSetListButtonProps) => {
     return (
-        <button className="border-slate-400 border-2 p-2 cursor-pointer rounded" onClick={deleteSetList}>X</button>
+        <button className="border-slate-400 border-2 p-2 cursor-pointer rounded" onClick={e => deleteSetList(id)}>X</button>
     )
 }
 

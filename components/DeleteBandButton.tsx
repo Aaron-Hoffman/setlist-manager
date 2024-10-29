@@ -1,17 +1,14 @@
 'use client'
 
+import { deleteBand } from "@/utils/serverActions"
+
 export type DeleteBandButtonProps = {
-    id: number,
-    deleteBandHandler: Function
+    id: number
 }
 
-const DeleteBandButton = ({id, deleteBandHandler}: DeleteBandButtonProps) => {
-    const deleteBand = async () => {
-        deleteBandHandler(id)
-    }
-
+const DeleteBandButton = ({id}: DeleteBandButtonProps) => {
     return (
-        <button className="border-slate-400 border-2 p-2 cursor-pointer rounded" onClick={deleteBand}>X</button>
+        <button className="border-slate-400 border-2 p-2 cursor-pointer rounded" onClick={e => deleteBand(id)}>X</button>
     )
 }
 

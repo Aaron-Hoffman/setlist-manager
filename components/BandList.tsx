@@ -1,7 +1,6 @@
 import { Band } from "@prisma/client";
 import Link from "next/link";
 import DeleteBandButton from "./DeleteBandButton";
-import { deleteBand } from "@/utils/serverActions";
 
 export type BandListProps = {
     bandList: Band[]
@@ -14,7 +13,7 @@ const BandList = ({bandList}: BandListProps) => {
                 return (
                     <li key={band.id} className="py-5">
                         <Link href={`/bands/${band.id}`} className="pr-5 text-2xl">{band.name}</Link>
-                        <DeleteBandButton id={band.id} deleteBandHandler={deleteBand.bind(null, band.id)} />
+                        <DeleteBandButton id={band.id} />
                     </li>
                 )
             })}
