@@ -79,3 +79,13 @@ export const deleteSong = async (songId: number) => {
 
     return revalidatePath('/')
 }
+
+export const editSong = async (songId: number) => {
+    await prisma.song.delete({
+        where: {
+          id: songId,
+        },
+    })
+
+    return revalidatePath('/')
+}

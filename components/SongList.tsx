@@ -1,4 +1,5 @@
 import DeleteSongButton from "./DeleteSongButton";
+import EditSongButton from "./EditSongButton";
 import { Song } from "@prisma/client";
 
 export type SongListProps = {
@@ -13,7 +14,6 @@ const SongList = ({songList}: SongListProps) => {
                     <tr>
                         <th className="border-slate-400 border-2 p-2" >Title</th>
                         <th className="border-slate-400 border-2 p-2">Key</th>
-                        
                     </tr>
                 </thead>
                 <tbody>
@@ -23,6 +23,7 @@ const SongList = ({songList}: SongListProps) => {
                                 <td className="border-slate-400 border-2 p-2">{song.title}</td>
                                 <td className="border-slate-400 border-2 p-2">{song.key}</td>
                                 <DeleteSongButton id={song.id} />
+                                <EditSongButton id={song.id} />
                             </tr>
                         )}
                     )}
