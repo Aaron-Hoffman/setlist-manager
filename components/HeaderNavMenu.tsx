@@ -8,14 +8,8 @@ const HeaderNavMenu = async () => {
     return (
         <nav>
             <ul className="flex">
-                {/* <li>
-                    <Link className="px-5" href="/repertoire">Repertoire</Link>
-                </li>
                 <li>
-                    <Link className="px-5" href="/setlists">Set Lists</Link>
-                </li> */}
-                <li>
-                    <Link className="px-5" href="/bands">Bands</Link>
+                    <Link className="px-5 text-xl" href="/bands">Bands</Link>
                 </li>
                 <li>
                     {session && <LogoutButton />}
