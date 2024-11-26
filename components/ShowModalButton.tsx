@@ -2,12 +2,13 @@
 
 export type ShowModalButtonProps = {
     show: boolean,
-    clickHandler: Function
+    clickHandler: Function,
+    label: string
 }
 
-const ShowModalButton = ({show, clickHandler}: ShowModalButtonProps) => {
+const ShowModalButton = ({show, clickHandler, label}: ShowModalButtonProps) => {
     return (
-        <button onClick={e => clickHandler(!show)}>Add Band</button>
+        <button className="p-5 mt-5 bg-blue-400 rounded font-bold text-lg" onClick={e => clickHandler(!show)}>{label}</button>
     )
 }
 

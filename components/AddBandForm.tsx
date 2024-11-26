@@ -19,11 +19,11 @@ const AddBandForm = ({user}: AddBandFormProps) => {
 
     return (
         <>
-            <ShowModalButton clickHandler={setShowModal} show={showModal}/>
+            <ShowModalButton clickHandler={setShowModal} show={showModal} label="Add Band"/>
             <Modal show={showModal}>
                 <div className="flex flex-col bg-white border-black border-2 p-5 rounded">
                     <h2 className="text-center text-2xl pb-5">Add A Band</h2>
-                    <form action={handleSubmit} className="flex flex-col p-5">
+                    <form action={handleSubmit} className="flex flex-col p-5 border-slate-400 border-2 ">
                         <div className="p-5">
                             <label htmlFor="name" className="pr-3">Name:</label>
                             <input type="text" name="name" id="name" placeholder="Band name here..." className="rounded p-2 "/>

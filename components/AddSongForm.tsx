@@ -19,7 +19,7 @@ const AddSongForm = ({bandId}: AddSongFormProps) => {
 
     return (
         <>
-            <ShowModalButton clickHandler={setShowModal} show={showModal}/>
+            <ShowModalButton clickHandler={setShowModal} show={showModal} label="Add Song"/>
             <Modal show={showModal}>
                 <div className="flex flex-col bg-white border-black border-2 p-5 rounded">
                     <h2 className="text-center text-2xl pb-5">Add A Song</h2>
