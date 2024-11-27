@@ -3,7 +3,7 @@ import { signIn } from "next-auth/react"
 
 const LoginButton = () => {
   return (
-    <button onClick={() => signIn('google')}>Login</button>
+    <button onClick={async () => await signIn('google')}>Login</button>
   );
 }
 
