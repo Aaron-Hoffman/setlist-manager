@@ -32,6 +32,7 @@ const AddSetListForm = ({bandId, songs}: AddSetListFormProps) => {
                             <input type="number" name="number" id="number" className="rounded p-2 "/>
                         </div>
                         <button className="p-5 mt-5 bg-blue-400 rounded font-bold text-lg" type='submit'>Create Set List</button>
+                        <button className="p-5 mt-5 bg-red-400 rounded font-bold text-lg" onClick={() => setShowModal(false)} type="button">Cancel</button>
                     </form>
                 </div>
             </Modal>

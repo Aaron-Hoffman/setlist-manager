@@ -35,6 +35,7 @@ const AddSongForm = ({bandId}: AddSongFormProps) => {
                             </select>
                         </div>
                         <button className="p-5 mt-5 bg-blue-400 rounded font-bold text-lg" type='submit'>Add Song</button>
+                        <button className="p-5 mt-5 bg-red-400 rounded font-bold text-lg" onClick={() => setShowModal(false)} type="button">Cancel</button>
                     </form>
                 </div>
             </Modal>

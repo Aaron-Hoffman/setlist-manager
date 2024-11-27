@@ -29,6 +29,7 @@ const AddBandForm = ({user}: AddBandFormProps) => {
                             <input type="text" name="name" id="name" placeholder="Band name here..." className="rounded p-2 "/>
                         </div>
                         <button className="p-5 mt-5 bg-blue-400 rounded font-bold text-lg" type='submit'>Add Band</button>
+                        <button className="p-5 mt-5 bg-red-400 rounded font-bold text-lg" onClick={() => setShowModal(false)} type="button">Cancel</button>
                     </form>
                 </div>
             </Modal>
