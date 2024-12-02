@@ -2,6 +2,7 @@ import AddBandForm from "@/components/AddBandForm";
 import BandList from "@/components/BandList";
 import getUser from "@/utils/getUser";
 import { isEmpty } from "lodash";
+import Link from "next/link";
 
 const BandsPage = async () => {
     const user = await getUser();
@@ -9,7 +10,7 @@ const BandsPage = async () => {
 
     if (!user || !userWithBands) {
         return (
-            <p>Login to access this page.</p>
+            <p><Link href="/login">Login</Link> to access this page.</p>
         )
     }
 

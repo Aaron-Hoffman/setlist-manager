@@ -11,8 +11,6 @@ export const addBand = async (user: User | null, formData: FormData) => {
         throw new Error("Error must sign in to create a band");
     }
 
-    console.log(user)
-
    await prisma.band.create({
         data: {
             name: formData.get('name') as string,
