@@ -3,7 +3,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "./auth";
 
 // maybe memoize?
-const getUser = async () => {
+const getUser = async (withBands: boolean = false) => {
     const session = await getServerSession(authOptions);
     if (!session || !session.user?.email) return undefined;
     
@@ -11,6 +11,9 @@ const getUser = async () => {
         where: {
           email: session.user.email,
         },
+        include: {
+          bands: withBands
+        }
     })
 
     return user

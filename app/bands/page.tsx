@@ -1,23 +1,19 @@
 import AddBandForm from "@/components/AddBandForm";
 import BandList from "@/components/BandList";
 import getUser from "@/utils/getUser";
-import prisma from "@/utils/db";
 import { isEmpty } from "lodash";
 
 const BandsPage = async () => {
     const user = await getUser();
+    const userWithBands = await getUser(true)
 
-    if (!user) {
+    if (!user || !userWithBands) {
         return (
             <p>Login to access this page.</p>
         )
     }
 
-    const bands = await prisma.band.findMany({
-        where: {
-            userId: user?.id,
-        },
-    })
+    const bands = userWithBands.bands
 
     return (
         <div className="mx-10">
