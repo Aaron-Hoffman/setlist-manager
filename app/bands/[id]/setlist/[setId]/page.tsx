@@ -1,7 +1,7 @@
 import SongList from "@/components/SongList";
-import AddSetListForm from "@/components/AddSetListForm";
 import prisma from "@/utils/db";
 import { PageProps } from "@/.next/types/app/page";
+import Link from "next/link";
 
 const SetlistPage = async (context: PageProps) => {
     const bandId = context.params.id;
@@ -39,7 +39,7 @@ const SetlistPage = async (context: PageProps) => {
 
     return (
         <main className="p-24">
-            <h2 className="text-3xl underline text-center mb-10">{band.name}</h2>
+            <h2 className="text-3xl underline text-center mb-10"><Link href={`/bands/${bandId}`}>{band?.name}</Link></h2>
             <div className="flex flex-row items-start">
                 <div className="flex flex-col items-start justify-around w-1/2">
                     <h3 className="text-center text-2xl pb-5">Repertoire</h3>

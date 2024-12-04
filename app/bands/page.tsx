@@ -17,12 +17,12 @@ const BandsPage = async () => {
     const bands = userWithBands.bands
 
     return (
-        <div className="mx-10">
-            <h2>Bands</h2>
+        <main className="p-24">
+            <h2 className="text-center text-5xl uppercase pb-12">Bands</h2>
             <AddBandForm user={user}/>
             {!isEmpty(bands) && <BandList bandList={bands} />}
             {isEmpty(bands) && <p>Add a band to get started.</p>}
-        </div>
+        </main>
     )
 }
 
