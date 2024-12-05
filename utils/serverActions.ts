@@ -62,7 +62,7 @@ export const addSong = async (bandId: number, formData: FormData) => {
         title: formData.get('title') as string,
         key: formData.get('key') as string,
         bandId: Number(bandId)
-      }
+    }
   
      await prisma.song.create({
           data: {
@@ -83,10 +83,18 @@ export const deleteSong = async (songId: number) => {
     return revalidatePath('/')
 }
 
-export const editSong = async (songId: number) => {
-    await prisma.song.delete({
+export const editSong = async (songId: number, formData: FormData) => {
+    const song = {
+        title: formData.get('title') as string,
+        key: formData.get('key') as string,
+    }
+
+    await prisma.song.update({
         where: {
           id: songId,
+        },
+        data: {
+            ...song
         },
     })
 
