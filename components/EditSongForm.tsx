@@ -32,7 +32,7 @@ const EditSongForm = ({song}: EditSongFormProps) => {
 
     return (
         <>
-            <ShowModalButton clickHandler={setShowModal} show={showModal} label="Edit Song"/>
+            <ShowModalButton clickHandler={setShowModal} show={showModal} label="Edit Song" table={true}/>
             <Modal show={showModal}>
                 <div className="flex flex-col bg-white border-black border-2 p-5 rounded">
                     <h2 className="text-center text-2xl pb-5">Edit Song</h2>
