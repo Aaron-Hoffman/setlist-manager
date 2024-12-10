@@ -3,7 +3,8 @@ import EditSongForm from "./EditSongForm";
 import { Song } from "@prisma/client";
 
 export type SongListProps = {
-    songList: Song[]
+    songList: Song[],
+    setListMode: boolean
 }
 
 const SongList = ({songList}: SongListProps) => {

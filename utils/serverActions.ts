@@ -1,6 +1,6 @@
 'use server'
 
-import { Song, User } from "@prisma/client";
+import { SetList, Song, User } from "@prisma/client";
 import createSetList from "./createSetList";
 import prisma from "./db";
 import { revalidatePath } from "next/cache";
@@ -55,6 +55,22 @@ export const deleteSetList = async (setListId: number) => {
     })
 
     return revalidatePath('/bands')
+}
+
+export const editSetList = async (setList: SetList, song: Song, add: boolean) => {
+
+    const songList = add ? [...setList.songs, song] : setList.songs.filter(setListItem => setListItem.id !== song.id);
+
+    await prisma.setList.update({
+        where: {
+          id: setList.id,
+        },
+        data: {
+            songs: songList,
+        },
+    })
+
+    return revalidatePath('/')
 }
 
 export const addSong = async (bandId: number, formData: FormData) => {
