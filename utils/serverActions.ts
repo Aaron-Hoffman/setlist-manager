@@ -72,15 +72,13 @@ export const editSetList = async (setList: SetList, song: Song, add: boolean) =>
 
     const songList = add ? [...setListWithSongs.songs, song] : setListWithSongs.songs.filter(setListItem => setListItem.id !== song.id);
 
-    console.log(setListWithSongs)
-    console.log(songList)
     await prisma.setList.update({
         where: {
           id: setList.id,
         },
         data: {
             songs: {
-                connect: songList,
+                set: songList,
             }
         },
     })
