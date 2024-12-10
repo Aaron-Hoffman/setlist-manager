@@ -59,14 +59,29 @@ export const deleteSetList = async (setListId: number) => {
 
 export const editSetList = async (setList: SetList, song: Song, add: boolean) => {
 
-    const songList = add ? [...setList.songs, song] : setList.songs.filter(setListItem => setListItem.id !== song.id);
+    const setListWithSongs = await prisma.setList.findUnique({
+        where: {
+            id: Number(setList.id),
+        },
+        include: {
+            songs: true
+        }
+    })
+    
+    if (!setListWithSongs) return 
 
+    const songList = add ? [...setListWithSongs.songs, song] : setListWithSongs.songs.filter(setListItem => setListItem.id !== song.id);
+
+    console.log(setListWithSongs)
+    console.log(songList)
     await prisma.setList.update({
         where: {
           id: setList.id,
         },
         data: {
-            songs: songList,
+            songs: {
+                connect: songList,
+            }
         },
     })
 

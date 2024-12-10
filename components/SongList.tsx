@@ -1,13 +1,16 @@
 import DeleteSongButton from "./DeleteSongButton";
+import EditSetListButton from "./EditSetListButton";
 import EditSongForm from "./EditSongForm";
-import { Song } from "@prisma/client";
+import { SetList, Song } from "@prisma/client";
 
 export type SongListProps = {
     songList: Song[],
-    setListMode: boolean
+    setListMode: boolean,
+    add: boolean,
+    setList: SetList
 }
 
-const SongList = ({songList}: SongListProps) => {
+const SongList = ({songList, setListMode, add, setList}: SongListProps) => {
     return (
         <div className="flex flex-col">
             <table className="border-slate-400 border-2">
@@ -25,6 +28,7 @@ const SongList = ({songList}: SongListProps) => {
                                 <td className="border-slate-400 border-2 p-2">{song.key}</td>
                                 <DeleteSongButton id={song.id} />
                                 <EditSongForm song={song} />
+                                <EditSetListButton song={song} add={add} setList={setList} />
                             </tr>
                         )}
                     )}

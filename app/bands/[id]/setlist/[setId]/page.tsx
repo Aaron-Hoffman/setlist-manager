@@ -51,11 +51,11 @@ const SetlistPage = async (context: PageProps) => {
             <div className="flex flex-row items-start">
                 <div className="flex flex-col items-start justify-around w-1/2">
                     <h3 className="text-center text-2xl pb-5">Repertoire</h3>
-                    <SongList songList={songs} setListMode={true}/>
+                    <SongList songList={songs} add={true} setListMode={true} setList={setList}/>
                 </div>
                 <div className="flex flex-col items-start justify-around w-1/2">
                     <h3 className="text-center text-2xl pb-5">Setlist</h3>
-                    {setList && <SongList songList={setList.songs} />}
+                    {setList && <SongList songList={setList.songs} add={false} setListMode={true} setList={setList}/>}
                 </div>
             </div>
         </main>
