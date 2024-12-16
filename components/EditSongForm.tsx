@@ -3,7 +3,7 @@
 import KEYS from "@/constants/KEYS";
 import { editSong } from "@/utils/serverActions";
 import Modal from './Modal';
-import { useState } from 'react';
+import { ChangeEvent, useState } from 'react';
 import ShowModalButton from './ShowModalButton';
 import { Song } from "@prisma/client";
 
@@ -23,9 +23,9 @@ const EditSongForm = ({song}: EditSongFormProps) => {
         setShowModal(false)
     }
     
-    const handleChange = (event: any) => {
+    const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
         const values = {...formValues}
-        values[event.target.name] = event.target.value
+        values[event.target.name as keyof typeof values] = event.target.value
 
         setFormValues(values)
     }
