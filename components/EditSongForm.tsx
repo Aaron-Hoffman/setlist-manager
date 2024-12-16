@@ -23,7 +23,7 @@ const EditSongForm = ({song}: EditSongFormProps) => {
         setShowModal(false)
     }
     
-    const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const handleChange = (event: any) => {
         const values = {...formValues}
         values[event.target.name as keyof typeof values] = event.target.value
 
