@@ -18,7 +18,7 @@ const AddSongForm = ({bandId}: AddSongFormProps) => {
     }
 
     return (
-        <>
+        <div className="mt-7 mr-12">
             <ShowModalButton clickHandler={setShowModal} show={showModal} label="Add Song" table={false}/>
             <Modal show={showModal}>
                 <div className="flex flex-col bg-white border-black border-2 p-5 rounded">
@@ -39,7 +39,7 @@ const AddSongForm = ({bandId}: AddSongFormProps) => {
                     </form>
                 </div>
             </Modal>
-        </>
+        </div>
     )
 }
 

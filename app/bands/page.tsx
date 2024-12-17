@@ -18,7 +18,7 @@ const BandsPage = async () => {
 
     return (
         <main className="p-24">
-            <h2 className="text-center text-5xl uppercase pb-12">Bands</h2>
+            <h2 className="text-5xl underline text-center mb-10">Bands</h2>
             <AddBandForm user={user}/>
             {!isEmpty(bands) && <BandList bandList={bands} />}
             {isEmpty(bands) && <p>Add a band to get started.</p>}

@@ -27,10 +27,11 @@ const BandPage = async (context: PageProps) => {
  
   return (
     <main className="p-24">
-      <h2 className="text-3xl underline text-center mb-10">{band.name}</h2>
+      <h2 className="text-5xl underline text-center mb-10">{band.name}</h2>
       <div className="flex flex-row items-start justify-end pb-10 max-w-6xl">
         <Link href={`/bands/${bandId}/setlists`} className="px-5 text-xl">Setlists</Link>
         <Link href={`/bands/${bandId}/setlist`} className="px-5 text-xl">New Setlist</Link>
+        <Link href={`/bands/${bandId}/setlist`} className="px-5 text-xl">Share Band</Link>
       </div>
       <div className="flex flex-row items-start justify-around">
         <AddSongForm bandId={bandId} />

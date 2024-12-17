@@ -11,8 +11,10 @@ const BandList = ({bandList}: BandListProps) => {
         <ul className="pt-5">
             {bandList && bandList.map(band => {
                 return (
-                    <li key={band.id} className="py-5">
-                        <Link href={`/bands/${band.id}`} className="pr-5 text-2xl">{band.name}</Link>
+                    <li key={band.id} className="py-5 flex-row flex justify-between max-w-lg">
+                        <div>
+                            <Link href={`/bands/${band.id}`} className="pr-5 text-2xl">{band.name}</Link>
+                        </div>
                         <DeleteBandButton id={band.id} />
                     </li>
                 )

@@ -12,7 +12,7 @@ const SetListList = ({bandId, setListList}: SetListListProps) => {
         <ul className="pt-5">
             {setListList && setListList.map(setList => {
                 return (
-                    <li key={setList.id} className="py-5">
+                    <li key={setList.id} className="py-5 flex-row flex justify-between max-w-lg">
                         <Link href={`/bands/${bandId}/setlist/${setList.id}`} className="pr-5 text-2xl">{setList.name}</Link>
                         <DeleteSetListButton id={setList.id} />
                     </li>
