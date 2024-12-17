@@ -15,7 +15,7 @@ const HeaderNavMenu = async () => {
                 </li>
                 <li>
                     {session && <LogoutButton />}
-                    <Link className="px-5 text-xl" href="/login">Login</Link>
+                    {!session && <Link className="px-5 text-xl" href="/login">Login</Link>}
                 </li>
             </ul>
         </nav>
