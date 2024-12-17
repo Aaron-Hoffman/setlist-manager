@@ -23,11 +23,11 @@ const SetlistPage = async (context: PageProps) => {
         <main className="p-24">
             <h2 className="text-3xl underline text-center mb-10"><Link href={`/bands/${bandId}`}>{band?.name}</Link></h2>
             <div className="flex flex-row items-start">
-                <div className="flex flex-col items-start justify-around w-1/2">
+                <div className="flex flex-col items-start justify-around w-1/2 mr-12">
                     <h3 className="text-center text-2xl pb-5">Repertoire</h3>
                     <SongList songList={songs}/>
                 </div>
-                <div className="flex flex-col items-start justify-around w-1/2">
+                <div className="flex flex-col items-start justify-around w-1/2 mt-7">
                     <AddSetListForm songs={songs} bandId={bandId}/>
                 </div>
             </div>
