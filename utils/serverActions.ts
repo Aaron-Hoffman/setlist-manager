@@ -33,6 +33,51 @@ export const deleteBand = async (bandId: number) => {
     return revalidatePath('/bands')
 }
 
+// TODO: fix this functionality
+export const shareBand = async (bandId: number, formData: FormData) => {
+    const bandWithUsers = await prisma.band.findUnique({
+        where: {
+            id: bandId,
+        },
+        include: {
+            users: true
+        }
+    })
+
+    if (!bandWithUsers) return
+
+    const emailToShareWith = formData.get('email') as string
+
+    let userToShareWith
+
+    try {
+        userToShareWith = await prisma.user.findUnique({
+            where: {
+                email: emailToShareWith
+            }
+        })
+    } catch(error) {
+        userToShareWith = await prisma.user.create({
+            data: {
+                email: emailToShareWith
+            }
+        })
+    }
+    
+    await prisma.band.update({
+        where: {
+          id: bandId,
+        },
+        data: {
+            users: {
+                set: [...bandWithUsers.users, userToShareWith],
+            }
+        },
+    })
+
+    return revalidatePath('/bands')
+}
+
 export const addSetList = async (bandId: number, songs: Song[], formData: FormData) => {
     const newSetList = await prisma.setList.create({
         data: {
