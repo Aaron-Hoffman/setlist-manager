@@ -25,8 +25,8 @@ const SongList = ({songList, add, setList}: SongListProps) => {
                             <tr key={song.id}>
                                 <td className="border-slate-400 border-2 p-2">{song.title}</td>
                                 <td className="border-slate-400 border-2 p-2">{song.key}</td>
-                                <DeleteSongButton id={song.id} />
-                                <EditSongForm song={song} />
+                                {!setList && <DeleteSongButton id={song.id} />}
+                                {!setList && <EditSongForm song={song} />}
                                 {setList && <EditSetListButton song={song} add={add || false} setList={setList} />}
                             </tr>
                         )}
