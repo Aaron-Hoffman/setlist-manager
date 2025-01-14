@@ -20,9 +20,11 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <div className="h-screen">
+        <div className="min-h-screen">
           <Header />
-          {children}
+          <div className="min-h-[calc(100vh-256px)]">
+            {children}
+          </div>
           <Footer />      
         </div>
       </body>
