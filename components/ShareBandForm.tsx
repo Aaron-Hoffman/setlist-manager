@@ -7,7 +7,7 @@ import { useState } from 'react';
 import ShowModalButton from './ShowModalButton';
 
 export type ShareBandFormProps = {
-    band: Band | null
+    band: Band
 }
 
 const ShareBandForm = ({band}: ShareBandFormProps) => {
@@ -19,7 +19,7 @@ const ShareBandForm = ({band}: ShareBandFormProps) => {
 
     return (
         <>
-            <ShowModalButton clickHandler={setShowModal} show={showModal} label="Add Band" table={false}/>
+            <ShowModalButton clickHandler={setShowModal} show={showModal} label="Share Band" table={false}/>
             <Modal show={showModal}>
                 <div className="flex flex-col bg-white border-black border-2 p-5 rounded">
                     <h2 className="text-center text-2xl pb-5">Share Band</h2>
