@@ -51,9 +51,6 @@ export const shareBand = async (bandId: number, formData: FormData) => {
         where: {
             email: emailToShareWith
         },
-        include: {
-            bands: true
-        }
     })
 
     if (!userToShareWith) return
@@ -62,27 +59,14 @@ export const shareBand = async (bandId: number, formData: FormData) => {
     
     await prisma.band.update({
         where: {
-          id: bandId,
+          id: bandWithUsers.id,
         },
         data: {
             users: {
-                set: userList,
+                set: userList
             }
         },
     })
-
-    // const bandsList: Band[] = [userToShareWith.bands, ...bandWithUsers]
-
-    // await prisma.user.update({
-    //     where: {
-    //       id: userToShareWith.id,
-    //     },
-    //     data: {
-    //         bands: {
-    //             set: bandsList,
-    //         }
-    //     },
-    // })
 
     return revalidatePath('/bands')
 }
