@@ -33,6 +33,7 @@ model Song {
   band      Band     @relation(fields: [bandId], references: [id])
   bandId    Int
   setLists  SetList[]
+  data      Json?
 }
 
 model SetList {
