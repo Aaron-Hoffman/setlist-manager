@@ -1,5 +1,5 @@
 import SongList from "@/components/SongList";
-import AddSetListForm from "@/components/AddSetListForm";
+import AddSetListForm from "@/components/forms/AddSetListForm";
 import prisma from "@/utils/db";
 import Link from "next/link";
 import { PageProps } from "@/.next/types/app/page";

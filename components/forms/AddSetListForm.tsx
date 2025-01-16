@@ -2,9 +2,9 @@
 
 import { Song } from '@prisma/client';
 import { addSetList } from '@/utils/serverActions';
-import Modal from './Modal';
+import Modal from '../Modal';
 import { useState } from 'react';
-import ShowModalButton from './ShowModalButton';
+import ShowModalButton from '../buttons/ShowModalButton';
 
 export type AddSetListFormProps = {
     bandId: number,

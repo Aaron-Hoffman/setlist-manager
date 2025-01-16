@@ -1,4 +1,4 @@
-import AddBandForm from "@/components/AddBandForm";
+import AddBandForm from "@/components/forms/AddBandForm";
 import BandList from "@/components/BandList";
 import getUser from "@/utils/getUser";
 import { isEmpty } from "lodash";

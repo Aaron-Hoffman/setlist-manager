@@ -1,6 +1,6 @@
 import { Band } from "@prisma/client";
 import Link from "next/link";
-import DeleteBandButton from "./DeleteBandButton";
+import DeleteBandButton from "./buttons/DeleteBandButton";
 
 export type BandListProps = {
     bandList: Band[]

@@ -2,9 +2,9 @@
 
 import KEYS from "@/constants/KEYS";
 import { editSong } from "@/utils/serverActions";
-import Modal from './Modal';
+import Modal from '../Modal';
 import { ChangeEvent, useState } from 'react';
-import ShowModalButton from './ShowModalButton';
+import ShowModalButton from '../buttons/ShowModalButton';
 import { Song } from "@prisma/client";
 
 export type EditSongFormProps = {

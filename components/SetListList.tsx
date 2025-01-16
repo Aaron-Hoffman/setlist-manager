@@ -1,6 +1,6 @@
 import { SetList} from "@prisma/client";
 import Link from "next/link";
-import DeleteSetListButton from "./DeleteSetListButton";
+import DeleteSetListButton from "./buttons/DeleteSetListButton";
 
 export type SetListListProps = {
     setListList: SetList[],

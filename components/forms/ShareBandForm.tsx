@@ -2,9 +2,9 @@
 
 import { Band } from '@prisma/client';
 import { shareBand } from '@/utils/serverActions';
-import Modal from './Modal';
+import Modal from '../Modal';
 import { useState } from 'react';
-import ShowModalButton from './ShowModalButton';
+import ShowModalButton from '../buttons/ShowModalButton';
 
 export type ShareBandFormProps = {
     band: Band

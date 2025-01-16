@@ -1,6 +1,6 @@
 import { PageProps } from "@/.next/types/app/page";
-import AddSongForm from "@/components/AddSongForm";
-import ShareBandForm from "@/components/ShareBandForm";
+import AddSongForm from "@/components/forms/AddSongForm";
+import ShareBandForm from "@/components/forms/ShareBandForm";
 import SongList from "@/components/SongList";
 import prisma from "@/utils/db";
 import Link from "next/link";

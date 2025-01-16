@@ -1,6 +1,5 @@
 import Link from "next/link";
-import LogoutButton from "@/components/LogoutButton";
-import LoginButton from "./LoginButton";
+import LogoutButton from "@/components/buttons/LogoutButton";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/utils/auth";
 

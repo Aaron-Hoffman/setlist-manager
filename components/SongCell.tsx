@@ -1,6 +1,6 @@
-import DeleteSongButton from "./DeleteSongButton";
-import EditSetListButton from "./EditSetListButton";
-import EditSongForm from "./EditSongForm";
+import DeleteSongButton from "./buttons/DeleteSongButton";
+import EditSetListButton from "./buttons/EditSetListButton";
+import EditSongForm from "./forms/EditSongForm";
 import { SetList, Song } from "@prisma/client";
 
 export type SongCellProps = {
