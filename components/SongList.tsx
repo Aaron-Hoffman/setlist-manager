@@ -1,7 +1,5 @@
-import DeleteSongButton from "./DeleteSongButton";
-import EditSetListButton from "./EditSetListButton";
-import EditSongForm from "./EditSongForm";
 import { SetList, Song } from "@prisma/client";
+import SongCell from "./SongCell";
 
 export type SongListProps = {
     songList: Song[],
@@ -22,13 +20,7 @@ const SongList = ({songList, add, setList}: SongListProps) => {
                 <tbody>
                     {songList && songList.map((song: Song) => {
                         return (
-                            <tr key={song.id}>
-                                <td className="border-slate-400 border-2 p-2">{song.title}</td>
-                                <td className="border-slate-400 border-2 p-2">{song.key}</td>
-                                {!setList && <DeleteSongButton id={song.id} />}
-                                {!setList && <EditSongForm song={song} />}
-                                {setList && <EditSetListButton song={song} add={add || false} setList={setList} />}
-                            </tr>
+                            <SongCell song={song} setList={setList} add={add} key={song.id}/>
                         )}
                     )}
                 </tbody>
