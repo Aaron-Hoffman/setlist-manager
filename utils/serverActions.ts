@@ -5,6 +5,7 @@ import createSetList from "./createSetList";
 import prisma from "./db";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
+import swapArrayElements from "./swapArrayElements";
 
 export const addBand = async (user: User | null, formData: FormData) => {
     if (!user) {
@@ -109,6 +110,35 @@ export const editSetList = async (setList: SetList, song: Song, add: boolean) =>
     if (!setListWithSongs) return 
 
     const songList = add ? [...setListWithSongs.songs, song] : setListWithSongs.songs.filter(setListItem => setListItem.id !== song.id);
+
+    await prisma.setList.update({
+        where: {
+          id: setList.id,
+        },
+        data: {
+            songs: {
+                set: songList,
+            }
+        },
+    })
+
+    return revalidatePath('/')
+}
+
+export const reorderSetList = async (setList: SetList, from: number, to: number ) => {
+
+    const setListWithSongs = await prisma.setList.findUnique({
+        where: {
+            id: Number(setList.id),
+        },
+        include: {
+            songs: true
+        }
+    })
+    
+    if (!setListWithSongs) return 
+
+    const songList = swapArrayElements(setListWithSongs.songs, from, to)
 
     await prisma.setList.update({
         where: {
