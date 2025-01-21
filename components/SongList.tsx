@@ -4,7 +4,8 @@ import SongCell from "./SongCell";
 export type SongListProps = {
     songList: Song[],
     add?: boolean,
-    setList?: SetList
+    setList?: SetList,
+
 }
 
 const SongList = ({songList, add, setList}: SongListProps) => {
@@ -18,9 +19,9 @@ const SongList = ({songList, add, setList}: SongListProps) => {
                     </tr>
                 </thead>
                 <tbody>
-                    {songList && songList.map((song: Song) => {
+                    {songList && songList.map((song: Song, index) => {
                         return (
-                            <SongCell song={song} setList={setList} add={add} key={song.id}/>
+                            <SongCell song={song} setList={setList} add={add} index={index} key={song.id}/>
                         )}
                     )}
                 </tbody>

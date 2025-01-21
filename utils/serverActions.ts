@@ -126,7 +126,6 @@ export const editSetList = async (setList: SetList, song: Song, add: boolean) =>
 }
 
 export const reorderSetList = async (setList: SetList, from: number, to: number ) => {
-
     const setListWithSongs = await prisma.setList.findUnique({
         where: {
             id: Number(setList.id),
@@ -151,7 +150,7 @@ export const reorderSetList = async (setList: SetList, from: number, to: number 
         },
     })
 
-    return revalidatePath('/')
+    return revalidatePath('/bands')
 }
 
 export const addSong = async (bandId: number, formData: FormData) => {
