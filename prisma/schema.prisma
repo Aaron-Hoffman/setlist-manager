@@ -41,8 +41,19 @@ model SetList {
   updatedAt DateTime @updatedAt
   name      String   @db.VarChar(255)
   songs     Song[]
+  order     SetListItem[]
   band      Band     @relation(fields: [bandId], references: [id])
   bandId    Int
+}
+
+model SetListItem {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  songId    Int
+  index     Int
+  setList   SetList     @relation(fields: [setListId], references: [id])
+  setListId Int
 }
 
 model User {
