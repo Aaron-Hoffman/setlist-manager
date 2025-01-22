@@ -6,6 +6,7 @@ import prisma from "./db";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import swapArrayElements from "./swapArrayElements";
+import createSetOrder from "./createSetOrder";
 
 export const addBand = async (user: User | null, formData: FormData) => {
     if (!user) {
@@ -73,15 +74,19 @@ export const shareBand = async (bandId: number, formData: FormData) => {
 }
 
 export const addSetList = async (bandId: number, songs: Song[], formData: FormData) => {
+    const setSongs: Song[] = createSetList(songs, Number(formData.get('number')))
+
     const newSetList = await prisma.setList.create({
         data: {
             name: formData.get('name') as string,
             songs: {
-                connect: createSetList(songs, Number(formData.get('number'))),
-            },
+                    connect: setSongs,
+                },
             bandId: Number(bandId)
         },
     })
+
+    await createSetOrder(setSongs, newSetList.id)
 
     return redirect(`/bands/${bandId}/setlist/${newSetList.id}`)
 }
@@ -136,8 +141,9 @@ export const reorderSetList = async (setList: SetList, from: number, to: number 
     })
     
     if (!setListWithSongs) return 
-
+ console.log(setListWithSongs.songs)
     const songList = swapArrayElements(setListWithSongs.songs, from, to)
+    console.log(songList)
 
     await prisma.setList.update({
         where: {
