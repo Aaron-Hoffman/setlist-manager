@@ -1,5 +1,7 @@
 import { SetList, Song } from "@prisma/client";
 import SongCell from "./SongCell";
+import orderSetForDisplay from "@/utils/orderSetForDisplay";
+import prisma from "@/utils/db";
 
 export type SongListProps = {
     songList: Song[],
@@ -8,7 +10,20 @@ export type SongListProps = {
 
 }
 
-const SongList = ({songList, add, setList}: SongListProps) => {
+const SongList = async ({songList, add, setList}: SongListProps) => {
+    const setListWithOrder = setList ? await prisma.setList.findUnique({
+        where: {
+            id: setList.id,
+        },
+        include: {
+            order: true
+        }
+    }) : undefined;
+
+    const order = setListWithOrder ? setListWithOrder.order : undefined;
+
+    const orderedSongList = orderSetForDisplay(songList, order)
+
     return (
         <div className="flex flex-col">
             <table className="border-slate-400 border-2">
@@ -19,7 +34,7 @@ const SongList = ({songList, add, setList}: SongListProps) => {
                     </tr>
                 </thead>
                 <tbody>
-                    {songList && songList.map((song: Song, index) => {
+                    {songList && orderedSongList.map((song: Song, index) => {
                         return (
                             <SongCell song={song} setList={setList} add={add} index={index} key={song.id}/>
                         )}
