@@ -131,28 +131,36 @@ export const editSetList = async (setList: SetList, song: Song, add: boolean) =>
 }
 
 export const reorderSetList = async (setList: SetList, from: number, to: number ) => {
-    const setListWithSongs = await prisma.setList.findUnique({
+    const setListWithOrder = await prisma.setList.findUnique({
         where: {
             id: Number(setList.id),
         },
         include: {
-            songs: true
+            order: true
         }
     })
     
-    if (!setListWithSongs) return 
- console.log(setListWithSongs.songs)
-    const songList = swapArrayElements(setListWithSongs.songs, from, to)
-    console.log(songList)
+    if (!setListWithOrder) return 
 
-    await prisma.setList.update({
+    const newOrder = swapArrayElements(setListWithOrder.order, from, to)
+    
+    if (!newOrder) return
+
+    await prisma.setListItem.update({
         where: {
-          id: setList.id,
+          id: newOrder[0].id,
         },
         data: {
-            songs: {
-                set: songList,
-            }
+            index: newOrder[0].index
+        },
+    })
+
+    await prisma.setListItem.update({
+        where: {
+          id: newOrder[1].id,
+        },
+        data: {
+            index: newOrder[1].index
         },
     })
 
