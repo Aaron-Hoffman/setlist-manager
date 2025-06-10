@@ -1,7 +1,7 @@
-import HeaderNavMenu from "./HeaderNavMenu";
 import Link from "next/link";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/utils/auth";
+import LogoutButton from "./LogoutButton";
 
 const Header = async () => {
     const session = await getServerSession(authOptions);
@@ -46,6 +46,7 @@ const Header = async () => {
                                         {session.user?.name || 'User'}
                                     </span>
                                 </div>
+                                <LogoutButton />
                             </div>
                         ) : (
                             <Link 
