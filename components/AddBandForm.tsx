@@ -19,17 +19,51 @@ const AddBandForm = ({user}: AddBandFormProps) => {
 
     return (
         <>
-            <ShowModalButton clickHandler={setShowModal} show={showModal} label="Add Band" table={false}/>
+            <button
+                onClick={() => setShowModal(true)}
+                className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors duration-200"
+            >
+                <svg className="-ml-1 mr-2 h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4" />
+                </svg>
+                Add Band
+            </button>
             <Modal show={showModal}>
-                <div className="flex flex-col bg-white border-black border-2 p-5 rounded">
-                    <h2 className="text-center text-2xl pb-5">Add A Band</h2>
-                    <form action={handleSubmit} className="flex flex-col p-5 border-slate-400 border-2 ">
-                        <div className="p-5">
-                            <label htmlFor="name" className="pr-3">Name:</label>
-                            <input type="text" name="name" id="name" placeholder="Band name here..." className="rounded p-2 "/>
+                <div className="bg-white rounded-lg shadow-xl max-w-md w-full mx-auto">
+                    <div className="px-6 py-4 border-b border-gray-200">
+                        <h2 className="text-xl font-semibold text-gray-900">Add a New Band</h2>
+                    </div>
+                    <form action={handleSubmit} className="p-6">
+                        <div className="space-y-4">
+                            <div>
+                                <label htmlFor="name" className="block text-sm font-medium text-gray-700">
+                                    Band Name
+                                </label>
+                                <input
+                                    type="text"
+                                    name="name"
+                                    id="name"
+                                    placeholder="Enter band name..."
+                                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                                    required
+                                />
+                            </div>
                         </div>
-                        <button className="p-5 mt-5 bg-blue-400 rounded font-bold text-lg" type='submit'>Add Band</button>
-                        <button className="p-5 mt-5 bg-red-400 rounded font-bold text-lg" onClick={() => setShowModal(false)} type="button">Cancel</button>
+                        <div className="mt-6 flex justify-end space-x-3">
+                            <button
+                                type="button"
+                                onClick={() => setShowModal(false)}
+                                className="inline-flex justify-center px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors duration-200"
+                            >
+                                Cancel
+                            </button>
+                            <button
+                                type="submit"
+                                className="inline-flex justify-center px-4 py-2 text-sm font-medium text-white bg-indigo-600 border border-transparent rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors duration-200"
+                            >
+                                Create Band
+                            </button>
+                        </div>
                     </form>
                 </div>
             </Modal>

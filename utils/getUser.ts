@@ -12,7 +12,12 @@ const getUser = async (withBands: boolean = false) => {
           email: session.user.email,
         },
         include: {
-          bands: withBands
+          bands: withBands ? {
+            include: {
+              songs: true,
+              setLists: true
+            }
+          } : false
         }
     })
 
