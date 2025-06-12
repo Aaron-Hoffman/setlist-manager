@@ -1,38 +1,67 @@
 'use client'
 
 import { Band } from '@prisma/client';
-import { shareBand } from '@/utils/serverActions';
+import { useState } from 'react';
 import Modal from './Modal';
-import { useState, useRef } from 'react';
-import ShowModalButton from './ShowModalButton';
 
-export type ShareBandFormProps = {
+type ShareBandFormProps = {
     band: Band
 }
 
-const ShareBandForm = ({band}: ShareBandFormProps) => {
-    const [ showModal, setShowModal ] = useState(false)
-    const formRef = useRef<HTMLFormElement>(null)
-
-    const handleSubmit = (formData: FormData) => {
-        shareBand(band.id, formData)
-        setShowModal(false)
-        formRef.current?.reset()
-    }
+const ShareBandForm = ({ band }: ShareBandFormProps) => {
+    const [show, setShow] = useState(false);
 
     return (
         <>
-            <ShowModalButton clickHandler={setShowModal} show={showModal} label="Share Band" table={false}/>
-            <Modal show={showModal}>
-                <div className="flex flex-col bg-white border-black border-2 p-5 rounded">
-                    <h2 className="text-center text-2xl pb-5">Share Band</h2>
-                    <form ref={formRef} action={handleSubmit} className="flex flex-col p-5 border-slate-400 border-2 ">
-                        <div className="p-5">
-                            <label htmlFor="email" className="pr-3">Please enter the email of the user you want to share with:</label>
-                            <input type="email" name="email" id="email" placeholder="Email here..." className="rounded p-2 "/>
+            <button
+                onClick={() => setShow(true)}
+                className="inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+            >
+                <svg className="-ml-0.5 mr-2 h-4 w-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
+                </svg>
+                Share
+            </button>
+            <Modal show={show}>
+                <div className="p-6 bg-white rounded-lg shadow-xl max-w-md w-full mx-4">
+                    <h3 className="text-lg font-medium text-gray-900 mb-4">Share Band</h3>
+                    <form action={async (formData: FormData) => {
+                        await fetch(`/api/bands/${band.id}/share`, {
+                            method: 'POST',
+                            body: formData
+                        });
+                        setShow(false);
+                    }}>
+                        <div className="space-y-4">
+                            <div>
+                                <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+                                    Email Address
+                                </label>
+                                <input
+                                    type="email"
+                                    name="email"
+                                    id="email"
+                                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                                    placeholder="Enter email address"
+                                    required
+                                />
+                            </div>
+                            <div className="flex justify-end space-x-3">
+                                <button
+                                    type="button"
+                                    onClick={() => setShow(false)}
+                                    className="inline-flex justify-center px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                                >
+                                    Cancel
+                                </button>
+                                <button
+                                    type="submit"
+                                    className="inline-flex justify-center px-4 py-2 text-sm font-medium text-white bg-indigo-600 border border-transparent rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                                >
+                                    Share
+                                </button>
+                            </div>
                         </div>
-                        <button className="p-5 mt-5 bg-blue-400 rounded font-bold text-lg" type='submit'>Share Band</button>
-                        <button className="p-5 mt-5 bg-red-400 rounded font-bold text-lg" onClick={() => setShowModal(false)} type="button">Cancel</button>
                     </form>
                 </div>
             </Modal>

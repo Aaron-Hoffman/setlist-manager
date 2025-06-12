@@ -1,48 +1,86 @@
 'use client'
 
+import { useState } from "react";
+import Modal from "./Modal";
 import KEYS from "@/constants/KEYS";
-import { addSong } from "@/utils/serverActions";
-import Modal from './Modal';
-import { useState, useRef } from 'react';
-import ShowModalButton from './ShowModalButton';
 
-export type AddSongFormProps = {
-    bandId: number,
+type AddSongFormProps = {
+    bandId: string
 }
 
-const AddSongForm = ({bandId}: AddSongFormProps) => {
-    const [ showModal, setShowModal ] = useState(false)
-    const formRef = useRef<HTMLFormElement>(null)
-
-    const handleSubmit = (formData: FormData) => {
-        addSong(bandId, formData)
-        setShowModal(false)
-        formRef.current?.reset()
-    }
+const AddSongForm = ({ bandId }: AddSongFormProps) => {
+    const [show, setShow] = useState(false);
 
     return (
-        <div className="mt-7 mr-12">
-            <ShowModalButton clickHandler={setShowModal} show={showModal} label="Add Song" table={false}/>
-            <Modal show={showModal}>
-                <div className="flex flex-col bg-white border-black border-2 p-5 rounded">
-                    <h2 className="text-center text-2xl pb-5">Add A Song</h2>
-                    <form ref={formRef} action={handleSubmit} className="flex flex-col p-5 border-slate-400 border-2">
-                        <div className="p-5">
-                            <label htmlFor="title" className="pr-3">Title:</label>
-                            <input type="text" name="title" id="title" placeholder="Song title here..." className="rounded p-2 "/>
+        <>
+            <button
+                onClick={() => setShow(true)}
+                className="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+            >
+                <svg className="-ml-0.5 mr-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4" />
+                </svg>
+                Add Song
+            </button>
+            <Modal show={show}>
+                <div className="p-6 bg-white rounded-lg shadow-xl max-w-md w-full mx-4">
+                    <h3 className="text-lg font-medium text-gray-900 mb-4">Add New Song</h3>
+                    <form action={async (formData: FormData) => {
+                        formData.append('bandId', bandId);
+                        await fetch('/api/songs', {
+                            method: 'POST',
+                            body: formData
+                        });
+                        setShow(false);
+                    }}>
+                        <div className="space-y-4">
+                            <div>
+                                <label htmlFor="title" className="block text-sm font-medium text-gray-700">
+                                    Title
+                                </label>
+                                <input
+                                    type="text"
+                                    name="title"
+                                    id="title"
+                                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                                    required
+                                />
+                            </div>
+                            <div>
+                                <label htmlFor="key" className="block text-sm font-medium text-gray-700">
+                                    Key
+                                </label>
+                                <select
+                                    name="key"
+                                    id="key"
+                                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                                    required
+                                >
+                                    {KEYS.map((key: { label: string; value: string }) => (
+                                        <option value={key.label} key={key.value}>{key.label}</option>
+                                    ))}
+                                </select>
+                            </div>
+                            <div className="flex justify-end space-x-3">
+                                <button
+                                    type="button"
+                                    onClick={() => setShow(false)}
+                                    className="inline-flex justify-center px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                                >
+                                    Cancel
+                                </button>
+                                <button
+                                    type="submit"
+                                    className="inline-flex justify-center px-4 py-2 text-sm font-medium text-white bg-indigo-600 border border-transparent rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                                >
+                                    Add Song
+                                </button>
+                            </div>
                         </div>
-                        <div className="p-5">
-                            <label htmlFor="key" className="pr-3">Key:</label>
-                            <select name="key" id="key" className="rounded p-2 ">
-                                {KEYS.map(key => <option value={key.label} key={key.value}>{key.label}</option>)}
-                            </select>
-                        </div>
-                        <button className="p-5 mt-5 bg-blue-400 rounded font-bold text-lg" type='submit'>Add Song</button>
-                        <button className="p-5 mt-5 bg-red-400 rounded font-bold text-lg" onClick={() => setShowModal(false)} type="button">Cancel</button>
                     </form>
                 </div>
             </Modal>
-        </div>
+        </>
     )
 }
 
