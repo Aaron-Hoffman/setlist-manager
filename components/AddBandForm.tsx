@@ -3,7 +3,7 @@
 import { User } from '@prisma/client';
 import { addBand } from '@/utils/serverActions';
 import Modal from './Modal';
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import ShowModalButton from './ShowModalButton';
 
 export type AddBandFormProps = {
@@ -12,9 +12,12 @@ export type AddBandFormProps = {
 
 const AddBandForm = ({user}: AddBandFormProps) => {
     const [ showModal, setShowModal ] = useState(false)
+    const formRef = useRef<HTMLFormElement>(null)
+
     const handleSubmit = (formData: FormData) => {
         addBand(user, formData)
         setShowModal(false)
+        formRef.current?.reset()
     }
 
     return (
@@ -33,7 +36,7 @@ const AddBandForm = ({user}: AddBandFormProps) => {
                     <div className="px-6 py-4 border-b border-gray-200">
                         <h2 className="text-xl font-semibold text-gray-900">Add a New Band</h2>
                     </div>
-                    <form action={handleSubmit} className="p-6">
+                    <form ref={formRef} action={handleSubmit} className="p-6">
                         <div className="space-y-4">
                             <div>
                                 <label htmlFor="name" className="block text-sm font-medium text-gray-700">

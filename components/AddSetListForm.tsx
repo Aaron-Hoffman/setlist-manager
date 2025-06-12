@@ -3,7 +3,7 @@
 import { Song } from '@prisma/client';
 import { addSetList } from '@/utils/serverActions';
 import Modal from './Modal';
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import ShowModalButton from './ShowModalButton';
 
 export type AddSetListFormProps = {
@@ -13,9 +13,12 @@ export type AddSetListFormProps = {
 
 const AddSetListForm = ({bandId, songs}: AddSetListFormProps) => {
     const [ showModal, setShowModal ] = useState(false)
+    const formRef = useRef<HTMLFormElement>(null)
+
     const handleSubmit = (formData: FormData) => {
         addSetList(bandId, songs, formData)
         setShowModal(false)
+        formRef.current?.reset()
     }
 
     return (
@@ -24,7 +27,7 @@ const AddSetListForm = ({bandId, songs}: AddSetListFormProps) => {
             <Modal show={showModal}>
                 <div className="flex flex-col bg-white border-black border-2 p-5 rounded">
                     <h2 className="text-center text-2xl pb-5">Create a Set List</h2>
-                    <form action={handleSubmit} className="flex flex-col p-5 border-slate-400 border-2">
+                    <form ref={formRef} action={handleSubmit} className="flex flex-col p-5 border-slate-400 border-2">
                         <div className="p-5">
                             <label htmlFor="name" className="pr-3">Name:</label>
                             <input type="text" name="name" id="name" placeholder="Set list name here..." className="rounded p-2 "/>

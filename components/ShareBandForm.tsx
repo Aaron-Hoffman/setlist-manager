@@ -3,7 +3,7 @@
 import { Band } from '@prisma/client';
 import { shareBand } from '@/utils/serverActions';
 import Modal from './Modal';
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import ShowModalButton from './ShowModalButton';
 
 export type ShareBandFormProps = {
@@ -12,9 +12,12 @@ export type ShareBandFormProps = {
 
 const ShareBandForm = ({band}: ShareBandFormProps) => {
     const [ showModal, setShowModal ] = useState(false)
+    const formRef = useRef<HTMLFormElement>(null)
+
     const handleSubmit = (formData: FormData) => {
         shareBand(band.id, formData)
         setShowModal(false)
+        formRef.current?.reset()
     }
 
     return (
@@ -23,7 +26,7 @@ const ShareBandForm = ({band}: ShareBandFormProps) => {
             <Modal show={showModal}>
                 <div className="flex flex-col bg-white border-black border-2 p-5 rounded">
                     <h2 className="text-center text-2xl pb-5">Share Band</h2>
-                    <form action={handleSubmit} className="flex flex-col p-5 border-slate-400 border-2 ">
+                    <form ref={formRef} action={handleSubmit} className="flex flex-col p-5 border-slate-400 border-2 ">
                         <div className="p-5">
                             <label htmlFor="email" className="pr-3">Please enter the email of the user you want to share with:</label>
                             <input type="email" name="email" id="email" placeholder="Email here..." className="rounded p-2 "/>
