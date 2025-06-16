@@ -116,7 +116,7 @@ export const editSetList = async (setList: SetList, song: Song, add: boolean) =>
         },
         data: {
             songs: {
-                set: songList,
+                set: songList.map(song => ({ id: song.id })),
             }
         },
     })
