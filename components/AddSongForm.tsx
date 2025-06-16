@@ -1,8 +1,9 @@
 'use client'
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import Modal from "./Modal";
 import KEYS from "@/constants/KEYS";
+import { addSong } from "@/utils/serverActions";
 
 type AddSongFormProps = {
     bandId: string
@@ -10,6 +11,7 @@ type AddSongFormProps = {
 
 const AddSongForm = ({ bandId }: AddSongFormProps) => {
     const [show, setShow] = useState(false);
+    const formRef = useRef<HTMLFormElement>(null);
 
     return (
         <>
@@ -25,12 +27,9 @@ const AddSongForm = ({ bandId }: AddSongFormProps) => {
             <Modal show={show}>
                 <div className="p-6 bg-white rounded-lg shadow-xl max-w-md w-full mx-4">
                     <h3 className="text-lg font-medium text-gray-900 mb-4">Add New Song</h3>
-                    <form action={async (formData: FormData) => {
-                        formData.append('bandId', bandId);
-                        await fetch('/api/songs', {
-                            method: 'POST',
-                            body: formData
-                        });
+                    <form ref={formRef} action={async (formData: FormData) => {
+                        await addSong(Number(bandId), formData);
+                        formRef.current?.reset();
                         setShow(false);
                     }}>
                         <div className="space-y-4">
