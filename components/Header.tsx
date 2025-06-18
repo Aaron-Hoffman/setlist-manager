@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/utils/auth";
-import LogoutButton from "./LogoutButton";
+import SignOutButton from "./SignOutButton";
 
 const Header = async () => {
     const session = await getServerSession(authOptions);
@@ -22,8 +22,8 @@ const Header = async () => {
                     <div className="flex items-center space-x-4">
                         {session ? (
                             <div className="flex items-center space-x-4">
-                                <Link 
-                                    href="/bands" 
+                                <Link
+                                    href="/bands"
                                     className="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200"
                                 >
                                     My Bands
@@ -46,10 +46,10 @@ const Header = async () => {
                                         {session.user?.name || 'User'}
                                     </span>
                                 </div>
-                                <LogoutButton />
+                                <SignOutButton />
                             </div>
                         ) : (
-                            <Link 
+                            <Link
                                 href="/login"
                                 className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors duration-200"
                             >
