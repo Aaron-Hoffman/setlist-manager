@@ -55,18 +55,27 @@ export const authOptions: NextAuthOptions = {
     },
     callbacks: {
       async session({ token, session }) {
-        if (token) {
-          session.user.id = token.id;
-          session.user.name = token.name;
-          session.user.email = token.email;
-          session.user.image = token.picture;
+        if (token && session.user) {
+          (session.user as any).id = token.id as string;
+          session.user.name = token.name as string;
+          session.user.email = token.email as string;
+          session.user.image = token.picture as string;
         }
         return session;
       },
-      async jwt({ token, user }) {
+      async jwt({ token, user, account, profile }) {
+        // If signing in with Google, update the image from the provider profile
+        if (account && profile && account.provider === 'google') {
+          token.picture = (profile as any).picture || undefined;
+        } else if (user && user.image) {
+          // For credentials or other providers, use the user image if available
+          token.picture = user.image;
+        }
+
+        // Always update the rest of the token fields from the database if possible
         const dbUser = await prisma.user.findFirst({
           where: {
-            email: token.email,
+            email: token.email as string,
           },
         });
 
@@ -81,7 +90,7 @@ export const authOptions: NextAuthOptions = {
           id: dbUser.id,
           name: dbUser.name,
           email: dbUser.email,
-          picture: dbUser.image,
+          picture: (typeof token.picture === 'string' ? token.picture : dbUser.image) || dbUser.image || undefined,
         };
       },
       async redirect({ url, baseUrl }) {
