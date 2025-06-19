@@ -41,6 +41,9 @@ const SongList = ({songList, add, setList}: SongListProps) => {
                             Title
                         </th>
                         <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Artist
+                        </th>
+                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                             Key
                         </th>
                         <th scope="col" className="relative px-6 py-3">
@@ -53,6 +56,9 @@ const SongList = ({songList, add, setList}: SongListProps) => {
                         <tr key={song.id} className="hover:bg-gray-50">
                             <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                                 {song.title}
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                {song.artist || '—'}
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                                 {song.key}
