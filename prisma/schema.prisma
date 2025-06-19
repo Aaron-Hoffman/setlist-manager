@@ -30,6 +30,7 @@ model Song {
   updatedAt DateTime @updatedAt
   title     String   @db.VarChar(255)
   key       String   @db.VarChar(255)
+  artist    String?  @db.VarChar(255)
   band      Band     @relation(fields: [bandId], references: [id])
   bandId    Int
   setLists  SetList[]
