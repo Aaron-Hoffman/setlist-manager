@@ -46,6 +46,18 @@ const AddSongForm = ({ bandId }: AddSongFormProps) => {
                                 />
                             </div>
                             <div>
+                                <label htmlFor="artist" className="block text-sm font-medium text-gray-700">
+                                    Artist
+                                </label>
+                                <input
+                                    type="text"
+                                    name="artist"
+                                    id="artist"
+                                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                                    placeholder="Artist or band"
+                                />
+                            </div>
+                            <div>
                                 <label htmlFor="key" className="block text-sm font-medium text-gray-700">
                                     Key
                                 </label>

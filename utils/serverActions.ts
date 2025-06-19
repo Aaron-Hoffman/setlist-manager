@@ -127,6 +127,7 @@ export const editSetList = async (setList: SetList, song: Song, add: boolean) =>
 export const addSong = async (bandId: number, formData: FormData) => {
     const song = {
         title: formData.get('title') as string,
+        artist: formData.get('artist') as string,
         key: formData.get('key') as string,
         bandId: Number(bandId)
     }
@@ -153,6 +154,7 @@ export const deleteSong = async (songId: number) => {
 export const editSong = async (songId: number, formData: FormData) => {
     const song = {
         title: formData.get('title') as string,
+        artist: formData.get('artist') as string,
         key: formData.get('key') as string,
     }
 
