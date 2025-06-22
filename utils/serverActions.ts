@@ -5,6 +5,7 @@ import createSetList from "./createSetList";
 import prisma from "./db";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
+import { searchSpotifyTrack, createSpotifyPlaylist, getSpotifyAccessToken } from './spotify';
 
 export const addBand = async (user: User | null, formData: FormData) => {
     if (!user) {
@@ -168,4 +169,51 @@ export const editSong = async (songId: number, formData: FormData) => {
     })
 
     return revalidatePath('/')
+}
+
+export async function createSpotifyPlaylistFromSetlist(setListId: number) {
+    const setList = await prisma.setList.findUnique({
+        where: { id: setListId },
+        include: {
+            songs: true,
+            band: true
+        }
+    });
+
+    if (!setList) {
+        throw new Error('Setlist not found');
+    }
+
+    const accessToken = await getSpotifyAccessToken();
+    if (!accessToken) {
+        throw new Error('No Spotify access token found. Please connect your Spotify account.');
+    }
+
+    const trackUris: string[] = [];
+    for (const song of setList.songs) {
+        const spotifyTrack = await searchSpotifyTrack(
+            `${song.title} ${song.artist}`,
+            accessToken
+        );
+        if (spotifyTrack) {
+            trackUris.push(spotifyTrack.uri);
+        }
+    }
+
+    if (trackUris.length === 0) {
+        throw new Error('No matching tracks found on Spotify');
+    }
+
+    const playlistUrl = await createSpotifyPlaylist(
+        `${setList.name} - ${setList.band.name}`,
+        `Setlist created from Setlist Manager`,
+        trackUris,
+        accessToken
+    );
+
+    if (!playlistUrl) {
+        throw new Error('Failed to create Spotify playlist');
+    }
+
+    return playlistUrl;
 }

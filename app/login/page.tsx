@@ -1,12 +1,17 @@
 import LoginButton from "@/components/LoginButton";
 import RegisterForm from "@/components/RegisterForm";
 import LoginForm from "@/components/LoginForm";
+import LoginWithGoogleButton from "@/components/LoginWithGoogleButton";
+import LoginWithSpotifyButton from "@/components/LoginWithSpotifyButton";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/utils/auth";
 import Link from "next/link";
+import { cookies } from "next/headers";
 
 const LoginPage = async () => {
     const session = await getServerSession(authOptions);
+    const searchParams = (typeof window === 'undefined') ? (new URLSearchParams(cookies().get('next-url')?.value?.split('?')[1] || '')) : new URLSearchParams(window.location.search);
+    const error = searchParams.get('error');
     return (
         <main className="min-h-screen p-4 md:p-20 bg-gradient-to-b from-gray-50 to-white">
             {!session && (
@@ -14,10 +19,29 @@ const LoginPage = async () => {
                     <div className="bg-white border border-gray-200 rounded-lg shadow-lg p-8 mb-10">
                         <h1 className="text-3xl font-bold text-gray-900 mb-2">Welcome to Set List Manager</h1>
                         <p className="text-gray-600 mb-8">Create and manage your setlists with ease!</p>
+                        {error === 'OAuthAccountNotLinked' && (
+                          <div className="bg-yellow-50 border-l-4 border-yellow-400 p-4 rounded mb-6">
+                            <div className="flex">
+                              <div className="flex-shrink-0">
+                                <svg className="h-5 w-5 text-yellow-400" viewBox="0 0 20 20" fill="currentColor">
+                                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+                                </svg>
+                              </div>
+                              <div className="ml-3">
+                                <p className="text-sm text-yellow-700">
+                                  You already have an account with this email. Please sign in with your original provider and connect Spotify from your account settings.
+                                </p>
+                              </div>
+                            </div>
+                          </div>
+                        )}
                         
                         <div className="space-y-8">
                             <div>
-                                <LoginButton />
+                                <LoginWithGoogleButton />
+                            </div>
+                            <div>
+                                <LoginWithSpotifyButton />
                             </div>
                             
                             <div className="relative">

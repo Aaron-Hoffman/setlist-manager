@@ -1,7 +1,7 @@
 'use client'
 import { signIn } from "next-auth/react"
 
-const LoginButton = () => {
+const LoginWithGoogleButton = () => {
   return (
     <button 
       onClick={async () => await signIn('google')}
@@ -15,4 +15,4 @@ const LoginButton = () => {
   );
 }
 
-export default LoginButton;
+export default LoginWithGoogleButton;

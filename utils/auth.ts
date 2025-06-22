@@ -1,6 +1,7 @@
 import { NextAuthOptions } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import CredentialsProvider from "next-auth/providers/credentials";
+import SpotifyProvider from "next-auth/providers/spotify";
 import {PrismaAdapter} from '@next-auth/prisma-adapter';
 import prisma from "@/utils/db";
 import bcrypt from "bcryptjs";
@@ -12,6 +13,15 @@ export const authOptions: NextAuthOptions = {
           clientId: process.env.GOOGLE_CLIENT_ID as string,
           clientSecret: process.env.GOOGLE_CLIENT_SECRET as string
         }),
+      SpotifyProvider({
+        clientId: process.env.SPOTIFY_CLIENT_ID as string,
+        clientSecret: process.env.SPOTIFY_CLIENT_SECRET as string,
+        authorization: {
+          params: {
+            scope: 'playlist-modify-public playlist-modify-private user-read-email'
+          }
+        }
+      }),
       CredentialsProvider({
         name: "credentials",
         credentials: {
@@ -60,10 +70,17 @@ export const authOptions: NextAuthOptions = {
           session.user.name = token.name as string;
           session.user.email = token.email as string;
           session.user.image = token.picture as string;
+          if (token.accessToken) {
+            (session as any).accessToken = token.accessToken;
+          }
         }
         return session;
       },
       async jwt({ token, user, account, profile }) {
+        // Handle Spotify access token
+        if (account && account.provider === 'spotify') {
+          token.accessToken = account.access_token;
+        }
         // If signing in with Google, update the image from the provider profile
         if (account && profile && account.provider === 'google') {
           token.picture = (profile as any).picture || undefined;
@@ -71,26 +88,30 @@ export const authOptions: NextAuthOptions = {
           // For credentials or other providers, use the user image if available
           token.picture = user.image;
         }
-
+        if (user) {
+          token.id = user.id;
+        }
         // Always update the rest of the token fields from the database if possible
-        const dbUser = await prisma.user.findFirst({
-          where: {
-            email: token.email as string,
-          },
-        });
-
+        let dbUser = null;
+        if (token.email) {
+          dbUser = await prisma.user.findFirst({
+            where: { email: token.email as string },
+          });
+        }
+        if (!dbUser && token.id) {
+          dbUser = await prisma.user.findUnique({
+            where: { id: token.id as string },
+          });
+        }
         if (!dbUser) {
-          if (user) {
-            token.id = user?.id;
-          }
           return token;
         }
-
         return {
           id: dbUser.id,
           name: dbUser.name,
           email: dbUser.email,
           picture: (typeof token.picture === 'string' ? token.picture : dbUser.image) || dbUser.image || undefined,
+          accessToken: token.accessToken,
         };
       },
       async redirect({ url, baseUrl }) {
