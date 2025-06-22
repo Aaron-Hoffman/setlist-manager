@@ -2,12 +2,21 @@
 import { useState } from "react";
 import Modal from "./Modal";
 
-export default function CreateSpotifyPlaylistModalButton({ setListId }: { setListId: string }) {
+// Client component only
+export default function CreateSpotifyPlaylistModalButton({ setListId, hasSpotify }: { setListId: string, hasSpotify: boolean }) {
   const [showModal, setShowModal] = useState(false);
   const [playlistUrl, setPlaylistUrl] = useState("");
   const [copied, setCopied] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  if (!hasSpotify) {
+    return (
+      <div className="bg-yellow-50 border-l-4 border-yellow-400 p-4 rounded mb-4 text-yellow-800">
+        <p className="font-medium">To create a Spotify playlist, please sign in with Spotify.</p>
+      </div>
+    );
+  }
 
   const handleCreate = async () => {
     setLoading(true);

@@ -3,7 +3,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "./auth";
 
 // maybe memoize?
-const getUser = async (withBands: boolean = false) => {
+const getUserWithSession = async (withBands: boolean = false) => {
     const session = await getServerSession(authOptions);
     if (!session) return undefined;
     const userSession = session.user as typeof session.user & { id?: string };
@@ -35,7 +35,8 @@ const getUser = async (withBands: boolean = false) => {
         }
       });
     }
-    return user;
+    // Return both user and accessToken from session
+    return { user, accessToken: (session as any).accessToken };
 }
 
-export default getUser;
+export default getUserWithSession;

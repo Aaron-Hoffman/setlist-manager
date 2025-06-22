@@ -5,6 +5,7 @@ import Link from "next/link";
 import { editSetList, createSpotifyPlaylistFromSetlist } from "@/utils/serverActions";
 import { Song } from "@prisma/client";
 import CreateSpotifyPlaylistModalButton from '@/components/CreateSpotifyPlaylistModalButton';
+import getUserWithSession from "@/utils/getUser";
 
 const SetlistPage = async (context: PageProps) => {
     const bandId = context.params.id;
@@ -68,6 +69,11 @@ const SetlistPage = async (context: PageProps) => {
         }
     })
 
+    const userSession = await getUserWithSession();
+    const user = userSession?.user;
+    const accessToken = userSession?.accessToken;
+    const hasSpotify = !!accessToken;
+
     const updateSetList = async (song: Song, add: boolean) => {
         return editSetList(setList, song, add)
     }
@@ -89,7 +95,7 @@ const SetlistPage = async (context: PageProps) => {
                     </div>
                 </div>
                 <div className="mt-4 flex md:mt-0 md:ml-4">
-                    <CreateSpotifyPlaylistModalButton setListId={setId} />
+                    <CreateSpotifyPlaylistModalButton setListId={setId} hasSpotify={hasSpotify} />
                     <Link
                         href={`/bands/${bandId}/setlists`}
                         className="ml-3 inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
