@@ -37,11 +37,16 @@ const LoginPage = async () => {
                         )}
                         
                         <div className="space-y-8">
-                            <div>
-                                <LoginWithGoogleButton />
+                            <div className="bg-green-50 border-l-4 border-green-400 p-4 rounded mb-2">
+                              <p className="text-sm text-green-700 font-medium">
+                                <span className="font-bold">Recommended:</span> Please use <span className="font-bold">Spotify</span> to log in. Certain features, like creating Spotify playlists from your setlists, only work with a Spotify account.
+                              </p>
                             </div>
                             <div>
                                 <LoginWithSpotifyButton />
+                            </div>
+                            <div>
+                                <LoginWithGoogleButton />
                             </div>
                             
                             <div className="relative">
