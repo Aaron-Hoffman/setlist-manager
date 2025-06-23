@@ -5,7 +5,7 @@ import Link from "next/link";
 import { editSetList, createSpotifyPlaylistFromSetlist } from "@/utils/serverActions";
 import { Song } from "@prisma/client";
 import CreateSpotifyPlaylistModalButton from '@/components/CreateSpotifyPlaylistModalButton';
-import getUserWithSession from "@/utils/getUser";
+import getUser from "@/utils/getUser";
 
 const SetlistPage = async (context: PageProps) => {
     const bandId = context.params.id;
@@ -69,9 +69,8 @@ const SetlistPage = async (context: PageProps) => {
         }
     })
 
-    const userSession = await getUserWithSession();
-    const user = userSession?.user;
-    const accessToken = userSession?.accessToken;
+    const session = await getUser();
+    const accessToken = session?.accessToken;
     const hasSpotify = !!accessToken;
 
     const updateSetList = async (song: Song, add: boolean) => {

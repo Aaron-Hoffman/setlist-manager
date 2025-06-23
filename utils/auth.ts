@@ -36,6 +36,14 @@ export const authOptions: NextAuthOptions = {
           const user = await prisma.user.findUnique({
             where: {
               email: credentials.email
+            },
+            include: {
+                bands: {
+                    include: {
+                        songs: true,
+                        setLists: true
+                    }
+                }
             }
           });
 
@@ -73,6 +81,9 @@ export const authOptions: NextAuthOptions = {
           if (token.accessToken) {
             (session as any).accessToken = token.accessToken;
           }
+          if (token.bands) {
+            (session.user as any).bands = token.bands;
+          }
         }
         return session;
       },
@@ -96,11 +107,27 @@ export const authOptions: NextAuthOptions = {
         if (token.email) {
           dbUser = await prisma.user.findFirst({
             where: { email: token.email as string },
+            include: {
+              bands: {
+                include: {
+                  songs: true,
+                  setLists: true,
+                },
+              },
+            },
           });
         }
         if (!dbUser && token.id) {
           dbUser = await prisma.user.findUnique({
             where: { id: token.id as string },
+            include: {
+              bands: {
+                include: {
+                  songs: true,
+                  setLists: true,
+                },
+              },
+            },
           });
         }
         if (!dbUser) {
@@ -112,6 +139,7 @@ export const authOptions: NextAuthOptions = {
           email: dbUser.email,
           picture: (typeof token.picture === 'string' ? token.picture : dbUser.image) || dbUser.image || undefined,
           accessToken: token.accessToken,
+          bands: dbUser.bands,
         };
       },
       async redirect({ url, baseUrl }) {

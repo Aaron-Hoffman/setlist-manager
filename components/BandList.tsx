@@ -1,9 +1,18 @@
-import { Band } from "@prisma/client";
+import { Prisma } from "@prisma/client";
 import Link from "next/link";
 import DeleteBandButton from "./DeleteBandButton";
 
+const bandWithRelations = Prisma.validator<Prisma.BandArgs>()({
+    include: {
+        songs: true,
+        setLists: true,
+    },
+});
+
+type BandWithRelations = Prisma.BandGetPayload<typeof bandWithRelations>;
+
 export type BandListProps = {
-    bandList: Band[]
+    bandList: BandWithRelations[]
 }
 
 const BandList = ({bandList}: BandListProps) => {

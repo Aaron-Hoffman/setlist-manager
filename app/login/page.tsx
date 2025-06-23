@@ -1,4 +1,3 @@
-import LoginButton from "@/components/LoginButton";
 import RegisterForm from "@/components/RegisterForm";
 import LoginForm from "@/components/LoginForm";
 import LoginWithGoogleButton from "@/components/LoginWithGoogleButton";
@@ -86,7 +85,7 @@ const LoginPage = async () => {
             {session && (
                 <div className="max-w-md mx-auto bg-white border border-gray-200 rounded-lg shadow-lg p-8">
                     <h2 className="text-2xl font-bold text-gray-900 mb-4">Welcome Back!</h2>
-                    <p className="text-gray-600 mb-6">You're all set to manage your setlists.</p>
+                    <p className="text-gray-600 mb-6">You&apos;re all set to manage your setlists.</p>
                     <Link 
                         href="/bands" 
                         className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"

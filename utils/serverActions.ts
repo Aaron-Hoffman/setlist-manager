@@ -16,7 +16,7 @@ export const addBand = async (user: User | null, formData: FormData) => {
         data: {
             name: formData.get('name') as string,
             users: {
-                connect: [user]
+                connect: [{ id: user.id }]
             }
         },
     })
@@ -64,7 +64,7 @@ export const shareBand = async (bandId: number, formData: FormData) => {
         },
         data: {
             users: {
-                set: userList
+                set: userList.map(u => ({ id: u.id }))
             }
         },
     })

@@ -5,10 +5,9 @@ import { isEmpty } from "lodash";
 import Link from "next/link";
 
 const BandsPage = async () => {
-    const user = await getUser();
-    const userWithBands = await getUser(true)
+    const session = await getUser()
 
-    if (!user || !userWithBands) {
+    if (!session?.user) {
         return (
             <div className="min-h-[calc(100vh-4rem)] flex items-center justify-center">
                 <div className="text-center">
@@ -24,7 +23,8 @@ const BandsPage = async () => {
         )
     }
 
-    const bands = userWithBands.bands
+    const { user } = session;
+    const { bands } = user;
 
     return (
         <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
