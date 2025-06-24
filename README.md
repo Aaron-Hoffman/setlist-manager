@@ -40,3 +40,16 @@ If having trouble connecting a deployed instance to the subabase db refer to thi
 https://supabase.com/docs/guides/database/prisma
 
 Make sure the environment variables on vercel match what is suggested there.
+
+For spotify sign in to work locally add this to .env NEXTAUTH_URL="http://127.0.0.1:3000" since localhost is not useable as a callback url for spotify auth.
+
+TODO:
+Create docs properly to allow someone to easily run the project locally and help me troubleshoot in the future. 
+Maybe dockerize
+Allow reordering setlists with drag and drop.
+Create printable setlists.
+Method to send email or google calendar event to bandmates with setlist, playlist and event details. (maybe this requires adding an event type that a setlist could be linked to)
+User profile section.
+Allow linking spotify after signing up with google.
+Refactor to avoid code duplication.
+Maybe allow a user to have a roster of musicians with contact info that could easily be added to an event from a list. 
