@@ -14,7 +14,8 @@ const BandPage = async (context: PageProps) => {
     include: {
       setLists: {
         include: {
-          songs: true
+          songs: true,
+          band: true
         }
       }
     }

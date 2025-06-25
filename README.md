@@ -20,6 +20,39 @@ You can start editing the page by modifying `app/page.tsx`. The page auto-update
 
 This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
 
+## Features
+
+### PDF Export Functionality
+
+The application now includes the ability to export setlists to printable PDFs. This feature includes:
+
+- **Client-side PDF generation** using jsPDF library
+- **Professional formatting** with band name, setlist name, and song details
+- **Configurable options** for including artist, key, and date information
+- **Multiple page support** for long setlists
+- **Export buttons** available on both individual setlist pages and the setlists list
+
+#### How to Use
+
+1. Navigate to any setlist page or the setlists list
+2. Click the green "Export PDF" button
+3. The PDF will be automatically downloaded with a filename format: `{BandName}_{SetListName}_setlist.pdf`
+
+#### PDF Features
+
+- Clean, professional layout with indigo header
+- Song numbering and details (title, key, artist)
+- Automatic page breaks for long setlists
+- Page numbering
+- Generation date stamp
+- Optimized for printing
+
+#### Technical Implementation
+
+- **Client-side**: Uses `jspdf` library for browser-based PDF generation
+- **TypeScript**: Fully typed with proper interfaces and error handling
+- **Configurable**: Options for page size, orientation, and content inclusion
+
 ## Learn More
 
 To learn more about Next.js, take a look at the following resources:
@@ -47,7 +80,7 @@ TODO:
 Create docs properly to allow someone to easily run the project locally and help me troubleshoot in the future. 
 Maybe dockerize
 Allow reordering setlists with drag and drop.
-Create printable setlists.
+Create printable setlists. ✅ **COMPLETED**
 Method to send email or google calendar event to bandmates with setlist, playlist and event details. (maybe this requires adding an event type that a setlist could be linked to)
 User profile section.
 Allow linking spotify after signing up with google.

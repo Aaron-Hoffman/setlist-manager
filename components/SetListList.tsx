@@ -1,9 +1,10 @@
-import { SetList, Song } from "@prisma/client";
+import { SetListWithSongsAndBand } from "@/types/pdf";
 import Link from "next/link";
 import DeleteSetListButton from "./DeleteSetListButton";
+import ExportPDFButton from "./ExportPDFButton";
 
 export type SetListListProps = {
-    setListList: (SetList & { songs: Song[] })[],
+    setListList: SetListWithSongsAndBand[],
     bandId: number
 }
 
@@ -36,6 +37,7 @@ const SetListList = ({bandId, setListList}: SetListListProps) => {
                             <span className="text-sm text-gray-500">
                                 {new Date(setList.createdAt).toLocaleDateString()}
                             </span>
+                            <ExportPDFButton setList={setList} />
                             <DeleteSetListButton id={setList.id} />
                         </div>
                     </div>

@@ -5,6 +5,7 @@ import Link from "next/link";
 import { editSetList, createSpotifyPlaylistFromSetlist } from "@/utils/serverActions";
 import { Song } from "@prisma/client";
 import CreateSpotifyPlaylistModalButton from '@/components/CreateSpotifyPlaylistModalButton';
+import ExportPDFButton from '@/components/ExportPDFButton';
 import getUser from "@/utils/getUser";
 
 const SetlistPage = async (context: PageProps) => {
@@ -39,7 +40,8 @@ const SetlistPage = async (context: PageProps) => {
             id: Number(setId),
         },
         include: {
-            songs: true
+            songs: true,
+            band: true
         }
     })
 
@@ -94,6 +96,7 @@ const SetlistPage = async (context: PageProps) => {
                     </div>
                 </div>
                 <div className="mt-4 flex md:mt-0 md:ml-4">
+                    <ExportPDFButton setList={setList} />
                     <CreateSpotifyPlaylistModalButton setListId={setId} hasSpotify={hasSpotify} />
                     <Link
                         href={`/bands/${bandId}/setlists`}
