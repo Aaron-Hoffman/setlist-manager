@@ -186,7 +186,7 @@ export async function createSpotifyPlaylistFromSetlist(setListId: number) {
 
     const accessToken = await getSpotifyAccessToken();
     if (!accessToken) {
-        throw new Error('No Spotify access token found. Please connect your Spotify account.');
+        throw new Error('No valid Spotify access token found. Please reconnect your Spotify account by signing out and signing back in with Spotify.');
     }
 
     const trackUris: string[] = [];
@@ -212,7 +212,7 @@ export async function createSpotifyPlaylistFromSetlist(setListId: number) {
     );
 
     if (!playlistUrl) {
-        throw new Error('Failed to create Spotify playlist');
+        throw new Error('Failed to create Spotify playlist. Please try again or reconnect your Spotify account.');
     }
 
     return playlistUrl;

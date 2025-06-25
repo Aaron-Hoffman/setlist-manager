@@ -13,6 +13,8 @@ type BandWithRelations = Prisma.BandGetPayload<typeof bandWithRelations>;
 declare module 'next-auth' {
     interface Session {
         accessToken?: string;
+        refreshToken?: string;
+        expiresAt?: number;
         user: {
             bands: BandWithRelations[];
         } & DefaultSession['user'];
@@ -20,6 +22,14 @@ declare module 'next-auth' {
 
     interface User {
         bands: BandWithRelations[];
+    }
+}
+
+declare module 'next-auth/jwt' {
+    interface JWT {
+        accessToken?: string;
+        refreshToken?: string;
+        expiresAt?: number;
     }
 }
 

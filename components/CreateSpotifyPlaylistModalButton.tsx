@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import Modal from "./Modal";
+import { signIn } from "next-auth/react";
 
 // Client component only
 export default function CreateSpotifyPlaylistModalButton({ setListId, hasSpotify }: { setListId: string, hasSpotify: boolean }) {
@@ -14,6 +15,12 @@ export default function CreateSpotifyPlaylistModalButton({ setListId, hasSpotify
     return (
       <div className="bg-yellow-50 border-l-4 border-yellow-400 p-4 rounded mb-4 text-yellow-800">
         <p className="font-medium">To create a Spotify playlist, please sign in with Spotify.</p>
+        <button
+          onClick={() => signIn('spotify')}
+          className="mt-2 px-3 py-1 bg-[#1DB954] hover:bg-[#1ed760] text-white rounded font-semibold text-sm shadow"
+        >
+          Connect Spotify
+        </button>
       </div>
     );
   }
@@ -35,10 +42,14 @@ export default function CreateSpotifyPlaylistModalButton({ setListId, hasSpotify
         setError(data.error || "Failed to create playlist");
       }
     } catch (e) {
-      setError("Failed to create playlist");
+      setError("Failed to create playlist. Please try again or reconnect your Spotify account.");
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleReconnectSpotify = () => {
+    signIn('spotify');
   };
 
   const handleCopy = () => {
@@ -89,7 +100,19 @@ export default function CreateSpotifyPlaylistModalButton({ setListId, hasSpotify
           </div>
         </div>
       </Modal>
-      {error && <div className="text-red-600 mt-2">{error}</div>}
+      {error && (
+        <div className="text-red-600 mt-2">
+          <p>{error}</p>
+          {error.includes('reconnect') && (
+            <button
+              onClick={handleReconnectSpotify}
+              className="mt-2 px-3 py-1 bg-[#1DB954] hover:bg-[#1ed760] text-white rounded font-semibold text-sm shadow"
+            >
+              Reconnect Spotify
+            </button>
+          )}
+        </div>
+      )}
     </>
   );
 } 

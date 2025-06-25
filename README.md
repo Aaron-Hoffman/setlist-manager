@@ -53,6 +53,38 @@ The application now includes the ability to export setlists to printable PDFs. T
 - **TypeScript**: Fully typed with proper interfaces and error handling
 - **Configurable**: Options for page size, orientation, and content inclusion
 
+### Spotify Integration
+
+The application includes seamless Spotify integration for creating playlists from setlists:
+
+- **Automatic token refresh**: Spotify access tokens are automatically refreshed when they expire
+- **Playlist creation**: Convert any setlist into a Spotify playlist with one click
+- **Song matching**: Automatically searches Spotify for matching songs using title and artist
+- **Error handling**: Graceful handling of token expiration with user-friendly reconnection prompts
+
+#### How to Use
+
+1. Sign in with your Spotify account (recommended) or connect Spotify after signing up
+2. Navigate to any setlist page
+3. Click the green "Create Spotify Playlist" button
+4. The playlist will be created in your Spotify account with all matching songs
+
+#### Technical Implementation
+
+- **Token Management**: Automatic refresh of expired access tokens using refresh tokens
+- **Database Storage**: Secure storage of tokens in the database with proper encryption
+- **Error Recovery**: Automatic cleanup of invalid accounts and user-friendly reconnection flows
+- **API Integration**: Direct integration with Spotify Web API for playlist creation and song search
+
+#### Token Refresh Logic
+
+The application implements a robust token refresh system:
+
+1. **Expiration Detection**: Tokens are checked for expiration with a 5-minute buffer
+2. **Automatic Refresh**: When tokens expire, the system automatically attempts to refresh them
+3. **Fallback Handling**: If refresh fails, the account is cleaned up and user is prompted to reconnect
+4. **Seamless Experience**: Users don't need to manually re-authenticate unless refresh tokens are invalid
+
 ## Learn More
 
 To learn more about Next.js, take a look at the following resources:

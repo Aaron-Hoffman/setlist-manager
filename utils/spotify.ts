@@ -1,10 +1,121 @@
 import { getServerSession } from "next-auth";
 import { authOptions } from "./auth";
+import prisma from "./db";
 
 interface SpotifyTrack {
     uri: string;
     name: string;
     artists: { name: string }[];
+}
+
+interface TokenResponse {
+    access_token: string;
+    refresh_token?: string;
+    expires_in: number;
+}
+
+async function refreshSpotifyToken(refreshToken: string): Promise<TokenResponse | null> {
+    const basic = Buffer.from(`${process.env.SPOTIFY_CLIENT_ID}:${process.env.SPOTIFY_CLIENT_SECRET}`).toString('base64');
+    
+    try {
+        const response = await fetch('https://accounts.spotify.com/api/token', {
+            method: 'POST',
+            headers: {
+                'Authorization': `Basic ${basic}`,
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: new URLSearchParams({
+                grant_type: 'refresh_token',
+                refresh_token: refreshToken,
+            }),
+        });
+
+        if (!response.ok) {
+            console.error('Failed to refresh Spotify token:', await response.text());
+            return null;
+        }
+
+        return await response.json();
+    } catch (error) {
+        console.error('Error refreshing Spotify token:', error);
+        return null;
+    }
+}
+
+async function getValidSpotifyAccessToken(userId: string): Promise<string | null> {
+    // Get the user's Spotify account
+    const account = await prisma.account.findFirst({
+        where: {
+            userId: userId,
+            provider: 'spotify',
+        },
+    });
+
+    if (!account || !account.access_token) {
+        console.log('No Spotify account found for user:', userId);
+        return null;
+    }
+
+    // Check if token is expired (with 5 minute buffer)
+    const now = Math.floor(Date.now() / 1000);
+    const expiresAt = account.expires_at || 0;
+    
+    console.log(`Token expires at: ${new Date(expiresAt * 1000).toISOString()}, current time: ${new Date(now * 1000).toISOString()}`);
+    
+    if (now >= expiresAt - 300) { // 5 minute buffer
+        console.log('Token is expired or will expire soon, attempting refresh...');
+        // Token is expired or will expire soon, try to refresh
+        if (account.refresh_token) {
+            const refreshResult = await refreshSpotifyToken(account.refresh_token);
+            
+            if (refreshResult) {
+                console.log('Token refresh successful');
+                // Update the account with new tokens
+                await prisma.account.update({
+                    where: {
+                        provider_providerAccountId: {
+                            provider: account.provider,
+                            providerAccountId: account.providerAccountId,
+                        },
+                    },
+                    data: {
+                        access_token: refreshResult.access_token,
+                        refresh_token: refreshResult.refresh_token || account.refresh_token,
+                        expires_at: Math.floor(Date.now() / 1000) + refreshResult.expires_in,
+                    },
+                });
+                
+                return refreshResult.access_token;
+            } else {
+                console.log('Token refresh failed, removing account');
+                // Refresh failed, remove the account
+                await prisma.account.delete({
+                    where: {
+                        provider_providerAccountId: {
+                            provider: account.provider,
+                            providerAccountId: account.providerAccountId,
+                        },
+                    },
+                });
+                return null;
+            }
+        } else {
+            console.log('No refresh token available, removing account');
+            // No refresh token, remove the account
+            await prisma.account.delete({
+                where: {
+                    provider_providerAccountId: {
+                        provider: account.provider,
+                        providerAccountId: account.providerAccountId,
+                    },
+                },
+            });
+            return null;
+        }
+    }
+
+    console.log('Using existing valid token');
+    return account.access_token;
 }
 
 export async function searchSpotifyTrack(query: string, accessToken: string): Promise<SpotifyTrack | null> {
@@ -18,7 +129,13 @@ export async function searchSpotifyTrack(query: string, accessToken: string): Pr
     );
 
     if (!response.ok) {
-        console.error('Spotify search failed:', await response.text());
+        const errorText = await response.text();
+        console.error('Spotify search failed:', errorText);
+        
+        // If token is expired, return null to trigger re-authentication
+        if (response.status === 401) {
+            console.error('Spotify token expired');
+        }
         return null;
     }
 
@@ -48,7 +165,12 @@ export async function createSpotifyPlaylist(
     });
 
     if (!userResponse.ok) {
-        console.error('Failed to get Spotify user:', await userResponse.text());
+        const errorText = await userResponse.text();
+        console.error('Failed to get Spotify user:', errorText);
+        
+        if (userResponse.status === 401) {
+            console.error('Spotify token expired during user fetch');
+        }
         return null;
     }
 
@@ -73,7 +195,12 @@ export async function createSpotifyPlaylist(
     );
 
     if (!createResponse.ok) {
-        console.error('Failed to create playlist:', await createResponse.text());
+        const errorText = await createResponse.text();
+        console.error('Failed to create playlist:', errorText);
+        
+        if (createResponse.status === 401) {
+            console.error('Spotify token expired during playlist creation');
+        }
         return null;
     }
 
@@ -96,7 +223,12 @@ export async function createSpotifyPlaylist(
     );
 
     if (!addTracksResponse.ok) {
-        console.error('Failed to add tracks to playlist:', await addTracksResponse.text());
+        const errorText = await addTracksResponse.text();
+        console.error('Failed to add tracks to playlist:', errorText);
+        
+        if (addTracksResponse.status === 401) {
+            console.error('Spotify token expired during track addition');
+        }
         return null;
     }
 
@@ -105,5 +237,10 @@ export async function createSpotifyPlaylist(
 
 export async function getSpotifyAccessToken(): Promise<string | null> {
     const session = await getServerSession(authOptions);
-    return session?.accessToken as string | null;
+    
+    if (!session?.user?.id) {
+        return null;
+    }
+
+    return await getValidSpotifyAccessToken(session.user.id);
 } 

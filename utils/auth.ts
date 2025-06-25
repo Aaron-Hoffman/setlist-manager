@@ -81,6 +81,12 @@ export const authOptions: NextAuthOptions = {
           if (token.accessToken) {
             (session as any).accessToken = token.accessToken;
           }
+          if (token.refreshToken) {
+            (session as any).refreshToken = token.refreshToken;
+          }
+          if (token.expiresAt) {
+            (session as any).expiresAt = token.expiresAt;
+          }
           if (token.bands) {
             (session.user as any).bands = token.bands;
           }
@@ -88,9 +94,11 @@ export const authOptions: NextAuthOptions = {
         return session;
       },
       async jwt({ token, user, account, profile }) {
-        // Handle Spotify access token
+        // Handle Spotify access token and refresh token
         if (account && account.provider === 'spotify') {
           token.accessToken = account.access_token;
+          token.refreshToken = account.refresh_token;
+          token.expiresAt = account.expires_at;
         }
         // If signing in with Google, update the image from the provider profile
         if (account && profile && account.provider === 'google') {
@@ -139,6 +147,8 @@ export const authOptions: NextAuthOptions = {
           email: dbUser.email,
           picture: (typeof token.picture === 'string' ? token.picture : dbUser.image) || dbUser.image || undefined,
           accessToken: token.accessToken,
+          refreshToken: token.refreshToken,
+          expiresAt: token.expiresAt,
           bands: dbUser.bands,
         };
       },
