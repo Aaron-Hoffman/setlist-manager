@@ -97,7 +97,9 @@ const SetlistPage = async (context: PageProps) => {
                 </div>
                 <div className="mt-4 flex md:mt-0 md:ml-4">
                     <ExportPDFButton setList={setList} />
-                    <CreateSpotifyPlaylistModalButton setListId={setId} hasSpotify={hasSpotify} />
+                    <div className="ml-3">
+                        <CreateSpotifyPlaylistModalButton setListId={setId} hasSpotify={hasSpotify} />
+                    </div>
                     <Link
                         href={`/bands/${bandId}/setlists`}
                         className="ml-3 inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
