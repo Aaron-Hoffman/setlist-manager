@@ -252,6 +252,7 @@ export function normalizeForSpotifyMatch(str: string): string {
         .replace(/\s*\(live\)$/i, '')    // Remove ' (Live)'
         .replace(/\s*\(remastered(\s*\d{4})?\)$/i, '')    // Remove ' (Remastered)' or ' (Remastered 2011)'
         .replace(/\s*[-–—]\s*.*$/i, '') // Remove any suffix starting with ' - '
+        .replace(/\band\b|\&/gi, ' and ') // Treat 'and' and '&' as equivalent
         .replace(/[^a-z0-9]/gi, '')        // Remove punctuation and spaces
         .trim();
 }
