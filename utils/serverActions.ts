@@ -257,6 +257,7 @@ export async function createSpotifyPlaylistFromSetlist(setListId: number) {
 
     const trackUris: string[] = [];
     for (const song of setList.songs) {
+        if (!song.spotifyPerfectMatch) continue; // Only include perfect matches
         const spotifyTrack = await searchSpotifyTrack(
             `${song.title} ${song.artist}`,
             accessToken
