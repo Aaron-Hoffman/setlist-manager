@@ -2,14 +2,18 @@
 import { useState } from "react";
 import Modal from "./Modal";
 import { signIn } from "next-auth/react";
+import { Song } from "@prisma/client";
 
 // Client component only
-export default function CreateSpotifyPlaylistModalButton({ setListId, hasSpotify }: { setListId: string, hasSpotify: boolean }) {
+export default function CreateSpotifyPlaylistModalButton({ setListId, hasSpotify, songs }: { setListId: string, hasSpotify: boolean, songs: Song[] }) {
   const [showModal, setShowModal] = useState(false);
+  const [showConfirm, setShowConfirm] = useState(false);
   const [playlistUrl, setPlaylistUrl] = useState("");
   const [copied, setCopied] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  const excludedSongs = songs.filter(song => !song.spotifyPerfectMatch);
 
   if (!hasSpotify) {
     return (
@@ -26,6 +30,7 @@ export default function CreateSpotifyPlaylistModalButton({ setListId, hasSpotify
   }
 
   const handleCreate = async () => {
+    setShowConfirm(false);
     setLoading(true);
     setError(null);
     try {
@@ -63,7 +68,13 @@ export default function CreateSpotifyPlaylistModalButton({ setListId, hasSpotify
   return (
     <>
       <button
-        onClick={handleCreate}
+        onClick={() => {
+          if (excludedSongs.length > 0) {
+            setShowConfirm(true);
+          } else {
+            handleCreate();
+          }
+        }}
         disabled={loading}
         className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
       >
@@ -96,6 +107,36 @@ export default function CreateSpotifyPlaylistModalButton({ setListId, hasSpotify
               className="px-3 py-1 bg-gray-200 rounded"
             >
               Close
+            </button>
+          </div>
+        </div>
+      </Modal>
+      {/* Confirmation Modal */}
+      <Modal show={showConfirm}>
+        <div className="p-6 bg-white rounded-lg shadow-xl max-w-md w-full mx-4">
+          <h3 className="text-lg font-medium text-gray-900 mb-4">Some songs will be skipped</h3>
+          <p className="mb-4">The following songs are not available on Spotify and will not be included in your playlist:</p>
+          <ul className="mb-4 list-disc list-inside text-sm text-gray-700">
+            {excludedSongs.map(song => (
+              <li key={song.id}>{song.title}{song.artist ? ` by ${song.artist}` : ''}</li>
+            ))}
+          </ul>
+          <p className="mb-4 text-sm text-yellow-700 bg-yellow-50 p-2 rounded">
+            If you believe a song should be available on Spotify, please double-check the title and artist for typos or alternate spellings.
+          </p>
+          <div className="flex justify-end gap-2">
+            <button
+              onClick={() => setShowConfirm(false)}
+              className="px-3 py-1 bg-gray-200 rounded"
+            >
+              Cancel
+            </button>
+            <button
+              onClick={handleCreate}
+              className="px-3 py-1 bg-green-600 text-white rounded"
+              disabled={loading}
+            >
+              {loading ? "Creating..." : "Continue"}
             </button>
           </div>
         </div>

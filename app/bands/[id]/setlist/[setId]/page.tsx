@@ -98,7 +98,7 @@ const SetlistPage = async (context: PageProps) => {
                 <div className="mt-4 flex md:mt-0 md:ml-4">
                     <ExportPDFButton setList={setList} />
                     <div className="ml-3">
-                        <CreateSpotifyPlaylistModalButton setListId={setId} hasSpotify={hasSpotify} />
+                        <CreateSpotifyPlaylistModalButton setListId={setId} hasSpotify={hasSpotify} songs={setList.songs} />
                     </div>
                     <Link
                         href={`/bands/${bandId}/setlists`}
