@@ -11,10 +11,9 @@ import { searchSpotifyTrack, createSpotifyPlaylist, getSpotifyAccessToken } from
 function normalizeForSpotifyMatch(str: string): string {
     return str
         .toLowerCase()
-        .replace(/\s*[-–—]\s*live$/i, '') // Remove ' - Live' or similar
         .replace(/\s*\(live\)$/i, '')    // Remove ' (Live)'
-        .replace(/\s*[-–—]\s*remastered(\s*\d{4})?$/i, '') // Remove ' - Remastered' or ' - Remastered 2011'
         .replace(/\s*\(remastered(\s*\d{4})?\)$/i, '')    // Remove ' (Remastered)' or ' (Remastered 2011)'
+        .replace(/\s*[-–—]\s*.*$/i, '') // Remove any suffix starting with ' - '
         .replace(/[^a-z0-9]/gi, '')        // Remove punctuation and spaces
         .trim();
 }
