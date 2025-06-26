@@ -243,4 +243,53 @@ export async function getSpotifyAccessToken(): Promise<string | null> {
     }
 
     return await getValidSpotifyAccessToken(session.user.id);
+}
+
+// Utility to normalize strings for loose matching (duplicated from serverActions for script use)
+export function normalizeForSpotifyMatch(str: string): string {
+    return str
+        .toLowerCase()
+        .replace(/\s*[-–—]\s*live$/i, '') // Remove ' - Live' or similar
+        .replace(/\s*\(live\)$/i, '')    // Remove ' (Live)'
+        .replace(/\s*[-–—]\s*remastered(\s*\d{4})?$/i, '') // Remove ' - Remastered' or ' - Remastered 2011'
+        .replace(/\s*\(remastered(\s*\d{4})?\)$/i, '')    // Remove ' (Remastered)' or ' (Remastered 2011)'
+        .replace(/[^a-z0-9]/gi, '')        // Remove punctuation and spaces
+        .trim();
+}
+
+// Utility to update all songs' spotifyPerfectMatch field
+export async function updateAllSpotifyPerfectMatches() {
+    const songs = await prisma.song.findMany();
+    const accessToken = await getSpotifyAccessToken();
+    if (!accessToken) {
+        throw new Error('No valid Spotify access token found.');
+    }
+    for (const song of songs) {
+        let spotifyPerfectMatch = false;
+        try {
+            const spotifyTrack = await searchSpotifyTrack(
+                `${song.title} ${song.artist ?? ''}`.trim(),
+                accessToken
+            );
+            if (spotifyTrack) {
+                const normTitle = normalizeForSpotifyMatch(song.title);
+                const normSpotifyTitle = normalizeForSpotifyMatch(spotifyTrack.name);
+                const titleMatch = normTitle === normSpotifyTitle;
+                const normArtist = song.artist ? normalizeForSpotifyMatch(song.artist) : '';
+                const artistMatch = song.artist
+                    ? spotifyTrack.artists.some(a => normalizeForSpotifyMatch(a.name) === normArtist)
+                    : true;
+                if (titleMatch && artistMatch) {
+                    spotifyPerfectMatch = true;
+                }
+            }
+        } catch (e) {
+            // Ignore errors, just fallback to false
+        }
+        await prisma.song.update({
+            where: { id: song.id },
+            data: { spotifyPerfectMatch },
+        });
+    }
+    return true;
 } 

@@ -7,6 +7,18 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { searchSpotifyTrack, createSpotifyPlaylist, getSpotifyAccessToken } from './spotify';
 
+// Utility to normalize strings for loose matching
+function normalizeForSpotifyMatch(str: string): string {
+    return str
+        .toLowerCase()
+        .replace(/\s*[-–—]\s*live$/i, '') // Remove ' - Live' or similar
+        .replace(/\s*\(live\)$/i, '')    // Remove ' (Live)'
+        .replace(/\s*[-–—]\s*remastered(\s*\d{4})?$/i, '') // Remove ' - Remastered' or ' - Remastered 2011'
+        .replace(/\s*\(remastered(\s*\d{4})?\)$/i, '')    // Remove ' (Remastered)' or ' (Remastered 2011)'
+        .replace(/[^a-z0-9]/gi, '')        // Remove punctuation and spaces
+        .trim();
+}
+
 export const addBand = async (user: User | null, formData: FormData) => {
     if (!user) {
         throw new Error("Error must sign in to create a band");
@@ -142,10 +154,13 @@ export const addSong = async (bandId: number, formData: FormData) => {
                 accessToken
             );
             if (spotifyTrack) {
-                // Check for perfect match: title and artist(s) match exactly (case-insensitive)
-                const titleMatch = spotifyTrack.name.trim().toLowerCase() === song.title.trim().toLowerCase();
+                // Loosened perfect match: ignore case, punctuation, and ' - Live'/' (Live)'
+                const normTitle = normalizeForSpotifyMatch(song.title);
+                const normSpotifyTitle = normalizeForSpotifyMatch(spotifyTrack.name);
+                const titleMatch = normTitle === normSpotifyTitle;
+                const normArtist = song.artist ? normalizeForSpotifyMatch(song.artist) : '';
                 const artistMatch = song.artist
-                    ? spotifyTrack.artists.some(a => a.name.trim().toLowerCase() === song.artist!.trim().toLowerCase())
+                    ? spotifyTrack.artists.some(a => normalizeForSpotifyMatch(a.name) === normArtist)
                     : true;
                 if (titleMatch && artistMatch) {
                     spotifyPerfectMatch = true;
@@ -183,12 +198,39 @@ export const editSong = async (songId: number, formData: FormData) => {
         key: formData.get('key') as string,
     }
 
+    let spotifyPerfectMatch = false;
+    try {
+        const accessToken = await getSpotifyAccessToken();
+        if (accessToken) {
+            const spotifyTrack = await searchSpotifyTrack(
+                `${song.title} ${song.artist ?? ''}`.trim(),
+                accessToken
+            );
+            if (spotifyTrack) {
+                // Loosened perfect match: ignore case, punctuation, and ' - Live'/' (Live)'
+                const normTitle = normalizeForSpotifyMatch(song.title);
+                const normSpotifyTitle = normalizeForSpotifyMatch(spotifyTrack.name);
+                const titleMatch = normTitle === normSpotifyTitle;
+                const normArtist = song.artist ? normalizeForSpotifyMatch(song.artist) : '';
+                const artistMatch = song.artist
+                    ? spotifyTrack.artists.some(a => normalizeForSpotifyMatch(a.name) === normArtist)
+                    : true;
+                if (titleMatch && artistMatch) {
+                    spotifyPerfectMatch = true;
+                }
+            }
+        }
+    } catch (e) {
+        // Ignore errors, just fallback to false
+    }
+
     await prisma.song.update({
         where: {
           id: songId,
         },
         data: {
-            ...song
+            ...song,
+            spotifyPerfectMatch,
         },
     })
 
