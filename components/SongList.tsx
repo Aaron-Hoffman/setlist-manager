@@ -57,10 +57,10 @@ const SongList = ({songList, add, setList}: SongListProps) => {
                             <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                                 {song.title}
                                 {song.spotifyPerfectMatch && (
-                                    <span title="Perfect Spotify match" className="inline-block align-middle ml-2">
-                                        <svg width="18" height="18" viewBox="0 0 168 168" fill="none" xmlns="http://www.w3.org/2000/svg" className="inline-block">
-                                            <circle cx="84" cy="84" r="84" fill="#1ED760"/>
-                                            <path d="M123.6 115.2c-2.4 3.6-6.8 4.8-10.4 2.8-28.4-17.2-64.4-21.2-106.8-12.4-4.2.8-8.4-1.8-9.2-6-1-4.2 1.8-8.4 6-9.2 45.2-9.2 84.4-4.8 115.2 13.2 3.6 2.2 4.8 6.8 2.8 10.4zm14.8-28.8c-3 4.4-8.8 5.8-13.2 2.8-32.4-20-81.6-25.8-119.6-15.2-5 1.4-10.2-1.4-11.6-6.4-1.4-5 1.4-10.2 6.4-11.6 42.8-11.8 96.8-5.6 133.2 17 4.4 2.8 5.8 8.8 2.8 13.2zm15.2-32.4c-38.2-22.6-101.2-24.8-137.2-14.6-6 1.6-12.2-1.6-13.8-7.6-1.6-6 1.6-12.2 7.6-13.8 40.8-11.2 109.2-8.8 152.8 16.2 5.4 3.2 7.2 10.2 4 15.6-3.2 5.4-10.2 7.2-15.6 4z" fill="#fff"/>
+                                    <span title="Perfect Spotify match" className="inline-block align-middle ml-2" aria-label="Spotify perfect match">
+                                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="inline-block">
+                                            <circle cx="12" cy="12" r="12" fill="#1ED760"/>
+                                            <path d="M17.25 16.13a.75.75 0 0 1-1.03.23c-2.82-1.73-6.39-2.12-10.6-1.17a.75.75 0 1 1-.32-1.47c4.6-1.01 8.56-.57 11.7 1.27.36.22.47.69.25 1.03zm1.47-2.93a.94.94 0 0 1-1.29.29c-3.23-2-8.16-2.59-11.98-1.52a.94.94 0 1 1-.53-1.81c4.23-1.23 9.6-.59 13.3 1.7.44.27.58.85.3 1.34zm.16-3.02c-3.7-2.21-9.81-2.42-13.19-1.42a1.13 1.13 0 1 1-.64-2.18c3.85-1.13 10.54-.89 14.7 1.6a1.13 1.13 0 0 1-1.17 1.99z" fill="#fff"/>
                                         </svg>
                                     </span>
                                 )}
