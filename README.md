@@ -111,7 +111,8 @@ For spotify sign in to work locally add this to .env NEXTAUTH_URL="http://127.0.
 TODO:
 Create docs properly to allow someone to easily run the project locally and help me troubleshoot in the future. 
 Maybe dockerize
-Fix spotify api integration issues (show spotify logo beside songs that have a perfect match, when a song doesn't have a match don't include it in the playlist and warn the user)
+Fix spotify api integration issues (show spotify logo beside songs that have a perfect match) ✅ **COMPLETED**
+When a song doesn't have a match don't include it in the playlist and warn the user  ✅ **COMPLETED**
 Allow reordering setlists with drag and drop.
 Create printable setlists. ✅ **COMPLETED**
 Method to send email or google calendar event to bandmates with setlist, playlist and event details. (maybe this requires adding an event type that a setlist could be linked to)
@@ -119,3 +120,4 @@ User profile section.
 Allow linking spotify after signing up with google.
 Refactor to avoid code duplication.
 Maybe allow a user to have a roster of musicians with contact info that could easily be added to an event from a list. 
+Be able to edit songs from setlist view ✅ **COMPLETED**

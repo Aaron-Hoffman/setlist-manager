@@ -6,7 +6,7 @@ const FAQPage = () => {
       <div className="mb-10 text-center">
         <h1 className="text-4xl font-extrabold text-gray-900 mb-4">FAQ: Spotify Playlist Creation</h1>
         <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-          Learn how the Spotify playlist feature works, what "perfect match" means, and how to get the most out of your setlists.
+          Learn how the Spotify playlist feature works, what &ldquo;perfect match&rdquo; means, and how to get the most out of your setlists.
         </p>
       </div>
       <div className="space-y-10 max-w-2xl mx-auto">
@@ -25,13 +25,13 @@ const FAQPage = () => {
         <section>
           <h2 className="text-xl font-semibold text-indigo-700 mb-2">Why are some songs skipped when creating a playlist?</h2>
           <p className="text-gray-700">
-            If a song in your setlist does not have a perfect match on Spotify, it will be skipped and not included in the playlist. Before creating the playlist, you'll see a confirmation modal listing any songs that will be excluded.
+            If a song in your setlist does not have a perfect match on Spotify, it will be skipped and not included in the playlist. Before creating the playlist, you&apos;ll see a confirmation modal listing any songs that will be excluded.
           </p>
         </section>
         <section>
-          <h2 className="text-xl font-semibold text-indigo-700 mb-2">What should I do if a song is skipped but I know it's on Spotify?</h2>
+          <h2 className="text-xl font-semibold text-indigo-700 mb-2">What should I do if a song is skipped but I know it&apos;s on Spotify?</h2>
           <p className="text-gray-700">
-            Double-check the song's title and artist for typos or alternate spellings. Even small differences can prevent a match. Edit the song in your setlist and try again. If you really think it should be working, you may have found an edge case. Please contact the developer.
+            Double-check the song&apos;s title and artist for typos or alternate spellings. Even small differences can prevent a match. Edit the song in your setlist and try again. If you really think it should be working, you may have found an edge case. Please contact the developer.
           </p>
         </section>
         <section>
@@ -43,7 +43,7 @@ const FAQPage = () => {
         <section>
           <h2 className="text-xl font-semibold text-indigo-700 mb-2">Who can use this feature?</h2>
           <p className="text-gray-700">
-            You must be signed in with your Spotify account to create playlists. If you haven't connected Spotify yet, you'll be prompted to do so.
+            You must be signed in with your Spotify account to create playlists. If you haven&apos;t connected Spotify yet, you&apos;ll be prompted to do so.
           </p>
         </section>
       </div>
