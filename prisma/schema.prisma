@@ -35,6 +35,7 @@ model Song {
   bandId    Int
   setLists  SetList[]
   data      Json?
+  spotifyPerfectMatch Boolean @default(false)
 }
 
 model SetList {

@@ -132,14 +132,38 @@ export const addSong = async (bandId: number, formData: FormData) => {
         key: formData.get('key') as string,
         bandId: Number(bandId)
     }
-  
-     await prisma.song.create({
-          data: {
-           ...song,
-          },
-      })
-    
-      return revalidatePath('/')
+
+    let spotifyPerfectMatch = false;
+    try {
+        const accessToken = await getSpotifyAccessToken();
+        if (accessToken) {
+            const spotifyTrack = await searchSpotifyTrack(
+                `${song.title} ${song.artist ?? ''}`.trim(),
+                accessToken
+            );
+            if (spotifyTrack) {
+                // Check for perfect match: title and artist(s) match exactly (case-insensitive)
+                const titleMatch = spotifyTrack.name.trim().toLowerCase() === song.title.trim().toLowerCase();
+                const artistMatch = song.artist
+                    ? spotifyTrack.artists.some(a => a.name.trim().toLowerCase() === song.artist!.trim().toLowerCase())
+                    : true;
+                if (titleMatch && artistMatch) {
+                    spotifyPerfectMatch = true;
+                }
+            }
+        }
+    } catch (e) {
+        // Ignore errors, just fallback to false
+    }
+
+    await prisma.song.create({
+        data: {
+            ...song,
+            spotifyPerfectMatch,
+        },
+    })
+
+    return revalidatePath('/')
 }
 
 export const deleteSong = async (songId: number) => {
