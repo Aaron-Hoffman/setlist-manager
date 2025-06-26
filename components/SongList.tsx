@@ -56,6 +56,14 @@ const SongList = ({songList, add, setList}: SongListProps) => {
                         <tr key={song.id} className="hover:bg-gray-50">
                             <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                                 {song.title}
+                                {song.spotifyPerfectMatch && (
+                                    <span title="Perfect Spotify match" className="inline-block align-middle ml-2">
+                                        <svg width="18" height="18" viewBox="0 0 168 168" fill="none" xmlns="http://www.w3.org/2000/svg" className="inline-block">
+                                            <circle cx="84" cy="84" r="84" fill="#1ED760"/>
+                                            <path d="M123.6 115.2c-2.4 3.6-6.8 4.8-10.4 2.8-28.4-17.2-64.4-21.2-106.8-12.4-4.2.8-8.4-1.8-9.2-6-1-4.2 1.8-8.4 6-9.2 45.2-9.2 84.4-4.8 115.2 13.2 3.6 2.2 4.8 6.8 2.8 10.4zm14.8-28.8c-3 4.4-8.8 5.8-13.2 2.8-32.4-20-81.6-25.8-119.6-15.2-5 1.4-10.2-1.4-11.6-6.4-1.4-5 1.4-10.2 6.4-11.6 42.8-11.8 96.8-5.6 133.2 17 4.4 2.8 5.8 8.8 2.8 13.2zm15.2-32.4c-38.2-22.6-101.2-24.8-137.2-14.6-6 1.6-12.2-1.6-13.8-7.6-1.6-6 1.6-12.2 7.6-13.8 40.8-11.2 109.2-8.8 152.8 16.2 5.4 3.2 7.2 10.2 4 15.6-3.2 5.4-10.2 7.2-15.6 4z" fill="#fff"/>
+                                        </svg>
+                                    </span>
+                                )}
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                                 {song.artist || '—'}
