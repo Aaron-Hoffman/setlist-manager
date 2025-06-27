@@ -121,3 +121,9 @@ Allow linking spotify after signing up with google.
 Refactor to avoid code duplication.
 Maybe allow a user to have a roster of musicians with contact info that could easily be added to an event from a list. 
 Be able to edit songs from setlist view ✅ **COMPLETED**
+Add Sharp and flat versions of each key ✅ **COMPLETED**
+Maybe let user know key is your singing key
+When sharing band, user should be notified and given a choice.
+User should have the ability to remove a band.
+Display how many users a band has and show a list somewhere
+fix share band
