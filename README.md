@@ -1,24 +1,16 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Setlist Manager
 
 ## Getting Started
 
-First, run the development server:
+> The following instructions assume you have Homebrew installed, if not do that first.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+1. Copy `.env.example` into a `.env` file and fill in the missing values.
+2. Install postgresql locally with `brew install postgresql`
+3. Run postgresql server with `brew services start postgresql`
+4. Generate the Prisma Client with `npx prisma generate`
+5. Start the development server with `npm run dev`
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
 
 ## Features
 
@@ -85,22 +77,6 @@ The application implements a robust token refresh system:
 3. **Fallback Handling**: If refresh fails, the account is cleaned up and user is prompted to reconnect
 4. **Seamless Experience**: Users don't need to manually re-authenticate unless refresh tokens are invalid
 
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
-
-
 If having trouble connecting a deployed instance to the subabase db refer to this page: 
 https://supabase.com/docs/guides/database/prisma
 
@@ -108,22 +84,22 @@ Make sure the environment variables on vercel match what is suggested there.
 
 For spotify sign in to work locally add this to .env NEXTAUTH_URL="http://127.0.0.1:3000" since localhost is not useable as a callback url for spotify auth.
 
-TODO:
-Create docs properly to allow someone to easily run the project locally and help me troubleshoot in the future. 
-Maybe dockerize
-Fix spotify api integration issues (show spotify logo beside songs that have a perfect match) ✅ **COMPLETED**
-When a song doesn't have a match don't include it in the playlist and warn the user  ✅ **COMPLETED**
-Allow reordering setlists with drag and drop.
-Create printable setlists. ✅ **COMPLETED**
-Method to send email or google calendar event to bandmates with setlist, playlist and event details. (maybe this requires adding an event type that a setlist could be linked to)
-User profile section.
-Allow linking spotify after signing up with google.
-Refactor to avoid code duplication.
-Maybe allow a user to have a roster of musicians with contact info that could easily be added to an event from a list. 
-Be able to edit songs from setlist view ✅ **COMPLETED**
-Add Sharp and flat versions of each key ✅ **COMPLETED**
-Maybe let user know key is your singing key
-When sharing band, user should be notified and given a choice.
-User should have the ability to remove a band.
-Display how many users a band has and show a list somewhere ✅ **COMPLETED**
-fix share band ✅ **COMPLETED**
+## TODO:
+- Create docs properly to allow someone to easily run the project locally and help me troubleshoot in the future. 
+- Maybe dockerize
+- Fix spotify api integration issues (show spotify logo beside songs that have a perfect match) ✅ **COMPLETED**
+- When a song doesn't have a match don't include it in the playlist and warn the user  ✅ **COMPLETED**
+- Allow reordering setlists with drag and drop.
+- Create printable setlists. ✅ **COMPLETED**
+- Method to send email or google calendar event to bandmates with setlist, playlist and event details. (maybe this requires adding an event type that a setlist could be linked to)
+- User profile section.
+- Allow linking spotify after signing up with google.
+- Refactor to avoid code duplication.
+- Maybe allow a user to have a roster of musicians with contact info that could easily be added to an event from a list. 
+- Be able to edit songs from setlist view ✅ **COMPLETED**
+- Add Sharp and flat versions of each key ✅ **COMPLETED**
+- Maybe let user know key is your singing key
+- When sharing band, user should be notified and given a choice.
+- User should have the ability to remove a band.
+- Display how many users a band has and show a list somewhere ✅ **COMPLETED**
+- Fix share band ✅ **COMPLETED**
