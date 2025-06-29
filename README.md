@@ -125,5 +125,5 @@ Add Sharp and flat versions of each key ✅ **COMPLETED**
 Maybe let user know key is your singing key
 When sharing band, user should be notified and given a choice.
 User should have the ability to remove a band.
-Display how many users a band has and show a list somewhere
-fix share band
+Display how many users a band has and show a list somewhere ✅ **COMPLETED**
+fix share band ✅ **COMPLETED**

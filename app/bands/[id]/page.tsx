@@ -14,7 +14,8 @@ const BandPage = async (context: PageProps) => {
     },
     include: {
       songs: true,
-      setLists: true
+      setLists: true,
+      users: true
     }
   })
 
@@ -55,6 +56,12 @@ const BandPage = async (context: PageProps) => {
               </svg>
               <span>{band.setLists.length} Set Lists</span>
             </div>
+            <div className="flex items-center">
+              <svg className="h-5 w-5 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 20h5v-2a4 4 0 00-3-3.87M9 20H4v-2a4 4 0 013-3.87m9-5a4 4 0 11-8 0 4 4 0 018 0z" />
+              </svg>
+              <span>{band.users.length} User{band.users.length !== 1 ? 's' : ''}</span>
+            </div>
           </div>
         </div>
         <div className="mt-4 flex space-x-3 md:mt-0 md:ml-4">
@@ -88,6 +95,24 @@ const BandPage = async (context: PageProps) => {
         <div className="border-t border-gray-200">
           <SongList songList={band.songs} />
         </div>
+      </div>
+
+      <div className="mt-6">
+        <h3 className="text-lg font-semibold text-gray-900 mb-2">Band Members</h3>
+        <ul className="bg-white shadow rounded-lg divide-y divide-gray-200">
+          {band.users.length === 0 ? (
+            <li className="px-4 py-3 text-gray-500">No users in this band.</li>
+          ) : (
+            band.users.map((user) => (
+              <li key={user.id} className="px-4 py-3 flex items-center space-x-3">
+                <span className="font-medium text-gray-800">{user.name || 'Unnamed User'}</span>
+                {user.email && (
+                  <span className="text-gray-500 text-sm">({user.email})</span>
+                )}
+              </li>
+            ))
+          )}
+        </ul>
       </div>
     </main>
   );
