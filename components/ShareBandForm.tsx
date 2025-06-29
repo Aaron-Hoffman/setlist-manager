@@ -1,8 +1,10 @@
 'use client'
 
 import { Band } from '@prisma/client';
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import Modal from './Modal';
+import { shareBand } from '@/utils/serverActions';
+import toast from 'react-hot-toast';
 
 type ShareBandFormProps = {
     band: Band
@@ -10,6 +12,7 @@ type ShareBandFormProps = {
 
 const ShareBandForm = ({ band }: ShareBandFormProps) => {
     const [show, setShow] = useState(false);
+    const formRef = useRef<HTMLFormElement>(null);
 
     return (
         <>
@@ -25,12 +28,16 @@ const ShareBandForm = ({ band }: ShareBandFormProps) => {
             <Modal show={show}>
                 <div className="p-6 bg-white rounded-lg shadow-xl max-w-md w-full mx-4">
                     <h3 className="text-lg font-medium text-gray-900 mb-4">Share Band</h3>
-                    <form action={async (formData: FormData) => {
-                        await fetch(`/api/bands/${band.id}/share`, {
-                            method: 'POST',
-                            body: formData
-                        });
-                        setShow(false);
+                    <form ref={formRef} action={async (formData: FormData) => {
+                        try {
+                            await shareBand(band.id, formData);
+                            toast.success('Band shared successfully!');
+                            formRef.current?.reset();
+                            setShow(false);
+                        } catch (e) {
+                            const errorMsg = e instanceof Error && e.message ? e.message : 'Failed to share band.';
+                            toast.error(errorMsg);
+                        }
                     }}>
                         <div className="space-y-4">
                             <div>

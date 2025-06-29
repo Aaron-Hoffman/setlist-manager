@@ -66,7 +66,7 @@ export const shareBand = async (bandId: number, formData: FormData) => {
         },
     })
 
-    if (!userToShareWith) return
+    if (!userToShareWith) throw new Error('User with that email does not exist.');
 
     const userList: User[] = [...bandWithUsers.users, userToShareWith]
     
