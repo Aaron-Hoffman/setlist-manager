@@ -1,6 +1,5 @@
 import { Prisma } from "@prisma/client";
 import Link from "next/link";
-import DeleteBandButton from "./DeleteBandButton";
 
 const bandWithRelations = Prisma.validator<Prisma.BandArgs>()({
     include: {
@@ -31,7 +30,6 @@ const BandList = ({bandList}: BandListProps) => {
                             >
                                 {band.name}
                             </Link>
-                            <DeleteBandButton id={band.id} />
                         </div>
                         <div className="space-y-2">
                             <div className="flex items-center space-x-2 text-sm text-gray-500">
