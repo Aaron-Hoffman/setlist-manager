@@ -2,11 +2,14 @@ import { PageProps } from "@/.next/types/app/page";
 import AddSongForm from "@/components/AddSongForm";
 import ShareBandForm from "@/components/ShareBandForm";
 import SongList from "@/components/SongList";
+import RemoveFromBandButton from "@/components/RemoveFromBandButton";
 import prisma from "@/utils/db";
+import getUser from "@/utils/getUser";
 import Link from "next/link";
 
 const BandPage = async (context: PageProps) => {
   const bandId = context.params.id;
+  const session = await getUser();
 
   const band = await prisma.band.findUnique({
     where: {
@@ -35,7 +38,7 @@ const BandPage = async (context: PageProps) => {
       </div>
     )
   }
- 
+
   return (
     <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
       <div className="md:flex md:items-center md:justify-between mb-8">
@@ -104,10 +107,25 @@ const BandPage = async (context: PageProps) => {
             <li className="px-4 py-3 text-gray-500">No users in this band.</li>
           ) : (
             band.users.map((user) => (
-              <li key={user.id} className="px-4 py-3 flex items-center space-x-3">
-                <span className="font-medium text-gray-800">{user.name || 'Unnamed User'}</span>
-                {user.email && (
-                  <span className="text-gray-500 text-sm">({user.email})</span>
+              <li key={user.id} className="px-4 py-3 flex items-center justify-between">
+                <div className="flex items-center space-x-3">
+                  <span className="font-medium text-gray-800">{user.name || 'Unnamed User'}</span>
+                  {user.email && (
+                    <span className="text-gray-500 text-sm">({user.email})</span>
+                  )}
+                  {session?.user?.id === user.id && (
+                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                      You
+                    </span>
+                  )}
+                </div>
+                {session?.user?.id === user.id && (
+                  <RemoveFromBandButton 
+                    bandId={band.id}
+                    bandName={band.name}
+                    userId={user.id}
+                    isLastUser={band.users.length === 1}
+                  />
                 )}
               </li>
             ))

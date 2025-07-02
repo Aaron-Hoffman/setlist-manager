@@ -84,6 +84,21 @@ export const shareBand = async (bandId: number, formData: FormData) => {
     return revalidatePath('/bands')
 }
 
+export const removeUserFromBand = async (bandId: number, userId: string) => {
+    await prisma.band.update({
+        where: {
+            id: bandId,
+        },
+        data: {
+            users: {
+                disconnect: [{ id: userId }]
+            }
+        },
+    })
+
+    return revalidatePath('/bands')
+}
+
 export const addSetList = async (bandId: number, songs: Song[], formData: FormData) => {
     const newSetList = await prisma.setList.create({
         data: {

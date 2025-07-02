@@ -100,6 +100,10 @@ For spotify sign in to work locally add this to .env NEXTAUTH_URL="http://127.0.
 - Add Sharp and flat versions of each key ✅ **COMPLETED**
 - Maybe let user know key is your singing key
 - When sharing band, user should be notified and given a choice.
-- User should have the ability to remove a band.
+- User should have the ability to remove a band. ✅ **COMPLETED**
 - Display how many users a band has and show a list somewhere ✅ **COMPLETED**
 - Fix share band ✅ **COMPLETED**
+- Add testing
+- Multiple Set Support
+- Filter out songs based on tags 
+- Add (Album Version) to edge cases of spotify perfect match
