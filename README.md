@@ -89,7 +89,7 @@ For spotify sign in to work locally add this to .env NEXTAUTH_URL="http://127.0.
 - Maybe dockerize
 - Fix spotify api integration issues (show spotify logo beside songs that have a perfect match) ✅ **COMPLETED**
 - When a song doesn't have a match don't include it in the playlist and warn the user  ✅ **COMPLETED**
-- Allow reordering setlists with drag and drop.
+- Allow reordering setlists with drag and drop. ✅ **COMPLETED**
 - Create printable setlists. ✅ **COMPLETED**
 - Method to send email or google calendar event to bandmates with setlist, playlist and event details. (maybe this requires adding an event type that a setlist could be linked to)
 - User profile section.
@@ -107,3 +107,4 @@ For spotify sign in to work locally add this to .env NEXTAUTH_URL="http://127.0.
 - Multiple Set Support
 - Filter out songs based on tags 
 - Add (Album Version) to edge cases of spotify perfect match
+- Add husky and require successful build to commit or push
