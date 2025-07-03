@@ -33,7 +33,7 @@ model Song {
   artist    String?  @db.VarChar(255)
   band      Band     @relation(fields: [bandId], references: [id])
   bandId    Int
-  setLists  SetList[]
+  setLists  SetListSong[]
   data      Json?
   spotifyPerfectMatch Boolean @default(false)
 }
@@ -43,7 +43,7 @@ model SetList {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   name      String   @db.VarChar(255)
-  songs     Song[]
+  songs     SetListSong[]
   band      Band     @relation(fields: [bandId], references: [id])
   bandId    Int
 }
@@ -117,4 +117,20 @@ model Authenticator {
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@id([userId, credentialID])
+}
+
+model SetListSong {
+  id        Int      @id @default(autoincrement())
+  setList   SetList  @relation(fields: [setListId], references: [id], onDelete: Cascade)
+  setListId Int
+  song      Song     @relation(fields: [songId], references: [id], onDelete: Cascade)
+  songId    Int
+  order     Int      // The position of the song in the setlist
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([setListId, songId])
+  @@index([songId])
+  @@index([setListId, order])
 }
