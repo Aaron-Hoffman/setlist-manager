@@ -124,32 +124,41 @@ export const deleteSetList = async (setListId: number) => {
 }
 
 export const editSetList = async (setList: SetList, song: Song, add: boolean) => {
+    // Find the bandId for revalidation
+    const setListWithBand = await prisma.setList.findUnique({
+        where: { id: Number(setList.id) },
+        select: { bandId: true }
+    });
+    const bandId = setListWithBand?.bandId;
 
-    const setListWithSongs = await prisma.setList.findUnique({
-        where: {
-            id: Number(setList.id),
-        },
-        include: {
-            songs: true
-        }
-    })
-    
-    if (!setListWithSongs) return 
+    if (add) {
+        // Find the current max order for this setlist
+        const maxOrder = await prisma.setListSong.aggregate({
+            where: { setListId: setList.id },
+            _max: { order: true }
+        });
+        const nextOrder = (maxOrder._max.order ?? 0) + 1;
+        await prisma.setListSong.create({
+            data: {
+                setListId: setList.id,
+                songId: song.id,
+                order: nextOrder,
+            },
+        });
+    } else {
+        await prisma.setListSong.deleteMany({
+            where: {
+                setListId: setList.id,
+                songId: song.id,
+            },
+        });
+    }
 
-    const songList = add ? [...setListWithSongs.songs, song] : setListWithSongs.songs.filter(setListItem => setListItem.id !== song.id);
-
-    await prisma.setList.update({
-        where: {
-          id: setList.id,
-        },
-        data: {
-            songs: {
-                set: songList.map(song => ({ id: song.id })),
-            }
-        },
-    })
-
-    return revalidatePath('/')
+    // Revalidate the band setlists page if bandId is available, else fallback
+    if (bandId) {
+        return revalidatePath(`/bands/${bandId}/setlist/${setList.id}`);
+    }
+    return revalidatePath('/');
 }
 
 export const addSong = async (bandId: number, formData: FormData) => {
