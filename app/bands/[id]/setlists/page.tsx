@@ -14,7 +14,7 @@ const BandPage = async (context: PageProps) => {
     include: {
       setLists: {
         include: {
-          songs: true,
+          songs: { include: { song: true }, orderBy: { order: 'asc' } },
           band: true
         }
       }
@@ -73,7 +73,7 @@ const BandPage = async (context: PageProps) => {
         </div>
         <div className="border-t border-gray-200">
           {!isEmpty(band.setLists) ? (
-            <SetListList bandId={bandId} setListList={band.setLists} />
+            <SetListList bandId={bandId} setListList={band.setLists.map(sl => ({...sl, songs: sl.songs.map(s => s.song), band: sl.band}))} />
           ) : (
             <div className="text-center py-12">
               <svg

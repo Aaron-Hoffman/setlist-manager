@@ -40,7 +40,10 @@ const SetlistPage = async (context: PageProps) => {
             id: Number(setId),
         },
         include: {
-            songs: true,
+            songs: {
+                include: { song: true },
+                orderBy: { order: 'asc' }
+            },
             band: true
         }
     })
@@ -66,7 +69,7 @@ const SetlistPage = async (context: PageProps) => {
         where: {
             bandId: Number(bandId),
             id: {
-                notIn: setList.songs.map(song => song.id)
+                notIn: setList.songs.map(s => s.songId)
             }
         }
     })
@@ -96,9 +99,9 @@ const SetlistPage = async (context: PageProps) => {
                     </div>
                 </div>
                 <div className="mt-4 flex md:mt-0 md:ml-4">
-                    <ExportPDFButton setList={setList} />
+                    <ExportPDFButton setList={{...setList, songs: setList.songs.map(s => s.song), band: setList.band}} />
                     <div className="ml-3">
-                        <CreateSpotifyPlaylistModalButton setListId={setId} hasSpotify={hasSpotify} songs={setList.songs} />
+                        <CreateSpotifyPlaylistModalButton setListId={setId} hasSpotify={hasSpotify} songs={setList.songs.map(s => s.song)} />
                     </div>
                     <Link
                         href={`/bands/${bandId}/setlists`}

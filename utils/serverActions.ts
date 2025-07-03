@@ -256,7 +256,7 @@ export async function createSpotifyPlaylistFromSetlist(setListId: number) {
     const setList = await prisma.setList.findUnique({
         where: { id: setListId },
         include: {
-            songs: true,
+            songs: { include: { song: true }, orderBy: { order: 'asc' } },
             band: true
         }
     });
@@ -271,7 +271,8 @@ export async function createSpotifyPlaylistFromSetlist(setListId: number) {
     }
 
     const trackUris: string[] = [];
-    for (const song of setList.songs) {
+    for (const setListSong of setList.songs) {
+        const song = setListSong.song;
         if (!song.spotifyPerfectMatch) continue; // Only include perfect matches
         const spotifyTrack = await searchSpotifyTrack(
             `${song.title} ${song.artist}`,
@@ -299,3 +300,16 @@ export async function createSpotifyPlaylistFromSetlist(setListId: number) {
 
     return playlistUrl;
 }
+
+export const reorderSetListSongs = async (setListId: number, orderedSetListSongIds: number[]) => {
+    // Update the order field for each SetListSong
+    await Promise.all(
+        orderedSetListSongIds.map((id, idx) =>
+            prisma.setListSong.update({
+                where: { id },
+                data: { order: idx + 1 },
+            })
+        )
+    );
+    return revalidatePath(`/bands/${setListId}`);
+};
