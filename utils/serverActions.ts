@@ -99,19 +99,64 @@ export const removeUserFromBand = async (bandId: number, userId: string) => {
     return revalidatePath('/bands')
 }
 
-export const addSetList = async (bandId: number, songs: Song[], formData: FormData) => {
-    const newSetList = await prisma.setList.create({
-        data: {
-            name: formData.get('name') as string,
-            songs: {
-                connect: createSetList(songs, Number(formData.get('number'))),
-            },
-            bandId: Number(bandId)
-        },
-    })
+// Type for new set input
+export type SetInput = {
+  name: string;
+  songIds: number[];
+};
 
-    return redirect(`/bands/${bandId}/setlist/${newSetList.id}`)
-}
+// Updated addSetList to support multiple sets
+export const addSetList = async (
+  bandId: number,
+  sets: SetInput[] | undefined,
+  formData: FormData,
+  allSongs?: Song[] // for backward compatibility if sets not provided
+) => {
+  // If sets not provided, fallback to one set with all songs
+  let setsToCreate: SetInput[];
+  if (!sets || sets.length === 0) {
+    setsToCreate = [
+      {
+        name: 'Set 1',
+        songIds: (allSongs || []).map((s) => s.id),
+      },
+    ];
+  } else {
+    setsToCreate = sets;
+  }
+
+  // Create the SetList
+  const newSetList = await prisma.setList.create({
+    data: {
+      name: formData.get('name') as string,
+      bandId: Number(bandId),
+    },
+  });
+
+  // For each set, create the Set and its SetSongs
+  for (let i = 0; i < setsToCreate.length; i++) {
+    const setInput = setsToCreate[i];
+    const set = await prisma.set.create({
+      data: {
+        setListId: newSetList.id,
+        name: setInput.name,
+        order: i + 1,
+      },
+    });
+    // Create SetSong entries for this set
+    for (let j = 0; j < setInput.songIds.length; j++) {
+      await prisma.setSong.create({
+        data: {
+          setId: set.id,
+          songId: setInput.songIds[j],
+          order: j + 1,
+        },
+      });
+    }
+  }
+
+  return redirect(`/bands/${bandId}/setlist/${newSetList.id}`);
+};
 
 export const deleteSetList = async (setListId: number) => {
     await prisma.setList.delete({
@@ -123,43 +168,48 @@ export const deleteSetList = async (setListId: number) => {
     return revalidatePath('/bands')
 }
 
-export const editSetList = async (setList: SetList, song: Song, add: boolean) => {
-    // Find the bandId for revalidation
-    const setListWithBand = await prisma.setList.findUnique({
-        where: { id: Number(setList.id) },
-        select: { bandId: true }
+// Updated editSetList to work with Set/SetSong
+export const editSetList = async (
+  setId: number,
+  song: Song,
+  add: boolean
+) => {
+  // Find the set and its setListId for revalidation
+  const set = await prisma.set.findUnique({
+    where: { id: setId },
+    select: { setListId: true }
+  });
+  const setListId = set?.setListId;
+
+  if (add) {
+    // Find the current max order for this set
+    const maxOrder = await prisma.setSong.aggregate({
+      where: { setId },
+      _max: { order: true }
     });
-    const bandId = setListWithBand?.bandId;
+    const nextOrder = (maxOrder._max.order ?? 0) + 1;
+    await prisma.setSong.create({
+      data: {
+        setId,
+        songId: song.id,
+        order: nextOrder,
+      },
+    });
+  } else {
+    await prisma.setSong.deleteMany({
+      where: {
+        setId,
+        songId: song.id,
+      },
+    });
+  }
 
-    if (add) {
-        // Find the current max order for this setlist
-        const maxOrder = await prisma.setListSong.aggregate({
-            where: { setListId: setList.id },
-            _max: { order: true }
-        });
-        const nextOrder = (maxOrder._max.order ?? 0) + 1;
-        await prisma.setListSong.create({
-            data: {
-                setListId: setList.id,
-                songId: song.id,
-                order: nextOrder,
-            },
-        });
-    } else {
-        await prisma.setListSong.deleteMany({
-            where: {
-                setListId: setList.id,
-                songId: song.id,
-            },
-        });
-    }
-
-    // Revalidate the band setlists page if bandId is available, else fallback
-    if (bandId) {
-        return revalidatePath(`/bands/${bandId}/setlist/${setList.id}`);
-    }
-    return revalidatePath('/');
-}
+  // Revalidate the setlist page
+  if (setListId) {
+    return revalidatePath(`/bands/set/${setListId}`);
+  }
+  return revalidatePath('/');
+};
 
 export const addSong = async (bandId: number, formData: FormData) => {
     const song = {
@@ -261,64 +311,77 @@ export const editSong = async (songId: number, formData: FormData) => {
     return revalidatePath('/')
 }
 
+// Updated createSpotifyPlaylistFromSetlist to use Sets and SetSongs
 export async function createSpotifyPlaylistFromSetlist(setListId: number) {
-    const setList = await prisma.setList.findUnique({
-        where: { id: setListId },
+  const setList = await prisma.setList.findUnique({
+    where: { id: setListId },
+    include: {
+      sets: {
+        orderBy: { order: 'asc' },
         include: {
-            songs: { include: { song: true }, orderBy: { order: 'asc' } },
-            band: true
-        }
-    });
+          setSongs: {
+            orderBy: { order: 'asc' },
+            include: { song: true },
+          },
+        },
+      },
+      band: true,
+    },
+  }) as any;
 
-    if (!setList) {
-        throw new Error('Setlist not found');
-    }
+  if (!setList) {
+    throw new Error('Setlist not found');
+  }
 
-    const accessToken = await getSpotifyAccessToken();
-    if (!accessToken) {
-        throw new Error('No valid Spotify access token found. Please reconnect your Spotify account by signing out and signing back in with Spotify.');
-    }
+  const accessToken = await getSpotifyAccessToken();
+  if (!accessToken) {
+    throw new Error('No valid Spotify access token found. Please reconnect your Spotify account by signing out and signing back in with Spotify.');
+  }
 
-    const trackUris: string[] = [];
-    for (const setListSong of setList.songs) {
-        const song = setListSong.song;
-        if (!song.spotifyPerfectMatch) continue; // Only include perfect matches
-        const spotifyTrack = await searchSpotifyTrack(
-            `${song.title} ${song.artist}`,
-            accessToken
-        );
-        if (spotifyTrack) {
-            trackUris.push(spotifyTrack.uri);
-        }
-    }
-
-    if (trackUris.length === 0) {
-        throw new Error('No matching tracks found on Spotify');
-    }
-
-    const playlistUrl = await createSpotifyPlaylist(
-        `${setList.name} - ${setList.band.name}`,
-        `Setlist created from Setlist Manager`,
-        trackUris,
+  // Flatten all songs in order across all sets
+  const trackUris: string[] = [];
+  for (const set of setList.sets) {
+    for (const setSong of set.setSongs) {
+      const song = setSong.song;
+      if (!song.spotifyPerfectMatch) continue; // Only include perfect matches
+      const spotifyTrack = await searchSpotifyTrack(
+        `${song.title} ${song.artist}`,
         accessToken
-    );
-
-    if (!playlistUrl) {
-        throw new Error('Failed to create Spotify playlist. Please try again or reconnect your Spotify account.');
+      );
+      if (spotifyTrack) {
+        trackUris.push(spotifyTrack.uri);
+      }
     }
+  }
 
-    return playlistUrl;
+  if (trackUris.length === 0) {
+    throw new Error('No matching tracks found on Spotify');
+  }
+
+  const playlistUrl = await createSpotifyPlaylist(
+    `${setList.name} - ${setList.band.name}`,
+    `Setlist created from Setlist Manager`,
+    trackUris,
+    accessToken
+  );
+
+  if (!playlistUrl) {
+    throw new Error('Failed to create Spotify playlist. Please try again or reconnect your Spotify account.');
+  }
+
+  return playlistUrl;
 }
 
-export const reorderSetListSongs = async (setListId: number, orderedSetListSongIds: number[]) => {
-    // Update the order field for each SetListSong
-    await Promise.all(
-        orderedSetListSongIds.map((id, idx) =>
-            prisma.setListSong.update({
-                where: { id },
-                data: { order: idx + 1 },
-            })
-        )
-    );
-    return revalidatePath(`/bands/${setListId}`);
+// Updated reorderSetListSongs to work with Set/SetSong
+export const reorderSetListSongs = async (setId: number, orderedSetSongIds: number[]) => {
+  // Update the order field for each SetSong in the set
+  await Promise.all(
+    orderedSetSongIds.map((id, idx) =>
+      prisma.setSong.update({
+        where: { id },
+        data: { order: idx + 1 },
+      })
+    )
+  );
+  return revalidatePath(`/bands/set/${setId}`);
 };
