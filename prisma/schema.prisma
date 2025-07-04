@@ -36,6 +36,7 @@ model Song {
   setLists  SetListSong[]
   data      Json?
   spotifyPerfectMatch Boolean @default(false)
+  setSongs  SetSong[]
 }
 
 model SetList {
@@ -46,6 +47,7 @@ model SetList {
   songs     SetListSong[]
   band      Band     @relation(fields: [bandId], references: [id])
   bandId    Int
+  sets      Set[]
 }
 
 model User {
@@ -133,4 +135,33 @@ model SetListSong {
   @@unique([setListId, songId])
   @@index([songId])
   @@index([setListId, order])
+}
+
+model Set {
+  id        Int      @id @default(autoincrement())
+  setList   SetList  @relation(fields: [setListId], references: [id], onDelete: Cascade)
+  setListId Int
+  name      String   @db.VarChar(255)
+  order     Int      // The position of the set within the setlist
+  setSongs  SetSong[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([setListId, order])
+}
+
+model SetSong {
+  id      Int    @id @default(autoincrement())
+  set     Set    @relation(fields: [setId], references: [id], onDelete: Cascade)
+  setId   Int
+  song    Song   @relation(fields: [songId], references: [id], onDelete: Cascade)
+  songId  Int
+  order   Int    // The position of the song within the set
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([setId, songId])
+  @@index([songId])
+  @@index([setId, order])
 }

@@ -12,6 +12,8 @@
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
+Note: For google and spotify auth to work you'll need to create an app for both of those to use.
+
 ## Features
 
 ### PDF Export Functionality
@@ -103,7 +105,7 @@ For spotify sign in to work locally add this to .env NEXTAUTH_URL="http://127.0.
 - User should have the ability to remove a band. ✅ **COMPLETED**
 - Display how many users a band has and show a list somewhere ✅ **COMPLETED**
 - Fix share band ✅ **COMPLETED**
-- Add testing
+- Add testing ** In Progress **
 - Multiple Set Support
 - Filter out songs based on tags 
 - Add (Album Version) to edge cases of spotify perfect match
