@@ -4,6 +4,7 @@ import { Song } from '@prisma/client';
 import { addSetList } from '@/utils/serverActions';
 import Modal from './Modal';
 import { useState, useRef } from 'react';
+import { sampleSize } from 'lodash';
 
 export type AddSetListFormProps = {
     bandId: number,
@@ -13,11 +14,43 @@ export type AddSetListFormProps = {
 const AddSetListForm = ({bandId, songs}: AddSetListFormProps) => {
     const [showModal, setShowModal] = useState(false)
     const formRef = useRef<HTMLFormElement>(null)
+    const [numSets, setNumSets] = useState(1);
+    const [songsPerSet, setSongsPerSet] = useState([1]);
+
+    // Update songsPerSet array when numSets changes
+    const handleNumSetsChange = (n: number) => {
+        setNumSets(n);
+        setSongsPerSet(prev => {
+            const arr = [...prev];
+            if (n > arr.length) {
+                return arr.concat(Array(n - arr.length).fill(1));
+            } else {
+                return arr.slice(0, n);
+            }
+        });
+    };
+
+    // Handle number of songs per set change
+    const handleSongsPerSetChange = (idx: number, value: number) => {
+        setSongsPerSet(prev => prev.map((v, i) => i === idx ? value : v));
+    };
 
     const handleSubmit = (formData: FormData) => {
-        addSetList(bandId, songs, formData)
+        // Randomly select songs for each set, no duplicates across sets
+        let available = [...songs];
+        const sets = songsPerSet.map((num, idx) => {
+            const selected = sampleSize(available, num);
+            available = available.filter(s => !selected.includes(s));
+            return {
+                name: `Set ${idx + 1}`,
+                songIds: selected.map(s => s.id)
+            };
+        });
+        addSetList(bandId, sets, formData)
         setShowModal(false)
         formRef.current?.reset()
+        setNumSets(1);
+        setSongsPerSet([1]);
     }
 
     return (
@@ -44,7 +77,7 @@ const AddSetListForm = ({bandId, songs}: AddSetListFormProps) => {
                             <div className="mt-2">
                                 <form ref={formRef} action={handleSubmit} className="space-y-4">
                                     <div>
-                                        <label htmlFor="name" className="block text-sm font-medium text-gray-700">Name</label>
+                                        <label htmlFor="name" className="block text-sm font-medium text-gray-700">Set List Name</label>
                                         <input
                                             type="text"
                                             name="name"
@@ -55,17 +88,31 @@ const AddSetListForm = ({bandId, songs}: AddSetListFormProps) => {
                                         />
                                     </div>
                                     <div>
-                                        <label htmlFor="number" className="block text-sm font-medium text-gray-700">Number of Songs</label>
+                                        <label htmlFor="numSets" className="block text-sm font-medium text-gray-700">Number of Sets</label>
                                         <input
                                             type="number"
-                                            name="number"
-                                            id="number"
-                                            required
-                                            min="1"
+                                            name="numSets"
+                                            id="numSets"
+                                            min={1}
                                             max={songs.length}
+                                            value={numSets}
+                                            onChange={e => handleNumSetsChange(Number(e.target.value))}
                                             className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                                         />
                                     </div>
+                                    {Array.from({ length: numSets }).map((_, idx) => (
+                                        <div key={idx}>
+                                            <label className="block text-sm font-medium text-gray-700">Number of Songs in Set {idx + 1}</label>
+                                            <input
+                                                type="number"
+                                                min={1}
+                                                max={songs.length - songsPerSet.slice(0, idx).reduce((a, b) => a + b, 0)}
+                                                value={songsPerSet[idx]}
+                                                onChange={e => handleSongsPerSetChange(idx, Number(e.target.value))}
+                                                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                                            />
+                                        </div>
+                                    ))}
                                     <div className="mt-5 sm:mt-4 sm:flex sm:flex-row-reverse">
                                         <button
                                             type="submit"

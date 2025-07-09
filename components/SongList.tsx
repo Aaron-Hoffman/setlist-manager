@@ -22,10 +22,10 @@ export type SetListSongWithSong = {
 export type SongListProps = {
     songList: Song[] | SetListSongWithSong[],
     add?: boolean,
-    setList?: SetList
+    setId?: number
 }
 
-const SongList = ({songList, add, setList}: SongListProps) => {
+const SongList = ({songList, add, setId}: SongListProps) => {
     const [isPending, startTransition] = useTransition();
     
     // Convert Song[] to SetListSongWithSong[] format if needed
@@ -40,14 +40,14 @@ const SongList = ({songList, add, setList}: SongListProps) => {
         // Convert Song[] to SetListSongWithSong[] format
         return (songList as Song[]).map((song, index) => ({
             id: song.id, // Use song.id as the join ID for repertoire
-            setListId: setList?.id || 0,
+            setListId: setId || 0,
             songId: song.id,
             order: index + 1,
             createdAt: song.createdAt,
             updatedAt: song.updatedAt,
             song: song
         }));
-    }, [songList, setList]);
+    }, [songList, setId]);
 
     const [localSongs, setLocalSongs] = React.useState(normalizedSongs);
 
@@ -61,10 +61,10 @@ const SongList = ({songList, add, setList}: SongListProps) => {
         const [removed] = reordered.splice(result.source.index, 1);
         reordered.splice(result.destination.index, 0, removed);
         setLocalSongs(reordered);
-        // Persist new order if setList is present and this is a setlist (not repertoire)
-        if (setList && !add) {
+        // Persist new order if setId is present and this is a set (not repertoire)
+        if (setId && !add) {
             startTransition(() => {
-                reorderSetListSongs(setList.id, reordered.map(s => s.id));
+                reorderSetListSongs(setId, reordered.map(s => s.id));
             });
         }
     };
@@ -92,7 +92,7 @@ const SongList = ({songList, add, setList}: SongListProps) => {
     }
 
     // Only enable drag-and-drop for set lists (not repertoire)
-    if (setList && !add) {
+    if (setId && !add) {
         return (
             <DragDropContext onDragEnd={onDragEnd}>
                 <Droppable droppableId="setlist-songs">
@@ -140,8 +140,7 @@ const SongList = ({songList, add, setList}: SongListProps) => {
                                                     <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                                                         <div className="flex items-center justify-end space-x-2">
                                                             <EditSongForm song={setListSong.song} />
-                                                            {!setList && <DeleteSongButton id={setListSong.song.id} />}
-                                                            {setList && <EditSetListButton song={setListSong.song} add={add || false} setList={setList} />}
+                                                            <EditSetListButton song={setListSong.song} add={add || false} setId={setId} />
                                                         </div>
                                                     </td>
                                                 </tr>
@@ -201,8 +200,8 @@ const SongList = ({songList, add, setList}: SongListProps) => {
                             <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                                 <div className="flex items-center justify-end space-x-2">
                                     <EditSongForm song={setListSong.song} />
-                                    {!setList && <DeleteSongButton id={setListSong.song.id} />}
-                                    {setList && <EditSetListButton song={setListSong.song} add={add || false} setList={setList} />}
+                                    {!setId && <DeleteSongButton id={setListSong.song.id} />}
+                                    {setId && <EditSetListButton song={setListSong.song} add={add || false} setId={setId} />}
                                 </div>
                             </td>
                         </tr>
