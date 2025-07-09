@@ -6,13 +6,13 @@ import { editSetList } from "@/utils/serverActions"
 interface EditSetListButtonProps {
     song: Song;
     add: boolean;
-    setList: SetList;
+    setId: number;
 }
 
-const EditSetListButton = ({ song, add, setList }: EditSetListButtonProps) => {
+const EditSetListButton = ({ song, add, setId }: EditSetListButtonProps) => {
     return (
         <button
-            onClick={() => editSetList(setList, song, add)}
+            onClick={() => editSetList(setId, song, add)}
             className={`inline-flex items-center px-3 py-1.5 border text-sm font-medium rounded-md transition-colors duration-200 ${
                 add 
                     ? 'border-green-300 text-green-700 bg-green-50 hover:bg-green-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500' 
