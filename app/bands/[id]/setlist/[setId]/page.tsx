@@ -1,14 +1,13 @@
 import SongList from "@/components/SongList";
 import prisma from "@/utils/db";
-import { GetServerSidePropsContext } from "next";
 import Link from "next/link";
-import { editSetList, createSpotifyPlaylistFromSetlist } from "@/utils/serverActions";
+import { editSetList } from "@/utils/serverActions";
 import { Song } from "@prisma/client";
 import CreateSpotifyPlaylistModalButton from '@/components/CreateSpotifyPlaylistModalButton';
 import ExportPDFButton from '@/components/ExportPDFButton';
 import getUser from "@/utils/getUser";
 import AddSongToSetDropdown from "@/components/AddSongToSetDropdown";
-import { useState } from "react";
+
 
 const SetlistPage = async (context: any) => {
     const bandId = context.params.id;
@@ -85,8 +84,8 @@ const SetlistPage = async (context: any) => {
     const accessToken = session?.accessToken;
     const hasSpotify = !!accessToken;
 
-    const updateSetList = async (song: Song, add: boolean) => {
-        return editSetList(setList, song, add)
+    const updateSetList = async (song: Song, add: boolean, setIdOverride?: number) => {
+        return editSetList(setIdOverride ?? setId, song, add)
     }
 
     return (
