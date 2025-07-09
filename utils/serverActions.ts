@@ -181,6 +181,16 @@ export const editSetList = async (
   });
   const setListId = set?.setListId;
 
+  // Fetch the bandId for the setList
+  let bandId: number | undefined = undefined;
+  if (setListId) {
+    const setList = await prisma.setList.findUnique({
+      where: { id: setListId },
+      select: { bandId: true }
+    });
+    bandId = setList?.bandId;
+  }
+
   if (add) {
     // Find the current max order for this set
     const maxOrder = await prisma.setSong.aggregate({
@@ -205,8 +215,8 @@ export const editSetList = async (
   }
 
   // Revalidate the setlist page
-  if (setListId) {
-    return revalidatePath(`/bands/set/${setListId}`);
+  if (setListId && bandId) {
+    return revalidatePath(`/bands/${bandId}/setlist/${setListId}`);
   }
   return revalidatePath('/');
 };

@@ -1,14 +1,16 @@
 import SongList from "@/components/SongList";
 import prisma from "@/utils/db";
-import { PageProps } from "@/.next/types/app/page";
+import { GetServerSidePropsContext } from "next";
 import Link from "next/link";
 import { editSetList, createSpotifyPlaylistFromSetlist } from "@/utils/serverActions";
 import { Song } from "@prisma/client";
 import CreateSpotifyPlaylistModalButton from '@/components/CreateSpotifyPlaylistModalButton';
 import ExportPDFButton from '@/components/ExportPDFButton';
 import getUser from "@/utils/getUser";
+import AddSongToSetDropdown from "@/components/AddSongToSetDropdown";
+import { useState } from "react";
 
-const SetlistPage = async (context: PageProps) => {
+const SetlistPage = async (context: any) => {
     const bandId = context.params.id;
     const setId = context.params.setId;
 
@@ -137,7 +139,11 @@ const SetlistPage = async (context: PageProps) => {
                     <div className="border-t border-gray-200">
                         {setList.sets.map(set => (
                             <div key={set.id} className="mb-8">
-                                <h4 className="text-md font-semibold text-gray-700 mb-4 mt-6 ml-4">{set.name}</h4>
+                                <div className="flex items-center">
+                                  <h4 className="text-md font-semibold text-gray-700 mb-4 mt-6 ml-4">{set.name}</h4>
+                                  {/* Add button for adding repertoire songs to this set */}
+                                  <AddSongToSetDropdown setId={set.id} repertoire={songs} />
+                                </div>
                                 <SongList songList={set.setSongs.map(s => ({
                                     id: s.id,
                                     setListId: setList.id,
