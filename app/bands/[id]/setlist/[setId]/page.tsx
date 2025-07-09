@@ -40,9 +40,14 @@ const SetlistPage = async (context: PageProps) => {
             id: Number(setId),
         },
         include: {
-            songs: {
-                include: { song: true },
-                orderBy: { order: 'asc' }
+            sets: {
+                orderBy: { order: 'asc' },
+                include: {
+                    setSongs: {
+                        orderBy: { order: 'asc' },
+                        include: { song: true },
+                    },
+                },
             },
             band: true
         }
@@ -69,7 +74,7 @@ const SetlistPage = async (context: PageProps) => {
         where: {
             bandId: Number(bandId),
             id: {
-                notIn: setList.songs.map(s => s.songId)
+                notIn: setList.sets.flatMap(set => set.setSongs.map(s => s.songId))
             }
         }
     })
@@ -99,9 +104,9 @@ const SetlistPage = async (context: PageProps) => {
                     </div>
                 </div>
                 <div className="mt-4 flex md:mt-0 md:ml-4">
-                    <ExportPDFButton setList={{...setList, songs: setList.songs.map(s => s.song), band: setList.band}} />
+                    <ExportPDFButton setList={{...setList, songs: setList.sets.flatMap(set => set.setSongs.map(s => s.song)), band: setList.band}} />
                     <div className="ml-3">
-                        <CreateSpotifyPlaylistModalButton setListId={setId} hasSpotify={hasSpotify} songs={setList.songs.map(s => s.song)} />
+                        <CreateSpotifyPlaylistModalButton setListId={String(setId)} hasSpotify={hasSpotify} songs={setList.sets.flatMap(set => set.setSongs.map(s => s.song))} />
                     </div>
                     <Link
                         href={`/bands/${bandId}/setlists`}
@@ -121,7 +126,7 @@ const SetlistPage = async (context: PageProps) => {
                         <h3 className="text-lg leading-6 font-medium text-gray-900">Repertoire</h3>
                     </div>
                     <div className="border-t border-gray-200">
-                        <SongList songList={songs} add={true} setList={setList}/>
+                        <SongList songList={songs} add={true} />
                     </div>
                 </div>
 
@@ -130,7 +135,20 @@ const SetlistPage = async (context: PageProps) => {
                         <h3 className="text-lg leading-6 font-medium text-gray-900">Set List</h3>
                     </div>
                     <div className="border-t border-gray-200">
-                        <SongList songList={setList.songs} add={false} setList={setList}/>
+                        {setList.sets.map(set => (
+                            <div key={set.id} className="mb-8">
+                                <h4 className="text-md font-semibold text-gray-700 mb-4 mt-6 ml-4">{set.name}</h4>
+                                <SongList songList={set.setSongs.map(s => ({
+                                    id: s.id,
+                                    setListId: setList.id,
+                                    songId: s.songId,
+                                    order: s.order,
+                                    createdAt: s.createdAt,
+                                    updatedAt: s.updatedAt,
+                                    song: s.song
+                                }))} add={false} setId={set.id} />
+                            </div>
+                        ))}
                     </div>
                 </div>
             </div>
