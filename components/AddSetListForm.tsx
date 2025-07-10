@@ -53,6 +53,26 @@ const AddSetListForm = ({bandId, songs}: AddSetListFormProps) => {
         setSongsPerSet([1]);
     }
 
+    // If no songs, show disabled button with message
+    if (songs.length === 0) {
+        return (
+            <div className="text-center">
+                <button
+                    disabled
+                    className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-gray-400 bg-gray-300 cursor-not-allowed"
+                >
+                    <svg className="-ml-1 mr-2 h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4" />
+                    </svg>
+                    Create Set List
+                </button>
+                <p className="mt-2 text-sm text-gray-500">
+                    Add songs to your band before creating a set list
+                </p>
+            </div>
+        )
+    }
+
     return (
         <>
             <button

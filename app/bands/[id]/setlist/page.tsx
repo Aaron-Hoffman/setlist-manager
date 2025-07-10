@@ -60,7 +60,38 @@ const SetlistPage = async (context: PageProps) => {
                         <h3 className="text-lg leading-6 font-medium text-gray-900">Repertoire</h3>
                     </div>
                     <div className="border-t border-gray-200">
-                        <SongList songList={songs}/>
+                        {songs.length === 0 ? (
+                            <div className="text-center py-12">
+                                <svg
+                                    className="mx-auto h-12 w-12 text-gray-400"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    viewBox="0 0 24 24"
+                                >
+                                    <path
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        strokeWidth="2"
+                                        d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3"
+                                    />
+                                </svg>
+                                <h3 className="mt-2 text-sm font-medium text-gray-900">No songs yet</h3>
+                                <p className="mt-1 text-sm text-gray-500">Add songs to your band to start creating set lists.</p>
+                                <div className="mt-6">
+                                    <Link
+                                        href={`/bands/${bandId}`}
+                                        className="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                                    >
+                                        <svg className="-ml-1 mr-2 h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4" />
+                                        </svg>
+                                        Add Songs
+                                    </Link>
+                                </div>
+                            </div>
+                        ) : (
+                            <SongList songList={songs}/>
+                        )}
                     </div>
                 </div>
 

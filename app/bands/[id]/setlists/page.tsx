@@ -17,7 +17,8 @@ const BandPage = async (context: PageProps) => {
           songs: { include: { song: true }, orderBy: { order: 'asc' } },
           band: true
         }
-      }
+      },
+      songs: true
     }
   })
   
@@ -55,15 +56,33 @@ const BandPage = async (context: PageProps) => {
           </div>
         </div>
         <div className="mt-4 flex md:mt-0 md:ml-4">
-          <Link
-            href={`/bands/${bandId}/setlist`}
-            className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-          >
-            <svg className="-ml-1 mr-2 h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4" />
-            </svg>
-            New Set List
-          </Link>
+          {band.songs.length === 0 ? (
+            <div className="relative group">
+              <button
+                disabled
+                className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-gray-400 bg-gray-300 cursor-not-allowed"
+              >
+                <svg className="-ml-1 mr-2 h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4" />
+                </svg>
+                New Set List
+              </button>
+              <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-gray-900 text-white text-sm rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap">
+                Add songs to your band first
+                <div className="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-gray-900"></div>
+              </div>
+            </div>
+          ) : (
+            <Link
+              href={`/bands/${bandId}/setlist`}
+              className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+            >
+              <svg className="-ml-1 mr-2 h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4" />
+              </svg>
+              New Set List
+            </Link>
+          )}
         </div>
       </div>
 
@@ -90,18 +109,37 @@ const BandPage = async (context: PageProps) => {
                 />
               </svg>
               <h3 className="mt-2 text-sm font-medium text-gray-900">No set lists</h3>
-              <p className="mt-1 text-sm text-gray-500">Get started by creating a new set list.</p>
-              <div className="mt-6">
-                <Link
-                  href={`/bands/${bandId}/setlist`}
-                  className="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                >
-                  <svg className="-ml-1 mr-2 h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4" />
-                  </svg>
-                  New Set List
-                </Link>
-              </div>
+              {band.songs.length === 0 ? (
+                <>
+                  <p className="mt-1 text-sm text-gray-500">Add songs to your band before creating set lists.</p>
+                  <div className="mt-6">
+                    <Link
+                      href={`/bands/${bandId}`}
+                      className="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                    >
+                      <svg className="-ml-1 mr-2 h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4" />
+                      </svg>
+                      Add Songs
+                    </Link>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <p className="mt-1 text-sm text-gray-500">Get started by creating a new set list.</p>
+                  <div className="mt-6">
+                    <Link
+                      href={`/bands/${bandId}/setlist`}
+                      className="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                    >
+                      <svg className="-ml-1 mr-2 h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4" />
+                      </svg>
+                      New Set List
+                    </Link>
+                  </div>
+                </>
+              )}
             </div>
           )}
         </div>

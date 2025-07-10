@@ -105,8 +105,8 @@ For spotify sign in to work locally add this to .env NEXTAUTH_URL="http://127.0.
 - User should have the ability to remove a band. ✅ **COMPLETED**
 - Display how many users a band has and show a list somewhere ✅ **COMPLETED**
 - Fix share band ✅ **COMPLETED**
-- Add testing ** In Progress **
-- Multiple Set Support
+- Add testing
+- Multiple Set Support ✅ **COMPLETED**
 - Filter out songs based on tags 
 - Add (Album Version) to edge cases of spotify perfect match
 - Add husky and require successful build to commit or push
