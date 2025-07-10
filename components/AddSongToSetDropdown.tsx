@@ -27,9 +27,9 @@ const AddSongToSetDropdown = ({ setId, repertoire }: AddSongToSetDropdownProps) 
   if (repertoire.length === 0) return null;
 
   return (
-    <div className="flex items-center space-x-2 ml-4">
+    <div className="flex flex-wrap items-center gap-2 ml-4 mr-4 w-full sm:w-auto">
       <select
-        className="border rounded px-2 py-1 text-sm"
+        className="border rounded px-2 py-1 text-sm w-full sm:w-auto"
         value={selectedSongId ?? ''}
         onChange={e => setSelectedSongId(Number(e.target.value))}
         disabled={isPending}
@@ -40,7 +40,7 @@ const AddSongToSetDropdown = ({ setId, repertoire }: AddSongToSetDropdownProps) 
         ))}
       </select>
       <button
-        className="px-2 py-1 bg-green-600 text-white rounded text-sm disabled:opacity-50"
+        className="px-2 py-1 bg-green-600 text-white rounded text-sm disabled:opacity-50 w-full sm:w-auto"
         onClick={handleAdd}
         disabled={!selectedSongId || isPending}
       >
