@@ -125,7 +125,7 @@ const BandPage = async (context: PageProps) => {
             <li className="px-4 py-3 text-gray-500">No users in this band.</li>
           ) : (
             band.users.map((user) => (
-              <li key={user.id} className="px-4 py-3 flex items-center justify-between">
+              <li key={user.id} className="px-4 py-3 flex flex-wrap items-center justify-between gap-y-2">
                 <div className="flex items-center space-x-3">
                   <span className="font-medium text-gray-800">{user.name || 'Unnamed User'}</span>
                   {user.email && (
@@ -138,12 +138,14 @@ const BandPage = async (context: PageProps) => {
                   )}
                 </div>
                 {session?.user?.id === user.id && (
-                  <RemoveFromBandButton 
-                    bandId={band.id}
-                    bandName={band.name}
-                    userId={user.id}
-                    isLastUser={band.users.length === 1}
-                  />
+                  <div className="w-full sm:w-auto mt-2 sm:mt-0">
+                    <RemoveFromBandButton 
+                      bandId={band.id}
+                      bandName={band.name}
+                      userId={user.id}
+                      isLastUser={band.users.length === 1}
+                    />
+                  </div>
                 )}
               </li>
             ))
