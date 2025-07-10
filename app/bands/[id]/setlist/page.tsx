@@ -55,7 +55,7 @@ const SetlistPage = async (context: PageProps) => {
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                <div className="bg-white shadow rounded-lg">
+                <div className="bg-white shadow rounded-lg order-2 lg:order-1">
                     <div className="px-4 py-5 sm:px-6">
                         <h3 className="text-lg leading-6 font-medium text-gray-900">Repertoire</h3>
                     </div>
@@ -95,7 +95,7 @@ const SetlistPage = async (context: PageProps) => {
                     </div>
                 </div>
 
-                <div className="bg-white shadow rounded-lg">
+                <div className="bg-white shadow rounded-lg order-1 lg:order-2">
                     <div className="px-4 py-5 sm:px-6">
                         <h3 className="text-lg leading-6 font-medium text-gray-900">Create New Set List</h3>
                     </div>
