@@ -8,6 +8,9 @@
   --background-end-rgb: 255, 255, 255;
 }
 
+/* Force light mode: Remove dark mode overrides */
+/* Remove or comment out the prefers-color-scheme: dark media query */
+/*
 @media (prefers-color-scheme: dark) {
   :root {
     --foreground-rgb: 255, 255, 255;
@@ -15,6 +18,7 @@
     --background-end-rgb: 0, 0, 0;
   }
 }
+*/
 
 body {
   color: rgb(var(--foreground-rgb));
@@ -24,6 +28,8 @@ body {
       rgb(var(--background-end-rgb))
     )
     rgb(var(--background-start-rgb));
+  /* Force light mode for supported browsers */
+  color-scheme: light;
 }
 
 @layer utilities {
