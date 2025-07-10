@@ -17,14 +17,10 @@ export default function CreateSpotifyPlaylistModalButton({ setListId, hasSpotify
 
   if (!hasSpotify) {
     return (
-      <div className="bg-yellow-50 border-l-4 border-yellow-400 p-4 rounded mb-4 text-yellow-800">
-        <p className="font-medium">To create a Spotify playlist, please sign in with Spotify.</p>
-        <button
-          onClick={() => signIn('spotify')}
-          className="mt-2 px-3 py-1 bg-[#1DB954] hover:bg-[#1ed760] text-white rounded font-semibold text-sm shadow"
-        >
-          Connect Spotify
-        </button>
+      <div className="bg-yellow-50 border-l-4 border-yellow-400 flex items-center p-0 md:py-0 py-2 rounded mb-0 h-full min-h-[42px]">
+        <div className="flex items-center px-4 w-full">
+          <span className="font-medium text-sm text-yellow-800">To create a Spotify playlist, please sign in with Spotify.</span>
+        </div>
       </div>
     );
   }
