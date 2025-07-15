@@ -18,6 +18,7 @@
     "@supabase/supabase-js": "^2.45.4",
     "@types/bcryptjs": "^2.4.6",
     "bcryptjs": "^3.0.2",
+    "formidable": "^3.5.4",
     "jspdf": "^3.0.1",
     "lodash": "^4.17.21",
     "next": "14.2.7",
