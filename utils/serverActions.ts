@@ -227,6 +227,7 @@ export const addSong = async (bandId: number, formData: FormData) => {
         title: formData.get('title') as string,
         artist: formData.get('artist') as string,
         key: formData.get('key') as string,
+        chart: formData.get('chart') as string | undefined,
         bandId: Number(bandId)
     }
 
@@ -281,6 +282,7 @@ export const editSong = async (songId: number, formData: FormData) => {
         title: formData.get('title') as string,
         artist: formData.get('artist') as string,
         key: formData.get('key') as string,
+        chart: formData.get('chart') as string | undefined,
     }
 
     let spotifyPerfectMatch = false;

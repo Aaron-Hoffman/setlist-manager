@@ -7,12 +7,26 @@ import { ChangeEvent, useState } from 'react';
 import ShowModalButton from './ShowModalButton';
 import { Song } from "@prisma/client";
 
+async function uploadChartFile(file: File): Promise<string | null> {
+    const formData = new FormData();
+    formData.append('file', file);
+    const res = await fetch('/api/upload', {
+        method: 'POST',
+        body: formData,
+    });
+    if (!res.ok) return null;
+    const data = await res.json();
+    return data.filePath || null;
+}
+
 export type EditSongFormProps = {
     song: Song,
 }
 
 const EditSongForm = ({song}: EditSongFormProps) => {
     const [show, setShow] = useState(false);
+    const [chartFile, setChartFile] = useState<File | null>(null);
+    const [uploading, setUploading] = useState(false);
 
     return (
         <>
@@ -29,7 +43,19 @@ const EditSongForm = ({song}: EditSongFormProps) => {
                 <div className="p-6 bg-white rounded-lg shadow-xl max-w-md w-full mx-4">
                     <h3 className="text-lg font-medium text-gray-900 mb-4">Edit Song</h3>
                     <form action={async (formData: FormData) => {
+                        setUploading(true);
+                        let chartPath = song.chart || '';
+                        if (chartFile) {
+                            chartPath = (await uploadChartFile(chartFile)) || song.chart || '';
+                        }
+                        if (chartPath) {
+                            formData.set('chart', chartPath);
+                        } else {
+                            formData.delete('chart');
+                        }
                         await editSong(song.id, formData);
+                        setChartFile(null);
+                        setUploading(false);
                         setShow(false);
                     }}>
                         <div className="space-y-4">
@@ -73,19 +99,39 @@ const EditSongForm = ({song}: EditSongFormProps) => {
                                     {KEYS.map(key => <option value={key.label} key={key.value}>{key.label}</option>)}
                                 </select>
                             </div>
+                            <div>
+                                <label htmlFor="chart" className="block text-sm font-medium text-gray-700">
+                                    Chart (PDF, image, or text file)
+                                </label>
+                                <input
+                                    type="file"
+                                    name="chart"
+                                    id="chart"
+                                    accept=".pdf,image/*,text/*"
+                                    className="mt-1 block w-full text-sm text-gray-700"
+                                    onChange={e => setChartFile(e.target.files?.[0] || null)}
+                                />
+                                {song.chart && !chartFile && (
+                                    <div className="mt-2 text-xs text-gray-500">
+                                        Current: <a href={song.chart} target="_blank" rel="noopener noreferrer" className="underline">View Chart</a>
+                                    </div>
+                                )}
+                            </div>
                             <div className="flex justify-end space-x-3">
                                 <button
                                     type="button"
                                     onClick={() => setShow(false)}
                                     className="inline-flex justify-center px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                                    disabled={uploading}
                                 >
                                     Cancel
                                 </button>
                                 <button
                                     type="submit"
                                     className="inline-flex justify-center px-4 py-2 text-sm font-medium text-white bg-indigo-600 border border-transparent rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                                    disabled={uploading}
                                 >
-                                    Save Changes
+                                    {uploading ? 'Uploading...' : 'Save Changes'}
                                 </button>
                             </div>
                         </div>
