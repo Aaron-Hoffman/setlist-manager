@@ -130,6 +130,13 @@ const SongList = ({songList, add, setId}: SongListProps) => {
                                                             {setListSong.song.key}
                                                         </span>
                                                     </div>
+                                                    {setListSong.song.chart && (
+                                                        <div className="mt-2">
+                                                            <a href={setListSong.song.chart} target="_blank" rel="noopener noreferrer" className="text-indigo-600 underline text-xs">
+                                                                View Chart
+                                                            </a>
+                                                        </div>
+                                                    )}
                                                 </div>
                                                 <div className="flex items-center justify-end space-x-2 flex-shrink-0">
                                                     <EditSongForm song={setListSong.song} />
@@ -176,6 +183,13 @@ const SongList = ({songList, add, setId}: SongListProps) => {
                                     {setListSong.song.key}
                                 </span>
                             </div>
+                            {setListSong.song.chart && (
+                                <div className="mt-2">
+                                    <a href={setListSong.song.chart} target="_blank" rel="noopener noreferrer" className="text-indigo-600 underline text-xs">
+                                        View Chart
+                                    </a>
+                                </div>
+                            )}
                         </div>
                         <div className="flex items-center justify-end space-x-2 flex-shrink-0">
                             <EditSongForm song={setListSong.song} />
