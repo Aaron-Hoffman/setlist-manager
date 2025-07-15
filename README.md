@@ -87,15 +87,16 @@ Make sure the environment variables on vercel match what is suggested there.
 For spotify sign in to work locally add this to .env NEXTAUTH_URL="http://127.0.0.1:3000" since localhost is not useable as a callback url for spotify auth.
 
 ## TODO:
-- Create docs properly to allow someone to easily run the project locally and help me troubleshoot in the future. 
-- Maybe dockerize
+- Create docs properly to allow someone to easily run the project locally and help me troubleshoot in the future.  (ticket created)
+- Maybe dockerize (ticket created)
 - Fix spotify api integration issues (show spotify logo beside songs that have a perfect match) ✅ **COMPLETED**
 - When a song doesn't have a match don't include it in the playlist and warn the user  ✅ **COMPLETED**
 - Allow reordering setlists with drag and drop. ✅ **COMPLETED**
 - Create printable setlists. ✅ **COMPLETED**
-- Method to send email or google calendar event to bandmates with setlist, playlist and event details. (maybe this requires adding an event type that a setlist could be linked to)
-- User profile section.
-- Allow linking spotify after signing up with google.
+- Method to send email or google calendar event to bandmates with setlist, playlist and event details. (ticket created)
+- Add time, location, details, maybe other properties to setlist to hold event details (ticket created)
+- User profile section. (ticket created)
+- Allow linking spotify after signing up with google. (ticket created)
 - Refactor to avoid code duplication.
 - Maybe allow a user to have a roster of musicians with contact info that could easily be added to an event from a list. 
 - Be able to edit songs from setlist view ✅ **COMPLETED**
@@ -107,6 +108,9 @@ For spotify sign in to work locally add this to .env NEXTAUTH_URL="http://127.0.
 - Fix share band ✅ **COMPLETED**
 - Add testing
 - Multiple Set Support ✅ **COMPLETED**
-- Filter out songs based on tags 
-- Add (Album Version) to edge cases of spotify perfect match
+- Filter out songs based on tags (ticket created)
+- Add (Album Version) to edge cases of spotify perfect match  ✅ **COMPLETED**
 - Add husky and require successful build to commit or push
+- Add PDF customization options (ticket created)
+- Add new properties to songs (tags, chart) (ticket created)
+- Add ability to add notes to a set song (solo order, start ending reminders, transitions) 
