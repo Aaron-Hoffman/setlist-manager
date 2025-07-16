@@ -121,6 +121,39 @@ const SetlistPage = async (context: any) => {
                 </div>
             </div>
 
+            {/* Event Details Section */}
+            <div className="mb-8 bg-white shadow rounded-lg p-6 border border-gray-200">
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">Event Details</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <span className="font-medium text-gray-700">Start Time:</span>{' '}
+                        {setList.time ? new Date(setList.time).toLocaleString() : <span className="text-gray-400">—</span>}
+                    </div>
+                    <div>
+                        <span className="font-medium text-gray-700">End Time:</span>{' '}
+                        {setList.endTime ? new Date(setList.endTime).toLocaleString() : <span className="text-gray-400">—</span>}
+                    </div>
+                    <div>
+                        <span className="font-medium text-gray-700">Location:</span>{' '}
+                        {setList.location || <span className="text-gray-400">—</span>}
+                    </div>
+                    <div>
+                        <span className="font-medium text-gray-700">Details:</span>{' '}
+                        {setList.details || <span className="text-gray-400">—</span>}
+                    </div>
+                    <div className="md:col-span-2">
+                        <span className="font-medium text-gray-700">Personnel:</span>{' '}
+                        {Array.isArray(setList.personel) ? (
+                            <ul className="list-disc ml-6 mt-1">
+                                {setList.personel.map((p: any, i: number) => <li key={i}>{p}</li>)}
+                            </ul>
+                        ) : setList.personel ? (
+                            <pre className="bg-gray-100 rounded p-2 mt-1 text-xs text-gray-700">{JSON.stringify(setList.personel, null, 2)}</pre>
+                        ) : <span className="text-gray-400">—</span>}
+                    </div>
+                </div>
+            </div>
+
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                 <div className="bg-white shadow rounded-lg order-2 lg:order-1">
                     <div className="px-4 py-5 sm:px-6">
