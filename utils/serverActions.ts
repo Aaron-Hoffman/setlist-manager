@@ -131,6 +131,21 @@ export const addSetList = async (
     data: {
       name: formData.get('name') as string,
       bandId: Number(bandId),
+      // New fields
+      time: formData.get('time') ? new Date(formData.get('time') as string) : undefined,
+      location: formData.get('location') as string || undefined,
+      details: formData.get('details') as string || undefined,
+      personel: (() => {
+        const val = formData.get('personel');
+        if (typeof val === 'string' && val.trim()) {
+          try {
+            return JSON.parse(val);
+          } catch {
+            return undefined;
+          }
+        }
+        return undefined;
+      })(),
     },
   });
 

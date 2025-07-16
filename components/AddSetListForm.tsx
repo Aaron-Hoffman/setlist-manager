@@ -16,6 +16,9 @@ const AddSetListForm = ({bandId, songs}: AddSetListFormProps) => {
     const formRef = useRef<HTMLFormElement>(null)
     const [numSets, setNumSets] = useState(1);
     const [songsPerSet, setSongsPerSet] = useState([1]);
+    // New state for personnel emails
+    const [personelEmail, setPersonelEmail] = useState("");
+    const [personelList, setPersonelList] = useState<string[]>([]);
 
     // Update songsPerSet array when numSets changes
     const handleNumSetsChange = (n: number) => {
@@ -36,6 +39,8 @@ const AddSetListForm = ({bandId, songs}: AddSetListFormProps) => {
     };
 
     const handleSubmit = (formData: FormData) => {
+        // Add personnel emails as JSON string
+        formData.set('personel', JSON.stringify(personelList));
         // Randomly select songs for each set, no duplicates across sets
         let available = [...songs];
         const sets = songsPerSet.map((num, idx) => {
@@ -133,6 +138,85 @@ const AddSetListForm = ({bandId, songs}: AddSetListFormProps) => {
                                             />
                                         </div>
                                     ))}
+                                    {/* Event Details Section */}
+                                    <div className="mt-8 pt-6 border-t border-gray-200">
+                                        <h4 className="text-md font-semibold text-gray-700 mb-4">Event Details</h4>
+                                        <div className="space-y-4">
+                                            <div>
+                                                <label htmlFor="time" className="block text-sm font-medium text-gray-700">Time</label>
+                                                <input
+                                                    type="datetime-local"
+                                                    name="time"
+                                                    id="time"
+                                                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                                                />
+                                            </div>
+                                            <div>
+                                                <label htmlFor="location" className="block text-sm font-medium text-gray-700">Location</label>
+                                                <input
+                                                    type="text"
+                                                    name="location"
+                                                    id="location"
+                                                    placeholder="Venue, city, etc."
+                                                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                                                />
+                                            </div>
+                                            <div>
+                                                <label htmlFor="details" className="block text-sm font-medium text-gray-700">Details</label>
+                                                <textarea
+                                                    name="details"
+                                                    id="details"
+                                                    placeholder="Any extra details about this set list..."
+                                                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                                                    rows={3}
+                                                />
+                                            </div>
+                                            {/* Personnel email input */}
+                                            <div>
+                                                <label className="block text-sm font-medium text-gray-700">Band Member Emails</label>
+                                                <div className="flex gap-2 mt-1">
+                                                    <input
+                                                        type="email"
+                                                        value={personelEmail}
+                                                        onChange={e => setPersonelEmail(e.target.value)}
+                                                        placeholder="Enter email and press Add"
+                                                        className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                                                    />
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => {
+                                                            if (personelEmail && !personelList.includes(personelEmail)) {
+                                                                setPersonelList([...personelList, personelEmail]);
+                                                                setPersonelEmail("");
+                                                            }
+                                                        }}
+                                                        className="inline-flex items-center px-3 py-1.5 border border-indigo-600 text-sm font-medium rounded-md text-indigo-700 bg-white hover:bg-indigo-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                                                    >
+                                                        Add
+                                                    </button>
+                                                </div>
+                                                {/* List of added emails */}
+                                                {personelList.length > 0 && (
+                                                    <ul className="mt-2 space-y-1">
+                                                        {personelList.map((email, idx) => (
+                                                            <li key={idx} className="flex items-center justify-between bg-gray-100 rounded px-2 py-1 text-sm">
+                                                                <span>{email}</span>
+                                                                <button
+                                                                    type="button"
+                                                                    onClick={() => setPersonelList(personelList.filter(e => e !== email))}
+                                                                    className="ml-2 text-red-500 hover:text-red-700 text-xs"
+                                                                >
+                                                                    Remove
+                                                                </button>
+                                                            </li>
+                                                        ))}
+                                                    </ul>
+                                                )}
+                                                {/* Hidden input for form submission */}
+                                                <input type="hidden" name="personel" value={JSON.stringify(personelList)} />
+                                            </div>
+                                        </div>
+                                    </div>
                                     <div className="mt-5 sm:mt-4 sm:flex sm:flex-row-reverse">
                                         <button
                                             type="submit"
