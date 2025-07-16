@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Modal from "./Modal";
+import { deleteSong } from "@/utils/serverActions";
 
 export type DeleteSongButtonProps = {
     id: number,
@@ -40,9 +41,7 @@ const DeleteSongButton = ({id}: DeleteSongButtonProps) => {
                     </div>
                     <div className="mt-5 sm:mt-4 sm:flex sm:flex-row-reverse">
                         <form action={async () => {
-                            await fetch(`/api/songs/${id}`, {
-                                method: 'DELETE'
-                            });
+                            await deleteSong(id);
                             setShow(false);
                         }}>
                             <button
