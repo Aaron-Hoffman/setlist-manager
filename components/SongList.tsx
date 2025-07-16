@@ -25,6 +25,19 @@ export type SongListProps = {
     setId?: number
 }
 
+// Helper to get tags as array of strings
+function getTags(tags: any): string[] {
+    if (!tags) return [];
+    if (Array.isArray(tags)) return tags.map(String);
+    if (typeof tags === 'string') {
+        try {
+            const parsed = JSON.parse(tags);
+            if (Array.isArray(parsed)) return parsed.map(String);
+        } catch {}
+    }
+    return [];
+}
+
 const SongList = ({songList, add, setId}: SongListProps) => {
     const [isPending, startTransition] = useTransition();
     
@@ -121,6 +134,16 @@ const SongList = ({songList, add, setId}: SongListProps) => {
                                                                 </svg>
                                                             </span>
                                                         )}
+                                                        {/* Tags display */}
+                                                        {getTags(setListSong.song.tags).length > 0 && (
+                                                            <div className="flex flex-wrap gap-1">
+                                                                {getTags(setListSong.song.tags).map((tag, i) => (
+                                                                    <span key={i} className="bg-gray-200 text-gray-700 px-2 py-0.5 rounded text-xs font-medium">
+                                                                        {tag}
+                                                                    </span>
+                                                                ))}
+                                                            </div>
+                                                        )}
                                                     </div>
                                                     <div className="flex flex-wrap items-center gap-4 text-xs text-gray-500">
                                                         <span className="truncate">
@@ -173,6 +196,16 @@ const SongList = ({songList, add, setId}: SongListProps) => {
                                             <path d="M17.25 16.13a.75.75 0 0 1-1.03.23c-2.82-1.73-6.39-2.12-10.6-1.17a.75.75 0 1 1-.32-1.47c4.6-1.01 8.56-.57 11.7 1.27.36.22.47.69.25 1.03zm1.47-2.93a.94.94 0 0 1-1.29.29c-3.23-2-8.16-2.59-11.98-1.52a.94.94 0 1 1-.53-1.81c4.23-1.23 9.6-.59 13.3 1.7.44.27.58.85.3 1.34zm.16-3.02c-3.7-2.21-9.81-2.42-13.19-1.42a1.13 1.13 0 1 1-.64-2.18c3.85-1.13 10.54-.89 14.7 1.6a1.13 1.13 0 0 1-1.17 1.99z" fill="#fff"/>
                                         </svg>
                                     </span>
+                                )}
+                                {/* Tags display */}
+                                {getTags(setListSong.song.tags).length > 0 && (
+                                    <div className="flex flex-wrap gap-1">
+                                        {getTags(setListSong.song.tags).map((tag, i) => (
+                                            <span key={i} className="bg-gray-200 text-gray-700 px-2 py-0.5 rounded text-xs font-medium">
+                                                {tag}
+                                            </span>
+                                        ))}
+                                    </div>
                                 )}
                             </div>
                             <div className="flex flex-wrap items-center gap-4 text-xs text-gray-500">
