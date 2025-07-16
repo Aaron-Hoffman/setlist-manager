@@ -39,6 +39,8 @@ model Song {
   setSongs  SetSong[]
   tags      Json?
   chart     String?
+  // New field
+  endTime   DateTime?
 }
 
 model SetList {
