@@ -39,9 +39,8 @@ const AddSetListForm = ({bandId, songs}: AddSetListFormProps) => {
     };
 
     const handleSubmit = (formData: FormData) => {
-        // Add personnel emails as JSON string
         formData.set('personel', JSON.stringify(personelList));
-        // Randomly select songs for each set, no duplicates across sets
+        // Restore original sets logic
         let available = [...songs];
         const sets = songsPerSet.map((num, idx) => {
             const selected = sampleSize(available, num);
@@ -148,6 +147,15 @@ const AddSetListForm = ({bandId, songs}: AddSetListFormProps) => {
                                                     type="datetime-local"
                                                     name="time"
                                                     id="time"
+                                                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                                                />
+                                            </div>
+                                            <div>
+                                                <label htmlFor="endTime" className="block text-sm font-medium text-gray-700">End Time</label>
+                                                <input
+                                                    type="datetime-local"
+                                                    name="endTime"
+                                                    id="endTime"
                                                     className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                                                 />
                                             </div>

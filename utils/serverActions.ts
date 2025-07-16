@@ -133,6 +133,7 @@ export const addSetList = async (
       bandId: Number(bandId),
       // New fields
       time: formData.get('time') ? new Date(formData.get('time') as string) : undefined,
+      endTime: formData.get('endTime') ? new Date(formData.get('endTime') as string) : undefined,
       location: formData.get('location') as string || undefined,
       details: formData.get('details') as string || undefined,
       personel: (() => {
