@@ -25,6 +25,19 @@ export type SongListProps = {
     setId?: number
 }
 
+// Helper to get tags as array of strings
+function getTags(tags: any): string[] {
+    if (!tags) return [];
+    if (Array.isArray(tags)) return tags.map(String);
+    if (typeof tags === 'string') {
+        try {
+            const parsed = JSON.parse(tags);
+            if (Array.isArray(parsed)) return parsed.map(String);
+        } catch {}
+    }
+    return [];
+}
+
 const SongList = ({songList, add, setId}: SongListProps) => {
     const [isPending, startTransition] = useTransition();
     
@@ -121,6 +134,16 @@ const SongList = ({songList, add, setId}: SongListProps) => {
                                                                 </svg>
                                                             </span>
                                                         )}
+                                                        {/* Tags display */}
+                                                        {getTags(setListSong.song.tags).length > 0 && (
+                                                            <div className="flex flex-wrap gap-1">
+                                                                {getTags(setListSong.song.tags).map((tag, i) => (
+                                                                    <span key={i} className="bg-gray-200 text-gray-700 px-2 py-0.5 rounded text-xs font-medium">
+                                                                        {tag}
+                                                                    </span>
+                                                                ))}
+                                                            </div>
+                                                        )}
                                                     </div>
                                                     <div className="flex flex-wrap items-center gap-4 text-xs text-gray-500">
                                                         <span className="truncate">
@@ -130,6 +153,13 @@ const SongList = ({songList, add, setId}: SongListProps) => {
                                                             {setListSong.song.key}
                                                         </span>
                                                     </div>
+                                                    {setListSong.song.chart && (
+                                                        <div className="mt-2">
+                                                            <a href={setListSong.song.chart} target="_blank" rel="noopener noreferrer" className="text-indigo-600 underline text-xs">
+                                                                View Chart
+                                                            </a>
+                                                        </div>
+                                                    )}
                                                 </div>
                                                 <div className="flex items-center justify-end space-x-2 flex-shrink-0">
                                                     <EditSongForm song={setListSong.song} />
@@ -167,6 +197,16 @@ const SongList = ({songList, add, setId}: SongListProps) => {
                                         </svg>
                                     </span>
                                 )}
+                                {/* Tags display */}
+                                {getTags(setListSong.song.tags).length > 0 && (
+                                    <div className="flex flex-wrap gap-1">
+                                        {getTags(setListSong.song.tags).map((tag, i) => (
+                                            <span key={i} className="bg-gray-200 text-gray-700 px-2 py-0.5 rounded text-xs font-medium">
+                                                {tag}
+                                            </span>
+                                        ))}
+                                    </div>
+                                )}
                             </div>
                             <div className="flex flex-wrap items-center gap-4 text-xs text-gray-500">
                                 <span className="truncate">
@@ -176,6 +216,13 @@ const SongList = ({songList, add, setId}: SongListProps) => {
                                     {setListSong.song.key}
                                 </span>
                             </div>
+                            {setListSong.song.chart && (
+                                <div className="mt-2">
+                                    <a href={setListSong.song.chart} target="_blank" rel="noopener noreferrer" className="text-indigo-600 underline text-xs">
+                                        View Chart
+                                    </a>
+                                </div>
+                            )}
                         </div>
                         <div className="flex items-center justify-end space-x-2 flex-shrink-0">
                             <EditSongForm song={setListSong.song} />

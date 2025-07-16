@@ -223,11 +223,21 @@ export const editSetList = async (
 };
 
 export const addSong = async (bandId: number, formData: FormData) => {
+    // Parse tags from formData
+    let tags: any = undefined;
+    const tagsRaw = formData.get('tags');
+    if (typeof tagsRaw === 'string' && tagsRaw.trim()) {
+        try {
+            tags = JSON.parse(tagsRaw);
+        } catch {}
+    }
     const song = {
         title: formData.get('title') as string,
         artist: formData.get('artist') as string,
         key: formData.get('key') as string,
-        bandId: Number(bandId)
+        chart: formData.get('chart') as string | undefined,
+        bandId: Number(bandId),
+        tags: tags
     }
 
     let spotifyPerfectMatch = false;
@@ -267,22 +277,50 @@ export const addSong = async (bandId: number, formData: FormData) => {
 }
 
 export const deleteSong = async (songId: number) => {
+    // Fetch the song to get the chart path
+    const song = await prisma.song.findUnique({ where: { id: songId } });
+    if (song?.chart) {
+        // Delete the chart file
+        await fetch(`${process.env.NEXT_PUBLIC_BASE_URL || ''}/api/delete-upload`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ filePath: song.chart }),
+        });
+    }
     await prisma.song.delete({
         where: {
           id: songId,
         },
     })
-
     return revalidatePath('/')
 }
 
 export const editSong = async (songId: number, formData: FormData) => {
+    // Fetch the old song to get the old chart path
+    const oldSong = await prisma.song.findUnique({ where: { id: songId } });
+    // Parse tags from formData
+    let tags: any = undefined;
+    const tagsRaw = formData.get('tags');
+    if (typeof tagsRaw === 'string' && tagsRaw.trim()) {
+        try {
+            tags = JSON.parse(tagsRaw);
+        } catch {}
+    }
     const song = {
         title: formData.get('title') as string,
         artist: formData.get('artist') as string,
         key: formData.get('key') as string,
+        chart: formData.get('chart') as string | undefined,
+        tags: tags
     }
-
+    // If the chart is being replaced, delete the old file
+    if (oldSong?.chart && song.chart && oldSong.chart !== song.chart) {
+        await fetch(`${process.env.NEXT_PUBLIC_BASE_URL || ''}/api/delete-upload`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ filePath: oldSong.chart }),
+        });
+    }
     let spotifyPerfectMatch = false;
     try {
         const accessToken = await getSpotifyAccessToken();
@@ -308,7 +346,6 @@ export const editSong = async (songId: number, formData: FormData) => {
     } catch (e) {
         // Ignore errors, just fallback to false
     }
-
     await prisma.song.update({
         where: {
           id: songId,
@@ -318,7 +355,6 @@ export const editSong = async (songId: number, formData: FormData) => {
             spotifyPerfectMatch,
         },
     })
-
     return revalidatePath('/')
 }
 

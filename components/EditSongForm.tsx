@@ -7,12 +7,41 @@ import { ChangeEvent, useState } from 'react';
 import ShowModalButton from './ShowModalButton';
 import { Song } from "@prisma/client";
 
+async function uploadChartFile(file: File): Promise<string | null> {
+    const formData = new FormData();
+    formData.append('file', file);
+    const res = await fetch('/api/upload', {
+        method: 'POST',
+        body: formData,
+    });
+    if (!res.ok) return null;
+    const data = await res.json();
+    return data.filePath || null;
+}
+
 export type EditSongFormProps = {
     song: Song,
 }
 
 const EditSongForm = ({song}: EditSongFormProps) => {
     const [show, setShow] = useState(false);
+    const [chartFile, setChartFile] = useState<File | null>(null);
+    const [uploading, setUploading] = useState(false);
+    const [removeChart, setRemoveChart] = useState(false);
+
+    // Parse initial tags from song.tags (which is Json | null)
+    let initialTags = "";
+    if (Array.isArray(song.tags)) {
+        initialTags = song.tags.map(String).join(", ");
+    } else if (typeof song.tags === "string") {
+        try {
+            const parsed = JSON.parse(song.tags);
+            if (Array.isArray(parsed)) {
+                initialTags = parsed.map(String).join(", ");
+            }
+        } catch {}
+    }
+    const [tags, setTags] = useState(initialTags);
 
     return (
         <>
@@ -29,7 +58,41 @@ const EditSongForm = ({song}: EditSongFormProps) => {
                 <div className="p-6 bg-white rounded-lg shadow-xl max-w-md w-full mx-4">
                     <h3 className="text-lg font-medium text-gray-900 mb-4">Edit Song</h3>
                     <form action={async (formData: FormData) => {
+                        setUploading(true);
+                        let chartPath = song.chart || '';
+                        if (removeChart) {
+                            // Remove chart: delete file and clear field
+                            if (song.chart) {
+                                await fetch('/api/delete-upload', {
+                                    method: 'POST',
+                                    headers: { 'Content-Type': 'application/json' },
+                                    body: JSON.stringify({ filePath: song.chart }),
+                                });
+                            }
+                            formData.delete('chart');
+                        } else if (chartFile) {
+                            chartPath = (await uploadChartFile(chartFile)) || song.chart || '';
+                            if (chartPath) {
+                                formData.set('chart', chartPath);
+                            } else {
+                                formData.delete('chart');
+                            }
+                        } else if (chartPath) {
+                            formData.set('chart', chartPath);
+                        } else {
+                            formData.delete('chart');
+                        }
+                        // Add tags as JSON array if present
+                        if (tags.trim()) {
+                            const tagArr = tags.split(',').map((t: string) => t.trim()).filter(Boolean);
+                            formData.set('tags', JSON.stringify(tagArr));
+                        } else {
+                            formData.delete('tags');
+                        }
                         await editSong(song.id, formData);
+                        setChartFile(null);
+                        setRemoveChart(false);
+                        setUploading(false);
                         setShow(false);
                     }}>
                         <div className="space-y-4">
@@ -73,19 +136,64 @@ const EditSongForm = ({song}: EditSongFormProps) => {
                                     {KEYS.map(key => <option value={key.label} key={key.value}>{key.label}</option>)}
                                 </select>
                             </div>
+                            <div>
+                                <label htmlFor="tags" className="block text-sm font-medium text-gray-700">
+                                    Tags (comma separated)
+                                </label>
+                                <input
+                                    type="text"
+                                    name="tags"
+                                    id="tags"
+                                    value={tags}
+                                    onChange={e => setTags(e.target.value)}
+                                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                                    placeholder="e.g. ballad, country, 80s"
+                                />
+                            </div>
+                            <div>
+                                <label htmlFor="chart" className="block text-sm font-medium text-gray-700">
+                                    Chart (PDF, image, or text file)
+                                </label>
+                                <input
+                                    type="file"
+                                    name="chart"
+                                    id="chart"
+                                    accept=".pdf,image/*,text/*"
+                                    className="mt-1 block w-full text-sm text-gray-700"
+                                    onChange={e => setChartFile(e.target.files?.[0] || null)}
+                                    disabled={removeChart}
+                                />
+                                {song.chart && !chartFile && !removeChart && (
+                                    <div className="mt-2 text-xs text-gray-500 flex items-center gap-2">
+                                        <span>Current: <a href={song.chart} target="_blank" rel="noopener noreferrer" className="underline">View Chart</a></span>
+                                        <button
+                                            type="button"
+                                            className="text-red-600 underline text-xs ml-2"
+                                            onClick={() => setRemoveChart(true)}
+                                        >
+                                            Remove Chart
+                                        </button>
+                                    </div>
+                                )}
+                                {removeChart && (
+                                    <div className="mt-2 text-xs text-red-600">Chart will be removed.</div>
+                                )}
+                            </div>
                             <div className="flex justify-end space-x-3">
                                 <button
                                     type="button"
-                                    onClick={() => setShow(false)}
+                                    onClick={() => { setShow(false); setRemoveChart(false); setChartFile(null); }}
                                     className="inline-flex justify-center px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                                    disabled={uploading}
                                 >
                                     Cancel
                                 </button>
                                 <button
                                     type="submit"
                                     className="inline-flex justify-center px-4 py-2 text-sm font-medium text-white bg-indigo-600 border border-transparent rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                                    disabled={uploading}
                                 >
-                                    Save Changes
+                                    {uploading ? 'Uploading...' : 'Save Changes'}
                                 </button>
                             </div>
                         </div>

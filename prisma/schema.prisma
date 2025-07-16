@@ -37,6 +37,8 @@ model Song {
   data      Json?
   spotifyPerfectMatch Boolean @default(false)
   setSongs  SetSong[]
+  tags      Json?
+  chart     String?
 }
 
 model SetList {
