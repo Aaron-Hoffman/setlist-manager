@@ -27,6 +27,7 @@ const EditSongForm = ({song}: EditSongFormProps) => {
     const [show, setShow] = useState(false);
     const [chartFile, setChartFile] = useState<File | null>(null);
     const [uploading, setUploading] = useState(false);
+    const [removeChart, setRemoveChart] = useState(false);
 
     return (
         <>
@@ -45,16 +46,31 @@ const EditSongForm = ({song}: EditSongFormProps) => {
                     <form action={async (formData: FormData) => {
                         setUploading(true);
                         let chartPath = song.chart || '';
-                        if (chartFile) {
+                        if (removeChart) {
+                            // Remove chart: delete file and clear field
+                            if (song.chart) {
+                                await fetch('/api/delete-upload', {
+                                    method: 'POST',
+                                    headers: { 'Content-Type': 'application/json' },
+                                    body: JSON.stringify({ filePath: song.chart }),
+                                });
+                            }
+                            formData.delete('chart');
+                        } else if (chartFile) {
                             chartPath = (await uploadChartFile(chartFile)) || song.chart || '';
-                        }
-                        if (chartPath) {
+                            if (chartPath) {
+                                formData.set('chart', chartPath);
+                            } else {
+                                formData.delete('chart');
+                            }
+                        } else if (chartPath) {
                             formData.set('chart', chartPath);
                         } else {
                             formData.delete('chart');
                         }
                         await editSong(song.id, formData);
                         setChartFile(null);
+                        setRemoveChart(false);
                         setUploading(false);
                         setShow(false);
                     }}>
@@ -110,17 +126,28 @@ const EditSongForm = ({song}: EditSongFormProps) => {
                                     accept=".pdf,image/*,text/*"
                                     className="mt-1 block w-full text-sm text-gray-700"
                                     onChange={e => setChartFile(e.target.files?.[0] || null)}
+                                    disabled={removeChart}
                                 />
-                                {song.chart && !chartFile && (
-                                    <div className="mt-2 text-xs text-gray-500">
-                                        Current: <a href={song.chart} target="_blank" rel="noopener noreferrer" className="underline">View Chart</a>
+                                {song.chart && !chartFile && !removeChart && (
+                                    <div className="mt-2 text-xs text-gray-500 flex items-center gap-2">
+                                        <span>Current: <a href={song.chart} target="_blank" rel="noopener noreferrer" className="underline">View Chart</a></span>
+                                        <button
+                                            type="button"
+                                            className="text-red-600 underline text-xs ml-2"
+                                            onClick={() => setRemoveChart(true)}
+                                        >
+                                            Remove Chart
+                                        </button>
                                     </div>
+                                )}
+                                {removeChart && (
+                                    <div className="mt-2 text-xs text-red-600">Chart will be removed.</div>
                                 )}
                             </div>
                             <div className="flex justify-end space-x-3">
                                 <button
                                     type="button"
-                                    onClick={() => setShow(false)}
+                                    onClick={() => { setShow(false); setRemoveChart(false); setChartFile(null); }}
                                     className="inline-flex justify-center px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                                     disabled={uploading}
                                 >
