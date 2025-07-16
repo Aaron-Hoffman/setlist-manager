@@ -29,6 +29,20 @@ const EditSongForm = ({song}: EditSongFormProps) => {
     const [uploading, setUploading] = useState(false);
     const [removeChart, setRemoveChart] = useState(false);
 
+    // Parse initial tags from song.tags (which is Json | null)
+    let initialTags = "";
+    if (Array.isArray(song.tags)) {
+        initialTags = song.tags.map(String).join(", ");
+    } else if (typeof song.tags === "string") {
+        try {
+            const parsed = JSON.parse(song.tags);
+            if (Array.isArray(parsed)) {
+                initialTags = parsed.map(String).join(", ");
+            }
+        } catch {}
+    }
+    const [tags, setTags] = useState(initialTags);
+
     return (
         <>
             <button
@@ -67,6 +81,13 @@ const EditSongForm = ({song}: EditSongFormProps) => {
                             formData.set('chart', chartPath);
                         } else {
                             formData.delete('chart');
+                        }
+                        // Add tags as JSON array if present
+                        if (tags.trim()) {
+                            const tagArr = tags.split(',').map((t: string) => t.trim()).filter(Boolean);
+                            formData.set('tags', JSON.stringify(tagArr));
+                        } else {
+                            formData.delete('tags');
                         }
                         await editSong(song.id, formData);
                         setChartFile(null);
@@ -114,6 +135,20 @@ const EditSongForm = ({song}: EditSongFormProps) => {
                                 >
                                     {KEYS.map(key => <option value={key.label} key={key.value}>{key.label}</option>)}
                                 </select>
+                            </div>
+                            <div>
+                                <label htmlFor="tags" className="block text-sm font-medium text-gray-700">
+                                    Tags (comma separated)
+                                </label>
+                                <input
+                                    type="text"
+                                    name="tags"
+                                    id="tags"
+                                    value={tags}
+                                    onChange={e => setTags(e.target.value)}
+                                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                                    placeholder="e.g. ballad, country, 80s"
+                                />
                             </div>
                             <div>
                                 <label htmlFor="chart" className="block text-sm font-medium text-gray-700">

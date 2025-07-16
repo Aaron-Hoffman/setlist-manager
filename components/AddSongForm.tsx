@@ -26,6 +26,7 @@ const AddSongForm = ({ bandId }: AddSongFormProps) => {
     const formRef = useRef<HTMLFormElement>(null);
     const [chartFile, setChartFile] = useState<File | null>(null);
     const [uploading, setUploading] = useState(false);
+    const [tags, setTags] = useState("");
 
     return (
         <>
@@ -52,9 +53,17 @@ const AddSongForm = ({ bandId }: AddSongFormProps) => {
                         } else {
                             formData.delete('chart');
                         }
+                        // Add tags as JSON array if present
+                        if (tags.trim()) {
+                            const tagArr = tags.split(',').map(t => t.trim()).filter(Boolean);
+                            formData.set('tags', JSON.stringify(tagArr));
+                        } else {
+                            formData.delete('tags');
+                        }
                         await addSong(Number(bandId), formData);
                         formRef.current?.reset();
                         setChartFile(null);
+                        setTags("");
                         setUploading(false);
                         setShow(false);
                     }}>
@@ -109,6 +118,20 @@ const AddSongForm = ({ bandId }: AddSongFormProps) => {
                                     accept=".pdf,image/*,text/*"
                                     className="mt-1 block w-full text-sm text-gray-700"
                                     onChange={e => setChartFile(e.target.files?.[0] || null)}
+                                />
+                            </div>
+                            <div>
+                                <label htmlFor="tags" className="block text-sm font-medium text-gray-700">
+                                    Tags (comma separated)
+                                </label>
+                                <input
+                                    type="text"
+                                    name="tags"
+                                    id="tags"
+                                    value={tags}
+                                    onChange={e => setTags(e.target.value)}
+                                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                                    placeholder="e.g. ballad, country, 80s"
                                 />
                             </div>
                             <div className="flex justify-end space-x-3">

@@ -223,12 +223,21 @@ export const editSetList = async (
 };
 
 export const addSong = async (bandId: number, formData: FormData) => {
+    // Parse tags from formData
+    let tags: any = undefined;
+    const tagsRaw = formData.get('tags');
+    if (typeof tagsRaw === 'string' && tagsRaw.trim()) {
+        try {
+            tags = JSON.parse(tagsRaw);
+        } catch {}
+    }
     const song = {
         title: formData.get('title') as string,
         artist: formData.get('artist') as string,
         key: formData.get('key') as string,
         chart: formData.get('chart') as string | undefined,
-        bandId: Number(bandId)
+        bandId: Number(bandId),
+        tags: tags
     }
 
     let spotifyPerfectMatch = false;
@@ -289,11 +298,20 @@ export const deleteSong = async (songId: number) => {
 export const editSong = async (songId: number, formData: FormData) => {
     // Fetch the old song to get the old chart path
     const oldSong = await prisma.song.findUnique({ where: { id: songId } });
+    // Parse tags from formData
+    let tags: any = undefined;
+    const tagsRaw = formData.get('tags');
+    if (typeof tagsRaw === 'string' && tagsRaw.trim()) {
+        try {
+            tags = JSON.parse(tagsRaw);
+        } catch {}
+    }
     const song = {
         title: formData.get('title') as string,
         artist: formData.get('artist') as string,
         key: formData.get('key') as string,
         chart: formData.get('chart') as string | undefined,
+        tags: tags
     }
     // If the chart is being replaced, delete the old file
     if (oldSong?.chart && song.chart && oldSong.chart !== song.chart) {
