@@ -39,6 +39,7 @@ model Song {
   setSongs  SetSong[]
   tags      Json?
   chart     String?
+  // Removed endTime from here
 }
 
 model SetList {
@@ -50,6 +51,12 @@ model SetList {
   band      Band     @relation(fields: [bandId], references: [id])
   bandId    Int
   sets      Set[]
+  // New optional fields
+  time      DateTime?
+  location  String?   @db.VarChar(255)
+  details   String?   @db.Text
+  personel  Json?
+  endTime   DateTime?
 }
 
 model User {

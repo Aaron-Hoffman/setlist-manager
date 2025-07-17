@@ -131,6 +131,22 @@ export const addSetList = async (
     data: {
       name: formData.get('name') as string,
       bandId: Number(bandId),
+      // New fields
+      time: formData.get('time') ? new Date(formData.get('time') as string) : undefined,
+      endTime: formData.get('endTime') ? new Date(formData.get('endTime') as string) : undefined,
+      location: formData.get('location') as string || undefined,
+      details: formData.get('details') as string || undefined,
+      personel: (() => {
+        const val = formData.get('personel');
+        if (typeof val === 'string' && val.trim()) {
+          try {
+            return JSON.parse(val);
+          } catch {
+            return undefined;
+          }
+        }
+        return undefined;
+      })(),
     },
   });
 
@@ -432,3 +448,76 @@ export const reorderSetListSongs = async (setId: number, orderedSetSongIds: numb
   );
   return revalidatePath(`/bands/set/${setId}`);
 };
+
+export async function updateSetListDetails(
+    setListId: number,
+    formData: FormData
+) {
+    const time = formData.get('time');
+    const endTime = formData.get('endTime');
+    const location = formData.get('location') as string;
+    const details = formData.get('details') as string;
+    const personel = (() => {
+        const val = formData.get('personel');
+        if (typeof val === 'string' && val.trim()) {
+            try {
+                return JSON.parse(val);
+            } catch {
+                return undefined;
+            }
+        }
+        return undefined;
+    })();
+
+    await prisma.setList.update({
+        where: { id: setListId },
+        data: {
+            time: time ? new Date(time as string) : null,
+            endTime: endTime ? new Date(endTime as string) : null,
+            location: location || null,
+            details: details || null,
+            personel,
+        },
+    });
+}
+
+export async function updateSetListField(
+    setListId: number,
+    field: string,
+    value: string
+) {
+    const updateData: any = {};
+    
+    switch (field) {
+        case 'time':
+            updateData.time = value ? new Date(value) : null;
+            break;
+        case 'endTime':
+            updateData.endTime = value ? new Date(value) : null;
+            break;
+        case 'location':
+            updateData.location = value || null;
+            break;
+        case 'details':
+            updateData.details = value || null;
+            break;
+        case 'personel':
+            if (value.trim()) {
+                try {
+                    updateData.personel = JSON.parse(value);
+                } catch {
+                    updateData.personel = undefined;
+                }
+            } else {
+                updateData.personel = null;
+            }
+            break;
+        default:
+            throw new Error(`Unknown field: ${field}`);
+    }
+
+    await prisma.setList.update({
+        where: { id: setListId },
+        data: updateData,
+    });
+}

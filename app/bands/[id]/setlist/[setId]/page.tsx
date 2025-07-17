@@ -7,6 +7,8 @@ import CreateSpotifyPlaylistModalButton from '@/components/CreateSpotifyPlaylist
 import ExportPDFButton from '@/components/ExportPDFButton';
 import getUser from "@/utils/getUser";
 import AddSongToSetDropdown from "@/components/AddSongToSetDropdown";
+import EditableField from "@/components/EditableField";
+import SetlistEventDetails from '@/components/SetlistEventDetails';
 
 
 const SetlistPage = async (context: any) => {
@@ -88,6 +90,15 @@ const SetlistPage = async (context: any) => {
         return editSetList(setIdOverride ?? setId, song, add)
     }
 
+    const bandMembers = await prisma.user.findMany({
+        where: {
+            bands: {
+                some: { id: Number(bandId) }
+            }
+        },
+        select: { id: true, name: true, email: true }
+    });
+
     return (
         <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
             <div className="md:flex md:items-center md:justify-between mb-8">
@@ -120,6 +131,17 @@ const SetlistPage = async (context: any) => {
                     </Link>
                 </div>
             </div>
+
+            {/* Event Details Section */}
+            <SetlistEventDetails
+                setListId={setList.id}
+                initialTime={setList.time ? setList.time.toISOString() : null}
+                initialEndTime={setList.endTime ? setList.endTime.toISOString() : null}
+                initialLocation={setList.location}
+                initialDetails={setList.details}
+                initialPersonel={setList.personel}
+                bandMembers={bandMembers.map(m => ({ ...m, id: Number(m.id) }))}
+            />
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                 <div className="bg-white shadow rounded-lg order-2 lg:order-1">
