@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import EditableField from './EditableField';
-import EditablePersonelList from './EditablePersonelList';
+import EditableList from './EditablePersonelList';
 import { updateSetListField } from '@/utils/serverActions';
 
 interface SetlistEventDetailsProps {
@@ -113,14 +113,17 @@ const SetlistEventDetails = ({
             <div className="md:col-span-2 flex items-start">
               <span className="w-32 md:w-40 font-semibold text-gray-800 text-right block mr-4 pt-2">Band Members:</span>
               <span className="flex-1 bg-gray-50 rounded px-2 py-1 text-gray-900">
-                <EditablePersonelList
+                <EditableList
                   value={personel}
-                  setListId={setListId}
-                  bandMembers={bandMembers}
                   onChange={async (newList) => {
                     setPersonel(newList);
                     await updateSetListField(setListId, 'personel', JSON.stringify(newList));
                   }}
+                  placeholder="Add band member email"
+                  validate={(input) => {
+                    return /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(input) ? null : 'Please enter a valid email address.';
+                  }}
+                  suggestions={bandMembers.map(m => m.email || '').filter(Boolean)}
                 />
               </span>
             </div>

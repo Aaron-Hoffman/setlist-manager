@@ -6,6 +6,7 @@ import Modal from './Modal';
 import { ChangeEvent, useState } from 'react';
 import ShowModalButton from './ShowModalButton';
 import { Song } from "@prisma/client";
+import EditableList from "./EditablePersonelList";
 
 async function uploadChartFile(file: File): Promise<string | null> {
     const formData = new FormData();
@@ -30,18 +31,18 @@ const EditSongForm = ({song}: EditSongFormProps) => {
     const [removeChart, setRemoveChart] = useState(false);
 
     // Parse initial tags from song.tags (which is Json | null)
-    let initialTags = "";
+    let initialTags: string[] = [];
     if (Array.isArray(song.tags)) {
-        initialTags = song.tags.map(String).join(", ");
+        initialTags = song.tags.map(String);
     } else if (typeof song.tags === "string") {
         try {
             const parsed = JSON.parse(song.tags);
             if (Array.isArray(parsed)) {
-                initialTags = parsed.map(String).join(", ");
+                initialTags = parsed.map(String);
             }
         } catch {}
     }
-    const [tags, setTags] = useState(initialTags);
+    const [tags, setTags] = useState<string[]>(initialTags);
 
     return (
         <>
@@ -83,12 +84,7 @@ const EditSongForm = ({song}: EditSongFormProps) => {
                             formData.delete('chart');
                         }
                         // Add tags as JSON array if present
-                        if (tags.trim()) {
-                            const tagArr = tags.split(',').map((t: string) => t.trim()).filter(Boolean);
-                            formData.set('tags', JSON.stringify(tagArr));
-                        } else {
-                            formData.delete('tags');
-                        }
+                        formData.set('tags', JSON.stringify(tags));
                         await editSong(song.id, formData);
                         setChartFile(null);
                         setRemoveChart(false);
@@ -138,17 +134,15 @@ const EditSongForm = ({song}: EditSongFormProps) => {
                             </div>
                             <div>
                                 <label htmlFor="tags" className="block text-sm font-medium text-gray-700">
-                                    Tags (comma separated)
+                                    Tags
                                 </label>
-                                <input
-                                    type="text"
-                                    name="tags"
-                                    id="tags"
+                                <EditableList
                                     value={tags}
-                                    onChange={e => setTags(e.target.value)}
-                                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                                    placeholder="e.g. ballad, country, 80s"
+                                    onChange={setTags}
+                                    placeholder="Add tag"
                                 />
+                                {/* Hidden input for form submission */}
+                                <input type="hidden" name="tags" value={JSON.stringify(tags)} />
                             </div>
                             <div>
                                 <label htmlFor="chart" className="block text-sm font-medium text-gray-700">
