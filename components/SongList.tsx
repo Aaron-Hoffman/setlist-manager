@@ -179,61 +179,70 @@ const SongList = ({songList, add, setId}: SongListProps) => {
     }
 
     // Fallback: list layout for non-setlist (repertoire)
-    return (
-        <div className="space-y-2">
-            {localSongs.map((setListSong) => (
-                <div key={setListSong.id} className="bg-white rounded-lg border border-gray-200 p-4 hover:bg-gray-50 transition-colors">
-                    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
-                        <div className="flex-1 min-w-0">
-                            <div className="flex items-center gap-2 mb-1">
-                                <h3 className="text-sm font-medium text-gray-900 truncate">
-                                    {setListSong.song.title}
-                                </h3>
-                                {setListSong.song.spotifyPerfectMatch && (
-                                    <span title="Perfect Spotify match" className="inline-block align-middle flex-shrink-0" aria-label="Spotify perfect match">
-                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="inline-block">
-                                            <circle cx="12" cy="12" r="12" fill="#1ED760"/>
-                                            <path d="M17.25 16.13a.75.75 0 0 1-1.03.23c-2.82-1.73-6.39-2.12-10.6-1.17a.75.75 0 1 1-.32-1.47c4.6-1.01 8.56-.57 11.7 1.27.36.22.47.69.25 1.03zm1.47-2.93a.94.94 0 0 1-1.29.29c-3.23-2-8.16-2.59-11.98-1.52a.94.94 0 1 1-.53-1.81c4.23-1.23 9.6-.59 13.3 1.7.44.27.58.85.3 1.34zm.16-3.02c-3.7-2.21-9.81-2.42-13.19-1.42a1.13 1.13 0 1 1-.64-2.18c3.85-1.13 10.54-.89 14.7 1.6a1.13 1.13 0 0 1-1.17 1.99z" fill="#fff"/>
-                                        </svg>
+    // Sort alphabetically by song title
+    const sortedLocalSongs = React.useMemo(() => {
+        return [...localSongs].sort((a, b) =>
+            a.song.title.localeCompare(b.song.title, undefined, { sensitivity: 'base' })
+        );
+    }, [localSongs]);
+
+    if (!setId || add) {
+        return (
+            <div className="space-y-2">
+                {sortedLocalSongs.map((setListSong) => (
+                    <div key={setListSong.id} className="bg-white rounded-lg border border-gray-200 p-4 hover:bg-gray-50 transition-colors">
+                        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+                            <div className="flex-1 min-w-0">
+                                <div className="flex items-center gap-2 mb-1">
+                                    <h3 className="text-sm font-medium text-gray-900 truncate">
+                                        {setListSong.song.title}
+                                    </h3>
+                                    {setListSong.song.spotifyPerfectMatch && (
+                                        <span title="Perfect Spotify match" className="inline-block align-middle flex-shrink-0" aria-label="Spotify perfect match">
+                                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="inline-block">
+                                                <circle cx="12" cy="12" r="12" fill="#1ED760"/>
+                                                <path d="M17.25 16.13a.75.75 0 0 1-1.03.23c-2.82-1.73-6.39-2.12-10.6-1.17a.75.75 0 1 1-.32-1.47c4.6-1.01 8.56-.57 11.7 1.27.36.22.47.69.25 1.03zm1.47-2.93a.94.94 0 0 1-1.29.29c-3.23-2-8.16-2.59-11.98-1.52a.94.94 0 1 1-.53-1.81c4.23-1.23 9.6-.59 13.3 1.7.44.27.58.85.3 1.34zm.16-3.02c-3.7-2.21-9.81-2.42-13.19-1.42a1.13 1.13 0 1 1-.64-2.18c3.85-1.13 10.54-.89 14.7 1.6a1.13 1.13 0 0 1-1.17 1.99z" fill="#fff"/>
+                                            </svg>
+                                        </span>
+                                    )}
+                                    {/* Tags display */}
+                                    {getTags(setListSong.song.tags).length > 0 && (
+                                        <div className="flex flex-wrap gap-1">
+                                            {getTags(setListSong.song.tags).map((tag, i) => (
+                                                <span key={i} className="bg-gray-200 text-gray-700 px-2 py-0.5 rounded text-xs font-medium">
+                                                    {tag}
+                                                </span>
+                                            ))}
+                                        </div>
+                                    )}
+                                </div>
+                                <div className="flex flex-wrap items-center gap-4 text-xs text-gray-500">
+                                    <span className="truncate">
+                                        {setListSong.song.artist || '—'}
                                     </span>
-                                )}
-                                {/* Tags display */}
-                                {getTags(setListSong.song.tags).length > 0 && (
-                                    <div className="flex flex-wrap gap-1">
-                                        {getTags(setListSong.song.tags).map((tag, i) => (
-                                            <span key={i} className="bg-gray-200 text-gray-700 px-2 py-0.5 rounded text-xs font-medium">
-                                                {tag}
-                                            </span>
-                                        ))}
+                                    <span className="flex-shrink-0">
+                                        {setListSong.song.key}
+                                    </span>
+                                </div>
+                                {setListSong.song.chart && (
+                                    <div className="mt-2">
+                                        <a href={setListSong.song.chart} target="_blank" rel="noopener noreferrer" className="text-indigo-600 underline text-xs">
+                                            View Chart
+                                        </a>
                                     </div>
                                 )}
                             </div>
-                            <div className="flex flex-wrap items-center gap-4 text-xs text-gray-500">
-                                <span className="truncate">
-                                    {setListSong.song.artist || '—'}
-                                </span>
-                                <span className="flex-shrink-0">
-                                    {setListSong.song.key}
-                                </span>
+                            <div className="flex items-center justify-end space-x-2 flex-shrink-0">
+                                <EditSongForm song={setListSong.song} />
+                                {!setId && <DeleteSongButton id={setListSong.song.id} />}
+                                {setId && <EditSetListButton song={setListSong.song} add={add || false} setId={setId} />}
                             </div>
-                            {setListSong.song.chart && (
-                                <div className="mt-2">
-                                    <a href={setListSong.song.chart} target="_blank" rel="noopener noreferrer" className="text-indigo-600 underline text-xs">
-                                        View Chart
-                                    </a>
-                                </div>
-                            )}
-                        </div>
-                        <div className="flex items-center justify-end space-x-2 flex-shrink-0">
-                            <EditSongForm song={setListSong.song} />
-                            {!setId && <DeleteSongButton id={setListSong.song.id} />}
-                            {setId && <EditSetListButton song={setListSong.song} add={add || false} setId={setId} />}
                         </div>
                     </div>
-                </div>
-            ))}
-        </div>
-    );
+                ))}
+            </div>
+        );
+    }
 }
 
 export default SongList;
