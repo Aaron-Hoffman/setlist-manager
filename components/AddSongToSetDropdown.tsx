@@ -24,6 +24,9 @@ const AddSongToSetDropdown = ({ setId, repertoire }: AddSongToSetDropdownProps) 
     setIsPending(false);
   };
 
+  // Sort repertoire alphabetically by title
+  const sortedRepertoire = [...repertoire].sort((a, b) => a.title.localeCompare(b.title, undefined, { sensitivity: 'base' }));
+
   if (repertoire.length === 0) return null;
 
   return (
@@ -35,7 +38,7 @@ const AddSongToSetDropdown = ({ setId, repertoire }: AddSongToSetDropdownProps) 
         disabled={isPending}
       >
         <option value="" disabled>Select song to add</option>
-        {repertoire.map(song => (
+        {sortedRepertoire.map(song => (
           <option key={song.id} value={song.id}>{song.title}{song.artist ? ` – ${song.artist}` : ''}</option>
         ))}
       </select>
