@@ -2,6 +2,8 @@
 
 import { useState } from 'react';
 import EditableField from './EditableField';
+import EditablePersonelList from './EditablePersonelList';
+import { updateSetListField } from '@/utils/serverActions';
 
 interface SetlistEventDetailsProps {
   setListId: number;
@@ -10,6 +12,7 @@ interface SetlistEventDetailsProps {
   initialLocation: string | null;
   initialDetails: string | null;
   initialPersonel: any;
+  bandMembers: { id: number; name: string | null; email: string | null }[];
 }
 
 const SetlistEventDetails = ({
@@ -19,13 +22,18 @@ const SetlistEventDetails = ({
   initialLocation,
   initialDetails,
   initialPersonel,
+  bandMembers,
 }: SetlistEventDetailsProps) => {
   const [time, setTime] = useState(initialTime);
   const [endTime, setEndTime] = useState(initialEndTime);
   const [location, setLocation] = useState(initialLocation);
   const [details, setDetails] = useState(initialDetails);
   const [personel, setPersonel] = useState(
-    initialPersonel ? (typeof initialPersonel === 'string' ? initialPersonel : JSON.stringify(initialPersonel, null, 2)) : ''
+    Array.isArray(initialPersonel)
+      ? initialPersonel
+      : initialPersonel
+      ? (typeof initialPersonel === 'string' ? [initialPersonel] : [])
+      : []
   );
 
   return (
@@ -79,14 +87,15 @@ const SetlistEventDetails = ({
           />
         </div>
         <div className="md:col-span-2">
-          <span className="font-medium text-gray-700">Personnel:</span>{' '}
-          <EditableField
-            field="personel"
+          <span className="font-medium text-gray-700">Band Members:</span>{' '}
+          <EditablePersonelList
             value={personel}
             setListId={setListId}
-            type="textarea"
-            placeholder="Enter personnel (JSON or array)"
-            onSave={setPersonel}
+            bandMembers={bandMembers}
+            onChange={async (newList) => {
+              setPersonel(newList);
+              await updateSetListField(setListId, 'personel', JSON.stringify(newList));
+            }}
           />
         </div>
       </div>

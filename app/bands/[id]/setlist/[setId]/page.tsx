@@ -90,6 +90,15 @@ const SetlistPage = async (context: any) => {
         return editSetList(setIdOverride ?? setId, song, add)
     }
 
+    const bandMembers = await prisma.user.findMany({
+        where: {
+            bands: {
+                some: { id: Number(bandId) }
+            }
+        },
+        select: { id: true, name: true, email: true }
+    });
+
     return (
         <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
             <div className="md:flex md:items-center md:justify-between mb-8">
@@ -131,6 +140,7 @@ const SetlistPage = async (context: any) => {
                 initialLocation={setList.location}
                 initialDetails={setList.details}
                 initialPersonel={setList.personel}
+                bandMembers={bandMembers}
             />
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
