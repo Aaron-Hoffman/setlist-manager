@@ -7,11 +7,12 @@ interface EditableFieldProps {
     field: string;
     value: string;
     setListId: number;
-    type: 'text' | 'tarea' | 'datetime-local';
+    type: 'text' | 'textarea' | 'datetime-local';
     placeholder?: string;
+    onSave?: (newValue: string) => void;
 }
 
-const EditableField = ({ field, value, setListId, type, placeholder }: EditableFieldProps) => {
+const EditableField = ({ field, value, setListId, type, placeholder, onSave }: EditableFieldProps) => {
     const [isEditing, setIsEditing] = useState(false);
     const [editValue, setEditValue] = useState(value);
     const [isLoading, setIsLoading] = useState(false);
@@ -37,6 +38,7 @@ const EditableField = ({ field, value, setListId, type, placeholder }: EditableF
         try {
             await updateSetListField(setListId, field, editValue);
             setIsEditing(false);
+            if (onSave) onSave(editValue);
         } catch (error) {
             console.error('Failed to update field:', error);
             setEditValue(value); // Reset to original value on error

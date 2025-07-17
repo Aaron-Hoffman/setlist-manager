@@ -8,6 +8,7 @@ import ExportPDFButton from '@/components/ExportPDFButton';
 import getUser from "@/utils/getUser";
 import AddSongToSetDropdown from "@/components/AddSongToSetDropdown";
 import EditableField from "@/components/EditableField";
+import SetlistEventDetails from '@/components/SetlistEventDetails';
 
 
 const SetlistPage = async (context: any) => {
@@ -123,63 +124,14 @@ const SetlistPage = async (context: any) => {
             </div>
 
             {/* Event Details Section */}
-            <div className="mb-8 bg-white shadow rounded-lg p-6 border border-gray-200">
-                <div className="mb-4">
-                    <h3 className="text-lg font-semibold text-gray-900">Event Details</h3>
-                </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                        <span className="font-medium text-gray-700">Start Time:</span>{' '}
-                        <EditableField
-                            field="time"
-                            value={setList.time ? new Date(setList.time).toISOString().slice(0, 16) : ''}
-                            setListId={setList.id}
-                            type="datetime-local"
-                            placeholder="Set start time"
-                        />
-                    </div>
-                    <div>
-                        <span className="font-medium text-gray-700">End Time:</span>{' '}
-                        <EditableField
-                            field="endTime"
-                            value={setList.endTime ? new Date(setList.endTime).toISOString().slice(0, 16) : ''}
-                            setListId={setList.id}
-                            type="datetime-local"
-                            placeholder="Set end time"
-                        />
-                    </div>
-                    <div>
-                        <span className="font-medium text-gray-700">Location:</span>{' '}
-                        <EditableField
-                            field="location"
-                            value={setList.location || ''}
-                            setListId={setList.id}
-                            type="text"
-                            placeholder="Enter location"
-                        />
-                    </div>
-                    <div>
-                        <span className="font-medium text-gray-700">Details:</span>{' '}
-                        <EditableField
-                            field="details"
-                            value={setList.details || ''}
-                            setListId={setList.id}
-                            type="textarea"
-                            placeholder="Enter details"
-                        />
-                    </div>
-                    <div className="md:col-span-2">
-                        <span className="font-medium text-gray-700">Personnel:</span>{' '}
-                        <EditableField
-                            field="personel"
-                            value={setList.personel ? (typeof setList.personel === 'string' ? setList.personel : JSON.stringify(setList.personel, null, 2)) : ''}
-                            setListId={setList.id}
-                            type="textarea"
-                            placeholder="Enter personnel (JSON or array)"
-                        />
-                    </div>
-                </div>
-            </div>
+            <SetlistEventDetails
+                setListId={setList.id}
+                initialTime={setList.time}
+                initialEndTime={setList.endTime}
+                initialLocation={setList.location}
+                initialDetails={setList.details}
+                initialPersonel={setList.personel}
+            />
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                 <div className="bg-white shadow rounded-lg order-2 lg:order-1">
