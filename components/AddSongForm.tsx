@@ -4,6 +4,7 @@ import { useState, useRef } from "react";
 import Modal from "./Modal";
 import KEYS from "@/constants/KEYS";
 import { addSong } from "@/utils/serverActions";
+import EditableList from "./EditablePersonelList";
 
 async function uploadChartFile(file: File): Promise<string | null> {
     const formData = new FormData();
@@ -26,7 +27,7 @@ const AddSongForm = ({ bandId }: AddSongFormProps) => {
     const formRef = useRef<HTMLFormElement>(null);
     const [chartFile, setChartFile] = useState<File | null>(null);
     const [uploading, setUploading] = useState(false);
-    const [tags, setTags] = useState("");
+    const [tags, setTags] = useState<string[]>([]);
 
     return (
         <>
@@ -54,16 +55,15 @@ const AddSongForm = ({ bandId }: AddSongFormProps) => {
                             formData.delete('chart');
                         }
                         // Add tags as JSON array if present
-                        if (tags.trim()) {
-                            const tagArr = tags.split(',').map(t => t.trim()).filter(Boolean);
-                            formData.set('tags', JSON.stringify(tagArr));
+                        if (tags.length > 0) {
+                            formData.set('tags', JSON.stringify(tags));
                         } else {
                             formData.delete('tags');
                         }
                         await addSong(Number(bandId), formData);
                         formRef.current?.reset();
                         setChartFile(null);
-                        setTags("");
+                        setTags([]);
                         setUploading(false);
                         setShow(false);
                     }}>
@@ -122,17 +122,15 @@ const AddSongForm = ({ bandId }: AddSongFormProps) => {
                             </div>
                             <div>
                                 <label htmlFor="tags" className="block text-sm font-medium text-gray-700">
-                                    Tags (comma separated)
+                                    Tags
                                 </label>
-                                <input
-                                    type="text"
-                                    name="tags"
-                                    id="tags"
+                                <EditableList
                                     value={tags}
-                                    onChange={e => setTags(e.target.value)}
-                                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                                    placeholder="e.g. ballad, country, 80s"
+                                    onChange={setTags}
+                                    placeholder="Add tag"
                                 />
+                                {/* Hidden input for form submission */}
+                                <input type="hidden" name="tags" value={JSON.stringify(tags)} />
                             </div>
                             <div className="flex justify-end space-x-3">
                                 <button
