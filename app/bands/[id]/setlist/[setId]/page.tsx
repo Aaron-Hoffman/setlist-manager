@@ -135,12 +135,12 @@ const SetlistPage = async (context: any) => {
             {/* Event Details Section */}
             <SetlistEventDetails
                 setListId={setList.id}
-                initialTime={setList.time}
-                initialEndTime={setList.endTime}
+                initialTime={setList.time ? setList.time.toISOString() : null}
+                initialEndTime={setList.endTime ? setList.endTime.toISOString() : null}
                 initialLocation={setList.location}
                 initialDetails={setList.details}
                 initialPersonel={setList.personel}
-                bandMembers={bandMembers}
+                bandMembers={bandMembers.map(m => ({ ...m, id: Number(m.id) }))}
             />
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">

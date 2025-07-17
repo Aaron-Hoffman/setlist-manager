@@ -94,7 +94,7 @@ For spotify sign in to work locally add this to .env NEXTAUTH_URL="http://127.0.
 - Allow reordering setlists with drag and drop. ✅ **COMPLETED**
 - Create printable setlists. ✅ **COMPLETED**
 - Method to send email or google calendar event to bandmates with setlist, playlist and event details. (ticket created)
-- Add time, location, details, maybe other properties to setlist to hold event details (ticket created)
+- Add time, location, details, maybe other properties to setlist to hold event details ✅ **COMPLETED**
 - User profile section. (ticket created)
 - Allow linking spotify after signing up with google. (ticket created)
 - Refactor to avoid code duplication.
