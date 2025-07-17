@@ -68,6 +68,13 @@ const SongList = ({songList, add, setId}: SongListProps) => {
         setLocalSongs(normalizedSongs);
     }, [normalizedSongs]);
 
+    // Sort alphabetically by song title for repertoire (non-setlist)
+    const sortedLocalSongs = React.useMemo(() => {
+        return [...localSongs].sort((a, b) =>
+            a.song.title.localeCompare(b.song.title, undefined, { sensitivity: 'base' })
+        );
+    }, [localSongs]);
+
     const onDragEnd = (result: DropResult) => {
         if (!result.destination) return;
         const reordered = Array.from(localSongs);
@@ -104,7 +111,6 @@ const SongList = ({songList, add, setId}: SongListProps) => {
         )
     }
 
-    // Only enable drag-and-drop for set lists (not repertoire)
     if (setId && !add) {
         return (
             <DragDropContext onDragEnd={onDragEnd}>
@@ -179,13 +185,6 @@ const SongList = ({songList, add, setId}: SongListProps) => {
     }
 
     // Fallback: list layout for non-setlist (repertoire)
-    // Sort alphabetically by song title
-    const sortedLocalSongs = React.useMemo(() => {
-        return [...localSongs].sort((a, b) =>
-            a.song.title.localeCompare(b.song.title, undefined, { sensitivity: 'base' })
-        );
-    }, [localSongs]);
-
     if (!setId || add) {
         return (
             <div className="space-y-2">
