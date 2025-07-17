@@ -12,6 +12,27 @@ interface EditableFieldProps {
     onSave?: (newValue: string) => void;
 }
 
+function formatDateTime(dateString: string) {
+    if (!dateString) return '';
+    const date = new Date(dateString);
+    if (isNaN(date.getTime())) return dateString;
+    const month = date.toLocaleString('en-US', { month: 'short' });
+    const day = date.getDate();
+    const year = date.getFullYear();
+    const hours = date.getHours();
+    const minutes = date.getMinutes();
+    const ampm = hours >= 12 ? 'PM' : 'AM';
+    const hour12 = hours % 12 === 0 ? 12 : hours % 12;
+    const minuteStr = minutes.toString().padStart(2, '0');
+    // Ordinal suffix
+    const j = day % 10, k = day % 100;
+    let dayStr = day + 'th';
+    if (j === 1 && k !== 11) dayStr = day + 'st';
+    else if (j === 2 && k !== 12) dayStr = day + 'nd';
+    else if (j === 3 && k !== 13) dayStr = day + 'rd';
+    return `${month}. ${dayStr}, ${year} - ${hour12}:${minuteStr}${ampm}`;
+}
+
 const EditableField = ({ field, value, setListId, type, placeholder, onSave }: EditableFieldProps) => {
     const [isEditing, setIsEditing] = useState(false);
     const [editValue, setEditValue] = useState(value);
@@ -101,7 +122,10 @@ const EditableField = ({ field, value, setListId, type, placeholder, onSave }: E
         );
     }
 
-    const displayValue = value || <span className="text-gray-400 italic">Click to add</span>;
+    const displayValue =
+        type === 'datetime-local' && value
+            ? <span>{formatDateTime(value)}</span>
+            : value || <span className="text-gray-400 italic">Click to add</span>;
 
     return (
         <div className="group inline-flex items-center gap-1">
