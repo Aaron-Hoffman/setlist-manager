@@ -3,12 +3,33 @@ import Link from "next/link";
 import DeleteSetListButton from "./DeleteSetListButton";
 import ExportPDFButton from "./ExportPDFButton";
 
+// Extend the type to include sets for new structure
+interface SetSong {
+    id: number;
+    songId: number;
+    order: number;
+    createdAt: string | Date;
+    updatedAt: string | Date;
+    song: any;
+}
+interface Set {
+    id: number;
+    setListId: number;
+    name: string;
+    order: number;
+    setSongs: SetSong[];
+    createdAt: string | Date;
+    updatedAt: string | Date;
+}
+
+type SetListWithSets = SetListWithSongsAndBand & { sets?: Set[] };
+
 export type SetListListProps = {
     setListList: SetListWithSongsAndBand[],
     bandId: number
 }
 
-const SetListList = ({bandId, setListList}: SetListListProps) => {
+const SetListList = ({bandId, setListList}: { bandId: number, setListList: SetListWithSets[] }) => {
     return (
         <ul className="divide-y divide-gray-200">
             {setListList && setListList.map(setList => (
@@ -30,7 +51,11 @@ const SetListList = ({bandId, setListList}: SetListListProps) => {
                                     <svg className="h-4 w-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3" />
                                     </svg>
-                                    <span>{setList.songs.length} Songs</span>
+                                    <span>{
+                                        Array.isArray(setList.sets) && setList.sets.length > 0
+                                            ? setList.sets.reduce((acc: number, set: Set) => acc + (set.setSongs?.length || 0), 0)
+                                            : setList.songs.length
+                                    } Songs</span>
                                 </div>
                             </div>
                         </div>
