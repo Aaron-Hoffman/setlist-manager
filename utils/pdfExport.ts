@@ -92,7 +92,11 @@ export const exportSetListToPDF = (
       renderSet(setList.sets[0].setSongs.map((s: any) => s.song));
     } else {
       // Fallback: flat songs array (legacy)
-      renderSet(setList.songs);
+      let songsToRender = setList.songs;
+      if (isFullRepertoire) {
+        songsToRender = [...setList.songs].sort((a, b) => a.title.localeCompare(b.title, undefined, { sensitivity: 'base' }));
+      }
+      renderSet(songsToRender);
     }
 
     // Footer - simple page numbering
