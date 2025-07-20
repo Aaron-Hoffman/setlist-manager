@@ -21,47 +21,56 @@ export const exportSetListToPDF = (
     });
     doc.setFont('helvetica');
 
+    // Detect if this is a full repertoire export
+    const isFullRepertoire = setList.name === 'Full Repertoire';
+
+    // Always include artist for full repertoire unless explicitly overridden
+    const effectiveIncludeArtist =
+      typeof options.includeArtist === 'boolean'
+        ? options.includeArtist
+        : isFullRepertoire;
+
     // Helper to render a set (with optional heading)
     const renderSet = (songs: any[], setHeading?: string, startY?: number) => {
-      let yPosition = startY ?? 60;
+      let yPosition = startY ?? (isFullRepertoire ? 38 : 60);
       if (setHeading) {
-        doc.setFontSize(20);
+        doc.setFontSize(isFullRepertoire ? 13 : 20);
         doc.setFont('helvetica', 'bold');
-        doc.text(setHeading, doc.internal.pageSize.width / 2, yPosition - 10, { align: 'center' });
-        yPosition += 10;
+        doc.text(setHeading, doc.internal.pageSize.width / 2, yPosition - (isFullRepertoire ? 6 : 10), { align: 'center' });
+        yPosition += isFullRepertoire ? 6 : 10;
       }
       songs.forEach((song, index) => {
-        if (yPosition > doc.internal.pageSize.height - 40) {
+        if (yPosition > doc.internal.pageSize.height - (isFullRepertoire ? 18 : 40)) {
           doc.addPage();
-          yPosition = setHeading ? 40 : 30;
+          yPosition = setHeading ? (isFullRepertoire ? 18 : 40) : (isFullRepertoire ? 10 : 30);
         }
         const songNumber = index + 1;
-        doc.setFontSize(18);
+        doc.setFontSize(isFullRepertoire ? 12 : 18);
         doc.setFont('helvetica', 'bold');
         doc.text(`${songNumber}.`, 20, yPosition);
-        doc.setFontSize(16);
+        doc.setFontSize(isFullRepertoire ? 11 : 16);
         doc.setFont('helvetica', 'normal');
         let songText = song.title;
-        if (includeKey || includeArtist) {
+        if (includeKey || effectiveIncludeArtist) {
           const details = [];
           if (includeKey && song.key) details.push(song.key);
-          if (includeArtist && song.artist) details.push(`Artist: ${song.artist}`);
+          if (effectiveIncludeArtist && song.artist) details.push(`Artist: ${song.artist}`);
           if (details.length > 0) {
             songText += ` (${details.join(' | ')})`;
           }
         }
         doc.text(songText, 35, yPosition);
-        yPosition += 20;
+        yPosition += isFullRepertoire ? 10 : 20;
       });
     };
 
     // Band name - large and prominent (only on first page)
-    doc.setFontSize(24);
+    doc.setFontSize(isFullRepertoire ? 16 : 24);
     doc.setFont('helvetica', 'bold');
-    doc.text(setList.band.name, doc.internal.pageSize.width / 2, 25, { align: 'center' });
+    doc.text(setList.band.name, doc.internal.pageSize.width / 2, isFullRepertoire ? 18 : 25, { align: 'center' });
     // Set list name (only on first page)
-    doc.setFontSize(18);
-    doc.text(setList.name, doc.internal.pageSize.width / 2, 40, { align: 'center' });
+    doc.setFontSize(isFullRepertoire ? 13 : 18);
+    doc.text(setList.name, doc.internal.pageSize.width / 2, isFullRepertoire ? 28 : 40, { align: 'center' });
 
     // Multi-set support
     if (setList.sets && setList.sets.length > 1) {
@@ -83,17 +92,21 @@ export const exportSetListToPDF = (
       renderSet(setList.sets[0].setSongs.map((s: any) => s.song));
     } else {
       // Fallback: flat songs array (legacy)
-      renderSet(setList.songs);
+      let songsToRender = setList.songs;
+      if (isFullRepertoire) {
+        songsToRender = [...setList.songs].sort((a, b) => a.title.localeCompare(b.title, undefined, { sensitivity: 'base' }));
+      }
+      renderSet(songsToRender);
     }
 
     // Footer - simple page numbering
     const totalPages = doc.getNumberOfPages();
     for (let i = 1; i <= totalPages; i++) {
       doc.setPage(i);
-      doc.setFontSize(10);
+      doc.setFontSize(isFullRepertoire ? 8 : 10);
       doc.setFont('helvetica', 'normal');
       doc.setTextColor(100, 100, 100);
-      doc.text(`Page ${i} of ${totalPages}`, doc.internal.pageSize.width / 2, doc.internal.pageSize.height - 15, { align: 'center' });
+      doc.text(`Page ${i} of ${totalPages}`, doc.internal.pageSize.width / 2, doc.internal.pageSize.height - (isFullRepertoire ? 8 : 15), { align: 'center' });
     }
 
     // Generate filename

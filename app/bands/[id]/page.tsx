@@ -3,6 +3,7 @@ import AddSongForm from "@/components/AddSongForm";
 import ShareBandForm from "@/components/ShareBandForm";
 import SongList from "@/components/SongList";
 import RemoveFromBandButton from "@/components/RemoveFromBandButton";
+import ExportPDFButton from "@/components/ExportPDFButton";
 import prisma from "@/utils/db";
 import getUser from "@/utils/getUser";
 import Link from "next/link";
@@ -111,7 +112,28 @@ const BandPage = async (context: PageProps) => {
       <div className="bg-white shadow rounded-lg">
         <div className="px-4 py-5 sm:px-6 flex justify-between items-center">
           <h3 className="text-lg leading-6 font-medium text-gray-900">Songs</h3>
-          <AddSongForm bandId={bandId} />
+          <div className="flex items-center gap-2">
+            <AddSongForm bandId={bandId} />
+            {band.songs.length > 0 && (
+              <ExportPDFButton
+                setList={{
+                  id: 0, // dummy id for full repertoire
+                  name: "Full Repertoire",
+                  createdAt: new Date(),
+                  updatedAt: new Date(),
+                  bandId: band.id,
+                  songs: band.songs,
+                  band: band,
+                  time: null,
+                  location: null,
+                  details: null,
+                  personel: null,
+                  endTime: null,
+                }}
+                className="ml-2"
+              />
+            )}
+          </div>
         </div>
         <div className="border-t border-gray-200">
           <SongList songList={band.songs} />
