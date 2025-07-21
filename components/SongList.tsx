@@ -195,7 +195,7 @@ const SongList = ({songList, add, setId, bandId}: SongListProps) => {
                                                             {setListSong.song.artist || '—'}
                                                         </span>
                                                         <span className="flex-shrink-0">
-                                                            {formatKeyLabel(setListSong.song.key)}
+                                                            Key: {formatKeyLabel(setListSong.song.key)}
                                                         </span>
                                                     </div>
                                                     {setListSong.song.chart && (
@@ -307,7 +307,7 @@ const SongList = ({songList, add, setId, bandId}: SongListProps) => {
                                     {setListSong.song.artist || '—'}
                                 </span>
                                 <span className="flex-shrink-0">
-                                    {formatKeyLabel(setListSong.song.key)}
+                                    Key: {formatKeyLabel(setListSong.song.key)}
                                 </span>
                             </div>
                             {setListSong.song.chart && (

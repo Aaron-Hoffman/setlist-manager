@@ -54,7 +54,7 @@ export const exportSetListToPDF = (
         let songText = song.title;
         if (includeKey || effectiveIncludeArtist) {
           const details = [];
-          if (includeKey && song.key) details.push(formatKeyLabel(song.key));
+          if (includeKey && song.key) details.push(`Key: ${formatKeyLabel(song.key)}`);
           if (effectiveIncludeArtist && song.artist) details.push(`Artist: ${song.artist}`);
           if (details.length > 0) {
             songText += ` (${details.join(' | ')})`;
