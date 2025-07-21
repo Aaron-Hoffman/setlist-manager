@@ -6,6 +6,7 @@ import prisma from "./db";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { searchSpotifyTrack, createSpotifyPlaylist, getSpotifyAccessToken } from './spotify';
+import getUser from "./getUser";
 
 // Utility to normalize strings for loose matching
 function normalizeForSpotifyMatch(str: string): string {
@@ -14,7 +15,7 @@ function normalizeForSpotifyMatch(str: string): string {
         .replace(/\s*\(live\)$/i, '')    // Remove ' (Live)'
         .replace(/\s*\(remastered(\s*\d{4})?\)$/i, '')    // Remove ' (Remastered)' or ' (Remastered 2011)'
         .replace(/\s*\(album version\)$/i, '')    // Remove ' (Album Version)'
-        .replace(/\s*[-–—]\s*.*$/i, '') // Remove any suffix starting with ' - '
+        .replace(/[-–—]\s*.*$/i, '') // Remove any suffix starting with ' - '
         .replace(/\band\b|\&/gi, ' and ') // Treat 'and' and '&' as equivalent
         .replace(/[^a-z0-9]/gi, '')        // Remove punctuation and spaces
         .trim();
@@ -581,4 +582,15 @@ export const copySongToBand = async (songId: number, targetBandId: number) => {
 
     await revalidatePath(`/bands/${targetBandId}`);
     return newSong.id;
+}
+
+export const getUserBands = async () => {
+    const session = await getUser();
+    if (!session?.user?.email) return [];
+    const user = await prisma.user.findUnique({
+        where: { email: session.user.email },
+        include: { bands: true }
+    });
+    if (!user) return [];
+    return user.bands.map(band => ({ id: band.id, name: band.name }));
 }

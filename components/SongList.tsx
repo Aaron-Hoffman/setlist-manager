@@ -8,7 +8,7 @@ import { SetList, Song } from "@prisma/client";
 import { DragDropContext, Droppable, Draggable, DropResult } from '@hello-pangea/dnd';
 import { reorderSetListSongs } from '@/utils/serverActions';
 import { useTransition } from 'react';
-import { copySongToBand } from "@/utils/serverActions";
+import { copySongToBand, getUserBands } from "@/utils/serverActions";
 
 export type SetListSongWithSong = {
     id: number;
@@ -101,8 +101,7 @@ const SongList = ({songList, add, setId, bandId}: SongListProps) => {
     React.useEffect(() => {
         if (copyModalOpen !== null) {
             setLoadingBands(true);
-            fetch('/api/bands')
-                .then(res => res.json())
+            getUserBands()
                 .then(data => {
                     if (Array.isArray(data)) {
                         setBands(data.filter((b: any) => b.id !== bandId));
