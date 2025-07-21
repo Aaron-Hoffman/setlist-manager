@@ -22,7 +22,8 @@ export type SetListSongWithSong = {
 export type SongListProps = {
     songList: Song[] | SetListSongWithSong[],
     add?: boolean,
-    setId?: number
+    setId?: number,
+    bandId: number,
 }
 
 // Helper to get tags as array of strings
@@ -38,7 +39,7 @@ function getTags(tags: any): string[] {
     return [];
 }
 
-const SongList = ({songList, add, setId}: SongListProps) => {
+const SongList = ({songList, add, setId, bandId}: SongListProps) => {
     const [isPending, startTransition] = useTransition();
     
     // Convert Song[] to SetListSongWithSong[] format if needed
@@ -88,6 +89,26 @@ const SongList = ({songList, add, setId}: SongListProps) => {
             });
         }
     };
+
+    // State for copy modal
+    const [copyModalOpen, setCopyModalOpen] = React.useState<number | null>(null); // songId or null
+    const [bands, setBands] = React.useState<{id: number, name: string}[]>([]);
+    const [selectedBandId, setSelectedBandId] = React.useState<number | null>(null);
+    const [loadingBands, setLoadingBands] = React.useState(false);
+    // Fetch bands when modal opens
+    React.useEffect(() => {
+        if (copyModalOpen !== null) {
+            setLoadingBands(true);
+            fetch('/api/bands')
+                .then(res => res.json())
+                .then(data => {
+                    if (Array.isArray(data)) {
+                        setBands(data.filter((b: any) => b.id !== bandId));
+                    }
+                })
+                .finally(() => setLoadingBands(false));
+        }
+    }, [copyModalOpen, bandId]);
 
     if (!localSongs.length) {
         return (
@@ -234,11 +255,65 @@ const SongList = ({songList, add, setId}: SongListProps) => {
                             <div className="flex items-center justify-end space-x-2 flex-shrink-0">
                                 <EditSongForm song={setListSong.song} />
                                 {!setId && <DeleteSongButton id={setListSong.song.id} />}
+                                {/* Copy to Band button */}
+                                <button
+                                    type="button"
+                                    className="inline-flex items-center px-2 py-1 border border-gray-300 shadow-sm text-xs font-medium rounded text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                                    onClick={() => { setCopyModalOpen(setListSong.song.id); setSelectedBandId(null); }}
+                                >
+                                    <svg className="h-4 w-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 16h8M8 12h8m-8-4h8M4 6h16M4 18h16" />
+                                    </svg>
+                                    Copy to Band
+                                </button>
                                 {setId && <EditSetListButton song={setListSong.song} add={add || false} setId={setId} />}
                             </div>
                         </div>
                     </div>
                 ))}
+                {/* Copy to Band Modal */}
+                {copyModalOpen !== null && (
+                    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-30">
+                        <div className="bg-white rounded-lg shadow-xl p-6 w-full max-w-sm mx-2">
+                            <h3 className="text-lg font-medium text-gray-900 mb-4">Copy Song to Another Band</h3>
+                            {loadingBands ? (
+                                <div className="text-center py-4">Loading bands...</div>
+                            ) : (
+                                <form onSubmit={e => { e.preventDefault(); /* server action wiring next */ }}>
+                                    <label htmlFor="band-select" className="block text-sm font-medium text-gray-700 mb-2">Select Band</label>
+                                    <select
+                                        id="band-select"
+                                        className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm mb-4"
+                                        value={selectedBandId ?? ''}
+                                        onChange={e => setSelectedBandId(Number(e.target.value))}
+                                        required
+                                    >
+                                        <option value="" disabled>Select a band</option>
+                                        {bands.map(band => (
+                                            <option key={band.id} value={band.id}>{band.name}</option>
+                                        ))}
+                                    </select>
+                                    <div className="flex justify-end space-x-3 mt-4">
+                                        <button
+                                            type="button"
+                                            className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50"
+                                            onClick={() => setCopyModalOpen(null)}
+                                        >
+                                            Cancel
+                                        </button>
+                                        <button
+                                            type="submit"
+                                            className="px-4 py-2 text-sm font-medium text-white bg-indigo-600 border border-transparent rounded-md shadow-sm hover:bg-indigo-700"
+                                            disabled={!selectedBandId}
+                                        >
+                                            Copy
+                                        </button>
+                                    </div>
+                                </form>
+                            )}
+                        </div>
+                    </div>
+                )}
             </div>
         );
     }
