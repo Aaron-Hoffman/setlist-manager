@@ -3,7 +3,7 @@
 import KEYS from "@/constants/KEYS";
 import { editSong } from "@/utils/serverActions";
 import Modal from './Modal';
-import { ChangeEvent, useState } from 'react';
+import { ChangeEvent, useState, useEffect } from 'react';
 import ShowModalButton from './ShowModalButton';
 import { Song } from "@prisma/client";
 import EditableList from "./EditablePersonelList";
@@ -43,6 +43,17 @@ const EditSongForm = ({song}: EditSongFormProps) => {
         } catch {}
     }
     const [tags, setTags] = useState<string[]>(initialTags);
+    const [tagSuggestions, setTagSuggestions] = useState<string[]>([]);
+
+    useEffect(() => {
+        if (show && song.bandId) {
+            fetch(`/api/tags?bandId=${song.bandId}`)
+                .then(res => res.json())
+                .then(data => {
+                    if (Array.isArray(data)) setTagSuggestions(data);
+                });
+        }
+    }, [show, song.bandId]);
 
     return (
         <>
@@ -140,6 +151,7 @@ const EditSongForm = ({song}: EditSongFormProps) => {
                                     value={tags}
                                     onChange={setTags}
                                     placeholder="Add tag"
+                                    suggestions={tagSuggestions}
                                 />
                                 {/* Hidden input for form submission */}
                                 <input type="hidden" name="tags" value={JSON.stringify(tags)} />
