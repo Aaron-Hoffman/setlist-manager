@@ -116,6 +116,17 @@ const SongList = ({songList, add, setId, bandId}: SongListProps) => {
     const [renameTitle, setRenameTitle] = React.useState("");
     const [renameTarget, setRenameTarget] = React.useState<{ songId: number, bandId: number } | null>(null);
 
+    // Bulk selection state
+    const [selectedSongIds, setSelectedSongIds] = React.useState<number[]>([]);
+    const [bulkCopyMode, setBulkCopyMode] = React.useState(false);
+
+    // Helper for toggling selection
+    const toggleSongSelection = (songId: number) => {
+        setSelectedSongIds(prev => prev.includes(songId) ? prev.filter(id => id !== songId) : [...prev, songId]);
+    };
+    const selectAll = () => setSelectedSongIds(sortedLocalSongs.map(s => s.song.id));
+    const clearSelection = () => setSelectedSongIds([]);
+
     if (!localSongs.length) {
         return (
             <div className="text-center py-12">
@@ -215,73 +226,93 @@ const SongList = ({songList, add, setId, bandId}: SongListProps) => {
     if (!setId || add) {
         return (
             <div className="space-y-2">
+                {/* Bulk Copy Controls */}
+                <div className="flex items-center mb-2 gap-2">
+                    <button
+                        type="button"
+                        className="px-3 py-1 bg-indigo-600 text-white rounded disabled:opacity-50"
+                        disabled={selectedSongIds.length === 0}
+                        onClick={() => { setBulkCopyMode(true); setCopyModalOpen(-1); setSelectedBandId(null); }}
+                    >
+                        Copy Selected to Band
+                    </button>
+                    <button
+                        type="button"
+                        className="px-2 py-1 bg-gray-200 rounded text-xs"
+                        onClick={selectAll}
+                    >
+                        Select All
+                    </button>
+                    <button
+                        type="button"
+                        className="px-2 py-1 bg-gray-200 rounded text-xs"
+                        onClick={clearSelection}
+                    >
+                        Clear
+                    </button>
+                    <span className="text-xs text-gray-500 ml-2">{selectedSongIds.length} selected</span>
+                </div>
                 {sortedLocalSongs.map((setListSong) => (
-                    <div key={setListSong.id} className="bg-white rounded-lg border border-gray-200 p-4 hover:bg-gray-50 transition-colors">
-                        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
-                            <div className="flex-1 min-w-0">
-                                <div className="flex items-center gap-2 mb-1">
-                                    <h3 className="text-sm font-medium text-gray-900 truncate">
-                                        {setListSong.song.title}
-                                    </h3>
-                                    {setListSong.song.spotifyPerfectMatch && (
-                                        <span title="Perfect Spotify match" className="inline-block align-middle flex-shrink-0" aria-label="Spotify perfect match">
-                                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="inline-block">
-                                                <circle cx="12" cy="12" r="12" fill="#1ED760"/>
-                                                <path d="M17.25 16.13a.75.75 0 0 1-1.03.23c-2.82-1.73-6.39-2.12-10.6-1.17a.75.75 0 1 1-.32-1.47c4.6-1.01 8.56-.57 11.7 1.27.36.22.47.69.25 1.03zm1.47-2.93a.94.94 0 0 1-1.29.29c-3.23-2-8.16-2.59-11.98-1.52a.94.94 0 1 1-.53-1.81c4.23-1.23 9.6-.59 13.3 1.7.44.27.58.85.3 1.34zm.16-3.02c-3.7-2.21-9.81-2.42-13.19-1.42a1.13 1.13 0 1 1-.64-2.18c3.85-1.13 10.54-.89 14.7 1.6a1.13 1.13 0 0 1-1.17 1.99z" fill="#fff"/>
-                                            </svg>
-                                        </span>
-                                    )}
-                                    {/* Tags display */}
-                                    {getTags(setListSong.song.tags).length > 0 && (
-                                        <div className="flex flex-wrap gap-1">
-                                            {getTags(setListSong.song.tags).map((tag, i) => (
-                                                <span key={i} className="bg-gray-200 text-gray-700 px-2 py-0.5 rounded text-xs font-medium">
-                                                    {tag}
-                                                </span>
-                                            ))}
-                                        </div>
-                                    )}
-                                </div>
-                                <div className="flex flex-wrap items-center gap-4 text-xs text-gray-500">
-                                    <span className="truncate">
-                                        {setListSong.song.artist || '—'}
+                    <div key={setListSong.id} className="bg-white rounded-lg border border-gray-200 p-4 hover:bg-gray-50 transition-colors flex items-center">
+                        {/* Checkbox for bulk selection */}
+                        <input
+                            type="checkbox"
+                            className="mr-3"
+                            checked={selectedSongIds.includes(setListSong.song.id)}
+                            onChange={() => toggleSongSelection(setListSong.song.id)}
+                        />
+                        <div className="flex-1 min-w-0">
+                            <div className="flex items-center gap-2 mb-1">
+                                <h3 className="text-sm font-medium text-gray-900 truncate">
+                                    {setListSong.song.title}
+                                </h3>
+                                {setListSong.song.spotifyPerfectMatch && (
+                                    <span title="Perfect Spotify match" className="inline-block align-middle flex-shrink-0" aria-label="Spotify perfect match">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="inline-block">
+                                            <circle cx="12" cy="12" r="12" fill="#1ED760"/>
+                                            <path d="M17.25 16.13a.75.75 0 0 1-1.03.23c-2.82-1.73-6.39-2.12-10.6-1.17a.75.75 0 1 1-.32-1.47c4.6-1.01 8.56-.57 11.7 1.27.36.22.47.69.25 1.03zm1.47-2.93a.94.94 0 0 1-1.29.29c-3.23-2-8.16-2.59-11.98-1.52a.94.94 0 1 1-.53-1.81c4.23-1.23 9.6-.59 13.3 1.7.44.27.58.85.3 1.34zm.16-3.02c-3.7-2.21-9.81-2.42-13.19-1.42a1.13 1.13 0 1 1-.64-2.18c3.85-1.13 10.54-.89 14.7 1.6a1.13 1.13 0 0 1-1.17 1.99z" fill="#fff"/>
+                                        </svg>
                                     </span>
-                                    <span className="flex-shrink-0">
-                                        {setListSong.song.key}
-                                    </span>
-                                </div>
-                                {setListSong.song.chart && (
-                                    <div className="mt-2">
-                                        <a href={setListSong.song.chart} target="_blank" rel="noopener noreferrer" className="text-indigo-600 underline text-xs">
-                                            View Chart
-                                        </a>
+                                )}
+                                {/* Tags display */}
+                                {getTags(setListSong.song.tags).length > 0 && (
+                                    <div className="flex flex-wrap gap-1">
+                                        {getTags(setListSong.song.tags).map((tag, i) => (
+                                            <span key={i} className="bg-gray-200 text-gray-700 px-2 py-0.5 rounded text-xs font-medium">
+                                                {tag}
+                                            </span>
+                                        ))}
                                     </div>
                                 )}
                             </div>
-                            <div className="flex items-center justify-end space-x-2 flex-shrink-0">
-                                <EditSongForm song={setListSong.song} />
-                                {!setId && <DeleteSongButton id={setListSong.song.id} />}
-                                {/* Copy to Band button */}
-                                <button
-                                    type="button"
-                                    className="inline-flex items-center px-2 py-1 border border-gray-300 shadow-sm text-xs font-medium rounded text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                                    onClick={() => { setCopyModalOpen(setListSong.song.id); setSelectedBandId(null); }}
-                                >
-                                    <svg className="h-4 w-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 16h8M8 12h8m-8-4h8M4 6h16M4 18h16" />
-                                    </svg>
-                                    Copy to Band
-                                </button>
-                                {setId && <EditSetListButton song={setListSong.song} add={add || false} setId={setId} />}
+                            <div className="flex flex-wrap items-center gap-4 text-xs text-gray-500">
+                                <span className="truncate">
+                                    {setListSong.song.artist || '—'}
+                                </span>
+                                <span className="flex-shrink-0">
+                                    {setListSong.song.key}
+                                </span>
                             </div>
+                            {setListSong.song.chart && (
+                                <div className="mt-2">
+                                    <a href={setListSong.song.chart} target="_blank" rel="noopener noreferrer" className="text-indigo-600 underline text-xs">
+                                        View Chart
+                                    </a>
+                                </div>
+                            )}
+                        </div>
+                        <div className="flex items-center justify-end space-x-2 flex-shrink-0">
+                            <EditSongForm song={setListSong.song} />
+                            {!setId && <DeleteSongButton id={setListSong.song.id} />}
+                            {/* Removed per-row Copy to Band button for a cleaner UI */}
                         </div>
                     </div>
                 ))}
-                {/* Copy to Band Modal */}
+                {/* Copy to Band Modal (single or bulk) */}
                 {copyModalOpen !== null && (
                     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-30">
                         <div className="bg-white rounded-lg shadow-xl p-6 w-full max-w-sm mx-2">
-                            <h3 className="text-lg font-medium text-gray-900 mb-4">Copy Song to Another Band</h3>
+                            <h3 className="text-lg font-medium text-gray-900 mb-4">Copy Song{bulkCopyMode ? 's' : ''} to Another Band</h3>
                             {loadingBands ? (
                                 <div className="text-center py-4">Loading bands...</div>
                             ) : (
@@ -290,18 +321,38 @@ const SongList = ({songList, add, setId, bandId}: SongListProps) => {
                                     if (!selectedBandId || copyModalOpen === null) return;
                                     setCopying(true);
                                     try {
-                                        await copySongToBand(copyModalOpen, selectedBandId);
-                                        toast.success('Song copied successfully!');
+                                        if (bulkCopyMode) {
+                                            // Bulk copy
+                                            let success = 0, duplicate = 0, fail = 0;
+                                            for (const songId of selectedSongIds) {
+                                                try {
+                                                    await copySongToBand(songId, selectedBandId);
+                                                    success++;
+                                                } catch (err: any) {
+                                                    if (err?.message === 'DUPLICATE_SONG' || err?.code === 'DUPLICATE_SONG') {
+                                                        duplicate++;
+                                                    } else {
+                                                        fail++;
+                                                    }
+                                                }
+                                            }
+                                            toast.success(`${success} copied, ${duplicate} duplicate${duplicate !== 1 ? 's' : ''}${fail ? `, ${fail} failed` : ''}`);
+                                            setBulkCopyMode(false);
+                                            setSelectedSongIds([]);
+                                        } else {
+                                            await copySongToBand(copyModalOpen, selectedBandId);
+                                            toast.success('Song copied successfully!');
+                                        }
                                         setCopyModalOpen(null);
                                     } catch (err: any) {
-                                        if (err?.message === 'DUPLICATE_SONG' || err?.code === 'DUPLICATE_SONG') {
-                                            // Show rename modal
+                                        if (!bulkCopyMode && (err?.message === 'DUPLICATE_SONG' || err?.code === 'DUPLICATE_SONG')) {
+                                            // Show rename modal (single only)
                                             const song = localSongs.find(s => s.song.id === copyModalOpen)?.song;
                                             setRenameTitle(song?.title || "");
                                             setRenameTarget({ songId: copyModalOpen, bandId: selectedBandId });
                                             setShowRenameModal(true);
                                         } else {
-                                            toast.error('Failed to copy song.');
+                                            toast.error('Failed to copy song(s).');
                                         }
                                     } finally {
                                         setCopying(false);
@@ -324,7 +375,8 @@ const SongList = ({songList, add, setId, bandId}: SongListProps) => {
                                         <button
                                             type="button"
                                             className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50"
-                                            onClick={() => setCopyModalOpen(null)}
+                                            onClick={() => { setCopyModalOpen(null); setBulkCopyMode(false); }}
+                                            disabled={copying}
                                         >
                                             Cancel
                                         </button>
@@ -333,7 +385,7 @@ const SongList = ({songList, add, setId, bandId}: SongListProps) => {
                                             className="px-4 py-2 text-sm font-medium text-white bg-indigo-600 border border-transparent rounded-md shadow-sm hover:bg-indigo-700"
                                             disabled={!selectedBandId || copying}
                                         >
-                                            {copying ? 'Copying...' : 'Copy'}
+                                            {copying ? 'Copying...' : (bulkCopyMode ? `Copy ${selectedSongIds.length} Songs` : 'Copy')}
                                         </button>
                                     </div>
                                 </form>
@@ -341,7 +393,7 @@ const SongList = ({songList, add, setId, bandId}: SongListProps) => {
                         </div>
                     </div>
                 )}
-                {/* Rename Modal for duplicate song */}
+                {/* Rename Modal for duplicate song (single only) */}
                 {showRenameModal && (
                     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-30">
                         <div className="bg-white rounded-lg shadow-xl p-6 w-full max-w-sm mx-2">
