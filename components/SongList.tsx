@@ -230,10 +230,13 @@ const SongList = ({songList, add, setId, bandId}: SongListProps) => {
                 <div className="flex items-center mb-2 gap-2">
                     <button
                         type="button"
-                        className="px-3 py-1 bg-indigo-600 text-white rounded disabled:opacity-50"
+                        className="px-2 py-1 text-xs rounded border border-indigo-200 bg-indigo-50 text-indigo-700 hover:bg-indigo-100 disabled:opacity-50 mb-1 mt-1 ml-2"
                         disabled={selectedSongIds.length === 0}
                         onClick={() => { setBulkCopyMode(true); setCopyModalOpen(-1); setSelectedBandId(null); }}
                     >
+                        <svg className="h-4 w-4 mr-1 inline-block align-text-bottom" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 16h8M8 12h8m-8-4h8M4 6h16M4 18h16" />
+                        </svg>
                         Copy Selected to Band
                     </button>
                     <button
