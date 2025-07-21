@@ -90,7 +90,7 @@ const SetlistPage = async (context: PageProps) => {
                                 </div>
                             </div>
                         ) : (
-                            <SongList songList={songs}/>
+                            <SongList songList={songs} add={true} bandId={Number(bandId)} />
                         )}
                     </div>
                 </div>

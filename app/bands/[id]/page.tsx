@@ -136,7 +136,7 @@ const BandPage = async (context: PageProps) => {
           </div>
         </div>
         <div className="border-t border-gray-200">
-          <SongList songList={band.songs} />
+          <SongList songList={band.songs} bandId={Number(bandId)} />
         </div>
       </div>
 

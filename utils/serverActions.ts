@@ -6,6 +6,9 @@ import prisma from "./db";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { searchSpotifyTrack, createSpotifyPlaylist, getSpotifyAccessToken } from './spotify';
+import getUser from "./getUser";
+import fs from 'fs';
+import path from 'path';
 
 // Utility to normalize strings for loose matching
 function normalizeForSpotifyMatch(str: string): string {
@@ -14,7 +17,7 @@ function normalizeForSpotifyMatch(str: string): string {
         .replace(/\s*\(live\)$/i, '')    // Remove ' (Live)'
         .replace(/\s*\(remastered(\s*\d{4})?\)$/i, '')    // Remove ' (Remastered)' or ' (Remastered 2011)'
         .replace(/\s*\(album version\)$/i, '')    // Remove ' (Album Version)'
-        .replace(/\s*[-–—]\s*.*$/i, '') // Remove any suffix starting with ' - '
+        .replace(/[-–—]\s*.*$/i, '') // Remove any suffix starting with ' - '
         .replace(/\band\b|\&/gi, ' and ') // Treat 'and' and '&' as equivalent
         .replace(/[^a-z0-9]/gi, '')        // Remove punctuation and spaces
         .trim();
@@ -520,4 +523,114 @@ export async function updateSetListField(
         where: { id: setListId },
         data: updateData,
     });
+}
+
+export const copySongToBand = async (songId: number, targetBandId: number, newTitle?: string) => {
+    // Fetch the song to copy
+    const song = await prisma.song.findUnique({ where: { id: songId } });
+    if (!song) throw new Error('Song not found');
+
+    // Use newTitle if provided
+    const titleToUse = newTitle || song.title;
+
+    // Check for duplicate in target band
+    const duplicate = await prisma.song.findFirst({
+        where: {
+            bandId: targetBandId,
+            title: titleToUse,
+            artist: song.artist || null,
+        },
+    });
+    if (duplicate) {
+        const error = new Error('DUPLICATE_SONG');
+        (error as any).code = 'DUPLICATE_SONG';
+        throw error;
+    }
+
+    // Prepare tags
+    let tags: any = undefined;
+    if (song.tags) {
+        if (Array.isArray(song.tags)) {
+            tags = song.tags;
+        } else if (typeof song.tags === 'string') {
+            try {
+                const parsed = JSON.parse(song.tags);
+                if (Array.isArray(parsed)) tags = parsed;
+            } catch {}
+        }
+    }
+
+    // Copy chart file if present and local
+    let newChartPath: string | null = null;
+    if (song.chart && typeof song.chart === 'string' && song.chart.startsWith('/')) {
+        try {
+            const uploadsDir = path.join(process.cwd(), 'public');
+            const oldChartPath = path.join(uploadsDir, song.chart);
+            if (fs.existsSync(oldChartPath)) {
+                const ext = path.extname(song.chart);
+                const base = path.basename(song.chart, ext);
+                const dir = path.dirname(song.chart);
+                const newFileName = `${base}_copy_${Date.now()}${ext}`;
+                const newFilePath = path.join(uploadsDir, dir, newFileName);
+                fs.copyFileSync(oldChartPath, newFilePath);
+                newChartPath = path.join(dir, newFileName).replace(/\\/g, '/');
+            }
+        } catch (e) {
+            // If copy fails, leave chart as null
+            newChartPath = null;
+        }
+    }
+
+    // Recalculate spotifyPerfectMatch for the new band/song
+    let spotifyPerfectMatch = false;
+    try {
+        const accessToken = await getSpotifyAccessToken();
+        if (accessToken) {
+            const spotifyTrack = await searchSpotifyTrack(
+                `${titleToUse} ${song.artist ?? ''}`.trim(),
+                accessToken
+            );
+            if (spotifyTrack) {
+                const normTitle = normalizeForSpotifyMatch(titleToUse);
+                const normSpotifyTitle = normalizeForSpotifyMatch(spotifyTrack.name);
+                const titleMatch = normTitle === normSpotifyTitle;
+                const normArtist = song.artist ? normalizeForSpotifyMatch(song.artist) : '';
+                const artistMatch = song.artist
+                    ? spotifyTrack.artists.some(a => normalizeForSpotifyMatch(a.name) === normArtist)
+                    : true;
+                if (titleMatch && artistMatch) {
+                    spotifyPerfectMatch = true;
+                }
+            }
+        }
+    } catch (e) {
+        // Ignore errors, just fallback to false
+    }
+
+    // Create the new song for the target band
+    const newSong = await prisma.song.create({
+        data: {
+            title: titleToUse,
+            artist: song.artist,
+            key: song.key,
+            chart: newChartPath || null,
+            tags: tags,
+            bandId: targetBandId,
+            spotifyPerfectMatch,
+        },
+    });
+
+    await revalidatePath(`/bands/${targetBandId}`);
+    return newSong.id;
+}
+
+export const getUserBands = async () => {
+    const session = await getUser();
+    if (!session?.user?.email) return [];
+    const user = await prisma.user.findUnique({
+        where: { email: session.user.email },
+        include: { bands: true }
+    });
+    if (!user) return [];
+    return user.bands.map(band => ({ id: band.id, name: band.name }));
 }

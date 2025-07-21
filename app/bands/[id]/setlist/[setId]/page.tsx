@@ -149,7 +149,7 @@ const SetlistPage = async (context: any) => {
                         <h3 className="text-lg leading-6 font-medium text-gray-900">Repertoire</h3>
                     </div>
                     <div className="border-t border-gray-200">
-                        <SongList songList={songs} add={true} />
+                        <SongList songList={songs} add={true} bandId={Number(bandId)} />
                     </div>
                 </div>
 
@@ -173,7 +173,7 @@ const SetlistPage = async (context: any) => {
                                     createdAt: s.createdAt,
                                     updatedAt: s.updatedAt,
                                     song: s.song
-                                }))} add={false} setId={set.id} />
+                                }))} add={false} setId={set.id} bandId={Number(bandId)} />
                             </div>
                         ))}
                     </div>
