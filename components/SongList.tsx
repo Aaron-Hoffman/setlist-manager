@@ -8,6 +8,7 @@ import { SetList, Song } from "@prisma/client";
 import { DragDropContext, Droppable, Draggable, DropResult } from '@hello-pangea/dnd';
 import { reorderSetListSongs } from '@/utils/serverActions';
 import { useTransition } from 'react';
+import { copySongToBand } from "@/utils/serverActions";
 
 export type SetListSongWithSong = {
     id: number;
@@ -95,6 +96,7 @@ const SongList = ({songList, add, setId, bandId}: SongListProps) => {
     const [bands, setBands] = React.useState<{id: number, name: string}[]>([]);
     const [selectedBandId, setSelectedBandId] = React.useState<number | null>(null);
     const [loadingBands, setLoadingBands] = React.useState(false);
+    const [copying, setCopying] = React.useState(false);
     // Fetch bands when modal opens
     React.useEffect(() => {
         if (copyModalOpen !== null) {
@@ -279,7 +281,20 @@ const SongList = ({songList, add, setId, bandId}: SongListProps) => {
                             {loadingBands ? (
                                 <div className="text-center py-4">Loading bands...</div>
                             ) : (
-                                <form onSubmit={e => { e.preventDefault(); /* server action wiring next */ }}>
+                                <form onSubmit={async e => {
+                                    e.preventDefault();
+                                    if (!selectedBandId || copyModalOpen === null) return;
+                                    setCopying(true);
+                                    try {
+                                        await copySongToBand(copyModalOpen, selectedBandId);
+                                        alert('Song copied successfully!'); // Replace with toast if you use one
+                                        setCopyModalOpen(null);
+                                    } catch (err) {
+                                        alert('Failed to copy song.');
+                                    } finally {
+                                        setCopying(false);
+                                    }
+                                }}>
                                     <label htmlFor="band-select" className="block text-sm font-medium text-gray-700 mb-2">Select Band</label>
                                     <select
                                         id="band-select"
@@ -304,9 +319,9 @@ const SongList = ({songList, add, setId, bandId}: SongListProps) => {
                                         <button
                                             type="submit"
                                             className="px-4 py-2 text-sm font-medium text-white bg-indigo-600 border border-transparent rounded-md shadow-sm hover:bg-indigo-700"
-                                            disabled={!selectedBandId}
+                                            disabled={!selectedBandId || copying}
                                         >
-                                            Copy
+                                            {copying ? 'Copying...' : 'Copy'}
                                         </button>
                                     </div>
                                 </form>

@@ -521,3 +521,64 @@ export async function updateSetListField(
         data: updateData,
     });
 }
+
+export const copySongToBand = async (songId: number, targetBandId: number) => {
+    // Fetch the song to copy
+    const song = await prisma.song.findUnique({ where: { id: songId } });
+    if (!song) throw new Error('Song not found');
+
+    // Prepare tags
+    let tags: any = undefined;
+    if (song.tags) {
+        if (Array.isArray(song.tags)) {
+            tags = song.tags;
+        } else if (typeof song.tags === 'string') {
+            try {
+                const parsed = JSON.parse(song.tags);
+                if (Array.isArray(parsed)) tags = parsed;
+            } catch {}
+        }
+    }
+
+    // Recalculate spotifyPerfectMatch for the new band/song
+    let spotifyPerfectMatch = false;
+    try {
+        const accessToken = await getSpotifyAccessToken();
+        if (accessToken) {
+            const spotifyTrack = await searchSpotifyTrack(
+                `${song.title} ${song.artist ?? ''}`.trim(),
+                accessToken
+            );
+            if (spotifyTrack) {
+                const normTitle = normalizeForSpotifyMatch(song.title);
+                const normSpotifyTitle = normalizeForSpotifyMatch(spotifyTrack.name);
+                const titleMatch = normTitle === normSpotifyTitle;
+                const normArtist = song.artist ? normalizeForSpotifyMatch(song.artist) : '';
+                const artistMatch = song.artist
+                    ? spotifyTrack.artists.some(a => normalizeForSpotifyMatch(a.name) === normArtist)
+                    : true;
+                if (titleMatch && artistMatch) {
+                    spotifyPerfectMatch = true;
+                }
+            }
+        }
+    } catch (e) {
+        // Ignore errors, just fallback to false
+    }
+
+    // Create the new song for the target band
+    const newSong = await prisma.song.create({
+        data: {
+            title: song.title,
+            artist: song.artist,
+            key: song.key,
+            chart: song.chart,
+            tags: tags,
+            bandId: targetBandId,
+            spotifyPerfectMatch,
+        },
+    });
+
+    await revalidatePath(`/bands/${targetBandId}`);
+    return newSong.id;
+}
