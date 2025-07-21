@@ -9,6 +9,7 @@ import { DragDropContext, Droppable, Draggable, DropResult } from '@hello-pangea
 import { reorderSetListSongs } from '@/utils/serverActions';
 import { useTransition } from 'react';
 import { copySongToBand, getUserBands } from "@/utils/serverActions";
+import toast from 'react-hot-toast';
 
 export type SetListSongWithSong = {
     id: number;
@@ -286,10 +287,10 @@ const SongList = ({songList, add, setId, bandId}: SongListProps) => {
                                     setCopying(true);
                                     try {
                                         await copySongToBand(copyModalOpen, selectedBandId);
-                                        alert('Song copied successfully!'); // Replace with toast if you use one
+                                        toast.success('Song copied successfully!');
                                         setCopyModalOpen(null);
                                     } catch (err) {
-                                        alert('Failed to copy song.');
+                                        toast.error('Failed to copy song.');
                                     } finally {
                                         setCopying(false);
                                     }
