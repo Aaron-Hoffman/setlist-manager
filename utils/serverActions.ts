@@ -523,10 +523,27 @@ export async function updateSetListField(
     });
 }
 
-export const copySongToBand = async (songId: number, targetBandId: number) => {
+export const copySongToBand = async (songId: number, targetBandId: number, newTitle?: string) => {
     // Fetch the song to copy
     const song = await prisma.song.findUnique({ where: { id: songId } });
     if (!song) throw new Error('Song not found');
+
+    // Use newTitle if provided
+    const titleToUse = newTitle || song.title;
+
+    // Check for duplicate in target band
+    const duplicate = await prisma.song.findFirst({
+        where: {
+            bandId: targetBandId,
+            title: titleToUse,
+            artist: song.artist || null,
+        },
+    });
+    if (duplicate) {
+        const error = new Error('DUPLICATE_SONG');
+        (error as any).code = 'DUPLICATE_SONG';
+        throw error;
+    }
 
     // Prepare tags
     let tags: any = undefined;
@@ -547,11 +564,11 @@ export const copySongToBand = async (songId: number, targetBandId: number) => {
         const accessToken = await getSpotifyAccessToken();
         if (accessToken) {
             const spotifyTrack = await searchSpotifyTrack(
-                `${song.title} ${song.artist ?? ''}`.trim(),
+                `${titleToUse} ${song.artist ?? ''}`.trim(),
                 accessToken
             );
             if (spotifyTrack) {
-                const normTitle = normalizeForSpotifyMatch(song.title);
+                const normTitle = normalizeForSpotifyMatch(titleToUse);
                 const normSpotifyTitle = normalizeForSpotifyMatch(spotifyTrack.name);
                 const titleMatch = normTitle === normSpotifyTitle;
                 const normArtist = song.artist ? normalizeForSpotifyMatch(song.artist) : '';
@@ -570,7 +587,7 @@ export const copySongToBand = async (songId: number, targetBandId: number) => {
     // Create the new song for the target band
     const newSong = await prisma.song.create({
         data: {
-            title: song.title,
+            title: titleToUse,
             artist: song.artist,
             key: song.key,
             chart: song.chart,

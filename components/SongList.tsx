@@ -112,6 +112,10 @@ const SongList = ({songList, add, setId, bandId}: SongListProps) => {
         }
     }, [copyModalOpen, bandId]);
 
+    const [showRenameModal, setShowRenameModal] = React.useState(false);
+    const [renameTitle, setRenameTitle] = React.useState("");
+    const [renameTarget, setRenameTarget] = React.useState<{ songId: number, bandId: number } | null>(null);
+
     if (!localSongs.length) {
         return (
             <div className="text-center py-12">
@@ -289,8 +293,16 @@ const SongList = ({songList, add, setId, bandId}: SongListProps) => {
                                         await copySongToBand(copyModalOpen, selectedBandId);
                                         toast.success('Song copied successfully!');
                                         setCopyModalOpen(null);
-                                    } catch (err) {
-                                        toast.error('Failed to copy song.');
+                                    } catch (err: any) {
+                                        if (err?.message === 'DUPLICATE_SONG' || err?.code === 'DUPLICATE_SONG') {
+                                            // Show rename modal
+                                            const song = localSongs.find(s => s.song.id === copyModalOpen)?.song;
+                                            setRenameTitle(song?.title || "");
+                                            setRenameTarget({ songId: copyModalOpen, bandId: selectedBandId });
+                                            setShowRenameModal(true);
+                                        } else {
+                                            toast.error('Failed to copy song.');
+                                        }
                                     } finally {
                                         setCopying(false);
                                     }
@@ -326,6 +338,53 @@ const SongList = ({songList, add, setId, bandId}: SongListProps) => {
                                     </div>
                                 </form>
                             )}
+                        </div>
+                    </div>
+                )}
+                {/* Rename Modal for duplicate song */}
+                {showRenameModal && (
+                    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-30">
+                        <div className="bg-white rounded-lg shadow-xl p-6 w-full max-w-sm mx-2">
+                            <h3 className="text-lg font-medium text-gray-900 mb-4">Duplicate Song</h3>
+                            <p className="mb-2 text-sm text-gray-700">A song with this title and artist already exists in the target band. Please enter a new title to copy the song, or cancel.</p>
+                            <input
+                                type="text"
+                                className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm mb-4"
+                                value={renameTitle}
+                                onChange={e => setRenameTitle(e.target.value)}
+                                autoFocus
+                            />
+                            <div className="flex justify-end space-x-3 mt-4">
+                                <button
+                                    type="button"
+                                    className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50"
+                                    onClick={() => { setShowRenameModal(false); setRenameTarget(null); }}
+                                >
+                                    Cancel
+                                </button>
+                                <button
+                                    type="button"
+                                    className="px-4 py-2 text-sm font-medium text-white bg-indigo-600 border border-transparent rounded-md shadow-sm hover:bg-indigo-700"
+                                    onClick={async () => {
+                                        if (!renameTarget || !renameTitle.trim()) return;
+                                        setCopying(true);
+                                        try {
+                                            await copySongToBand(renameTarget.songId, renameTarget.bandId, renameTitle.trim());
+                                            toast.success('Song copied successfully!');
+                                            setShowRenameModal(false);
+                                            setRenameTarget(null);
+                                            setCopyModalOpen(null);
+                                        } catch (err) {
+                                            toast.error('Failed to copy song.');
+                                        } finally {
+                                            setCopying(false);
+                                        }
+                                    }}
+                                    disabled={!renameTitle.trim() || copying}
+                                >
+                                    {copying ? 'Copying...' : 'Copy'}
+                                </button>
+                            </div>
                         </div>
                     </div>
                 )}
