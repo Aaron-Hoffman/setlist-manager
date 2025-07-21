@@ -7,6 +7,8 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { searchSpotifyTrack, createSpotifyPlaylist, getSpotifyAccessToken } from './spotify';
 import getUser from "./getUser";
+import fs from 'fs';
+import path from 'path';
 
 // Utility to normalize strings for loose matching
 function normalizeForSpotifyMatch(str: string): string {
@@ -558,6 +560,27 @@ export const copySongToBand = async (songId: number, targetBandId: number, newTi
         }
     }
 
+    // Copy chart file if present and local
+    let newChartPath: string | null = null;
+    if (song.chart && typeof song.chart === 'string' && song.chart.startsWith('/')) {
+        try {
+            const uploadsDir = path.join(process.cwd(), 'public');
+            const oldChartPath = path.join(uploadsDir, song.chart);
+            if (fs.existsSync(oldChartPath)) {
+                const ext = path.extname(song.chart);
+                const base = path.basename(song.chart, ext);
+                const dir = path.dirname(song.chart);
+                const newFileName = `${base}_copy_${Date.now()}${ext}`;
+                const newFilePath = path.join(uploadsDir, dir, newFileName);
+                fs.copyFileSync(oldChartPath, newFilePath);
+                newChartPath = path.join(dir, newFileName).replace(/\\/g, '/');
+            }
+        } catch (e) {
+            // If copy fails, leave chart as null
+            newChartPath = null;
+        }
+    }
+
     // Recalculate spotifyPerfectMatch for the new band/song
     let spotifyPerfectMatch = false;
     try {
@@ -590,7 +613,7 @@ export const copySongToBand = async (songId: number, targetBandId: number, newTi
             title: titleToUse,
             artist: song.artist,
             key: song.key,
-            chart: song.chart,
+            chart: newChartPath || null,
             tags: tags,
             bandId: targetBandId,
             spotifyPerfectMatch,
