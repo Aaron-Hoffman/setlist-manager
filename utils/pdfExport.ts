@@ -1,5 +1,6 @@
 import jsPDF from 'jspdf';
 import { SetListWithSongsAndBand, PDFExportOptions, PDFExportResult } from '@/types/pdf';
+import { formatKeyLabel } from './formatKeyLabel';
 
 export const exportSetListToPDF = (
   setList: any, // Accepts sets for multi-set support
@@ -53,7 +54,7 @@ export const exportSetListToPDF = (
         let songText = song.title;
         if (includeKey || effectiveIncludeArtist) {
           const details = [];
-          if (includeKey && song.key) details.push(song.key);
+          if (includeKey && song.key) details.push(`Key: ${formatKeyLabel(song.key)}`);
           if (effectiveIncludeArtist && song.artist) details.push(`Artist: ${song.artist}`);
           if (details.length > 0) {
             songText += ` (${details.join(' | ')})`;

@@ -10,6 +10,7 @@ import { reorderSetListSongs } from '@/utils/serverActions';
 import { useTransition } from 'react';
 import { copySongToBand, getUserBands } from "@/utils/serverActions";
 import toast from 'react-hot-toast';
+import { formatKeyLabel } from '../utils/formatKeyLabel';
 
 export type SetListSongWithSong = {
     id: number;
@@ -194,7 +195,7 @@ const SongList = ({songList, add, setId, bandId}: SongListProps) => {
                                                             {setListSong.song.artist || '—'}
                                                         </span>
                                                         <span className="flex-shrink-0">
-                                                            {setListSong.song.key}
+                                                            Key: {formatKeyLabel(setListSong.song.key)}
                                                         </span>
                                                     </div>
                                                     {setListSong.song.chart && (
@@ -306,7 +307,7 @@ const SongList = ({songList, add, setId, bandId}: SongListProps) => {
                                     {setListSong.song.artist || '—'}
                                 </span>
                                 <span className="flex-shrink-0">
-                                    {setListSong.song.key}
+                                    Key: {formatKeyLabel(setListSong.song.key)}
                                 </span>
                             </div>
                             {setListSong.song.chart && (

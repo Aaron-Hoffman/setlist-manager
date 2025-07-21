@@ -5,6 +5,7 @@ import Modal from "./Modal";
 import KEYS from "@/constants/KEYS";
 import { addSong } from "@/utils/serverActions";
 import EditableList from "./EditablePersonelList";
+import { formatKeyLabel } from '../utils/formatKeyLabel';
 
 async function uploadChartFile(file: File): Promise<string | null> {
     const formData = new FormData();
@@ -114,7 +115,7 @@ const AddSongForm = ({ bandId }: AddSongFormProps) => {
                                     required
                                 >
                                     {KEYS.map((key: { label: string; value: string }) => (
-                                        <option value={key.label} key={key.value}>{key.label}</option>
+                                        <option value={key.label} key={key.value}>{formatKeyLabel(key.label)}</option>
                                     ))}
                                 </select>
                             </div>

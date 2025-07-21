@@ -7,6 +7,7 @@ import { ChangeEvent, useState, useEffect } from 'react';
 import ShowModalButton from './ShowModalButton';
 import { Song } from "@prisma/client";
 import EditableList from "./EditablePersonelList";
+import { formatKeyLabel } from '../utils/formatKeyLabel';
 
 async function uploadChartFile(file: File): Promise<string | null> {
     const formData = new FormData();
@@ -140,7 +141,7 @@ const EditSongForm = ({song}: EditSongFormProps) => {
                                     className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                                     required
                                 >
-                                    {KEYS.map(key => <option value={key.label} key={key.value}>{key.label}</option>)}
+                                    {KEYS.map(key => <option value={key.label} key={key.value}>{formatKeyLabel(key.label)}</option>)}
                                 </select>
                             </div>
                             <div>
