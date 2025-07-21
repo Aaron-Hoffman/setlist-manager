@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import Modal from "./Modal";
 import KEYS from "@/constants/KEYS";
 import { addSong } from "@/utils/serverActions";
@@ -28,6 +28,17 @@ const AddSongForm = ({ bandId }: AddSongFormProps) => {
     const [chartFile, setChartFile] = useState<File | null>(null);
     const [uploading, setUploading] = useState(false);
     const [tags, setTags] = useState<string[]>([]);
+    const [tagSuggestions, setTagSuggestions] = useState<string[]>([]);
+
+    useEffect(() => {
+        if (show) {
+            fetch(`/api/tags?bandId=${bandId}`)
+                .then(res => res.json())
+                .then(data => {
+                    if (Array.isArray(data)) setTagSuggestions(data);
+                });
+        }
+    }, [show, bandId]);
 
     return (
         <>
@@ -128,6 +139,7 @@ const AddSongForm = ({ bandId }: AddSongFormProps) => {
                                     value={tags}
                                     onChange={setTags}
                                     placeholder="Add tag"
+                                    suggestions={tagSuggestions}
                                 />
                                 {/* Hidden input for form submission */}
                                 <input type="hidden" name="tags" value={JSON.stringify(tags)} />
