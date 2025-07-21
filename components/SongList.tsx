@@ -253,13 +253,26 @@ const SongList = ({songList, add, setId, bandId}: SongListProps) => {
                     <span className="text-xs text-gray-500 ml-2">{selectedSongIds.length} selected</span>
                 </div>
                 {sortedLocalSongs.map((setListSong) => (
-                    <div key={setListSong.id} className="bg-white rounded-lg border border-gray-200 p-4 hover:bg-gray-50 transition-colors flex items-center">
+                    <div
+                        key={setListSong.id}
+                        className="bg-white rounded-lg border border-gray-200 p-4 hover:bg-gray-50 transition-colors flex items-center cursor-pointer"
+                        onClick={e => {
+                            // Only toggle if not clicking on a button or input
+                            if (
+                                e.target instanceof HTMLElement &&
+                                !['INPUT', 'BUTTON', 'SVG', 'A'].includes(e.target.tagName)
+                            ) {
+                                toggleSongSelection(setListSong.song.id);
+                            }
+                        }}
+                    >
                         {/* Checkbox for bulk selection */}
                         <input
                             type="checkbox"
                             className="mr-3"
                             checked={selectedSongIds.includes(setListSong.song.id)}
                             onChange={() => toggleSongSelection(setListSong.song.id)}
+                            onClick={e => e.stopPropagation()}
                         />
                         <div className="flex-1 min-w-0">
                             <div className="flex items-center gap-2 mb-1">
