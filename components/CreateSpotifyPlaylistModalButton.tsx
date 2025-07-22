@@ -5,7 +5,7 @@ import { signIn } from "next-auth/react";
 import { Song } from "@prisma/client";
 
 // Client component only
-export default function CreateSpotifyPlaylistModalButton({ setListId, hasSpotify, songs }: { setListId: string, hasSpotify: boolean, songs: Song[] }) {
+export default function CreateSpotifyPlaylistModalButton({ setListId, hasSpotify, songs, isBand = false }: { setListId: string, hasSpotify: boolean, songs: Song[], isBand?: boolean }) {
   const [showModal, setShowModal] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
   const [playlistUrl, setPlaylistUrl] = useState("");
@@ -33,7 +33,7 @@ export default function CreateSpotifyPlaylistModalButton({ setListId, hasSpotify
       const res = await fetch("/api/create-spotify-playlist", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ setListId: Number(setListId) }),
+        body: JSON.stringify({ setListId: Number(setListId), isBand: isBand }),
       });
       const data = await res.json();
       if (data.url) {
