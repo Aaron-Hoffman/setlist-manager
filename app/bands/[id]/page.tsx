@@ -4,6 +4,7 @@ import ShareBandForm from "@/components/ShareBandForm";
 import SongList from "@/components/SongList";
 import RemoveFromBandButton from "@/components/RemoveFromBandButton";
 import ExportPDFButton from "@/components/ExportPDFButton";
+import CreateSpotifyPlaylistModalButton from '@/components/CreateSpotifyPlaylistModalButton';
 import prisma from "@/utils/db";
 import getUser from "@/utils/getUser";
 import Link from "next/link";
@@ -11,6 +12,8 @@ import Link from "next/link";
 const BandPage = async (context: PageProps) => {
   const bandId = context.params.id;
   const session = await getUser();
+  const accessToken = session?.accessToken;
+  const hasSpotify = !!accessToken;
 
   const band = await prisma.band.findUnique({
     where: {
@@ -132,6 +135,11 @@ const BandPage = async (context: PageProps) => {
                 }}
                 className="ml-2"
               />
+            )}
+            {band.songs.length > 0 && (
+              <div className="ml-3">
+                <CreateSpotifyPlaylistModalButton setListId={String(bandId)} hasSpotify={hasSpotify} songs={band.songs} isBand={true} />
+              </div>
             )}
           </div>
         </div>
