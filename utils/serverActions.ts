@@ -377,6 +377,51 @@ export const editSong = async (songId: number, formData: FormData) => {
     return revalidatePath('/')
 }
 
+export async function createSpotifyPlaylistFromBand(bandId: number) {
+  const band = await prisma.band.findUnique({
+    where: { id: bandId },
+    include: { songs: true },
+    })
+
+  if (!band) {
+    throw new Error('Band not found');
+  }
+
+  const accessToken = await getSpotifyAccessToken();
+  if (!accessToken) {
+    throw new Error('No valid Spotify access token found. Please reconnect your Spotify account by signing out and signing back in with Spotify.');
+  }
+
+  const trackUris: string[] = [];
+  for (const song of band.songs) {
+    if (!song.spotifyPerfectMatch) continue; // Only include perfect matches
+    const spotifyTrack = await searchSpotifyTrack(
+      `${song.title} ${song.artist}`,
+      accessToken
+    );
+    if (spotifyTrack) {
+      trackUris.push(spotifyTrack.uri);
+    }
+  }
+
+  if (trackUris.length === 0) {
+    throw new Error('No matching tracks found on Spotify');
+  }
+
+  const playlistUrl = await createSpotifyPlaylist(
+    `${band.name} - Full Repertoire`,
+    `Band created from Setlist Manager`,
+    trackUris,
+    accessToken
+  );
+
+  if (!playlistUrl) {
+    throw new Error('Failed to create Spotify playlist. Please try again or reconnect your Spotify account.');
+  }
+
+  return playlistUrl;
+} 
+
 // Updated createSpotifyPlaylistFromSetlist to use Sets and SetSongs
 export async function createSpotifyPlaylistFromSetlist(setListId: number) {
   const setList = await prisma.setList.findUnique({
