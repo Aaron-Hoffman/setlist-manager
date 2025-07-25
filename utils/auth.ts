@@ -37,14 +37,6 @@ export const authOptions: NextAuthOptions = {
             where: {
               email: credentials.email
             },
-            include: {
-                bands: {
-                    include: {
-                        songs: true,
-                        setLists: true
-                    }
-                }
-            }
           });
 
           if (!user || !user.password) {
@@ -87,9 +79,6 @@ export const authOptions: NextAuthOptions = {
           if (token.expiresAt) {
             (session as any).expiresAt = token.expiresAt;
           }
-          if (token.bands) {
-            (session.user as any).bands = token.bands;
-          }
         }
         return session;
       },
@@ -115,27 +104,11 @@ export const authOptions: NextAuthOptions = {
         if (token.email) {
           dbUser = await prisma.user.findFirst({
             where: { email: token.email as string },
-            include: {
-              bands: {
-                include: {
-                  songs: true,
-                  setLists: true,
-                },
-              },
-            },
           });
         }
         if (!dbUser && token.id) {
           dbUser = await prisma.user.findUnique({
             where: { id: token.id as string },
-            include: {
-              bands: {
-                include: {
-                  songs: true,
-                  setLists: true,
-                },
-              },
-            },
           });
         }
         if (!dbUser) {
@@ -149,7 +122,6 @@ export const authOptions: NextAuthOptions = {
           accessToken: token.accessToken,
           refreshToken: token.refreshToken,
           expiresAt: token.expiresAt,
-          bands: dbUser.bands,
         };
       },
       async redirect({ url, baseUrl }) {
