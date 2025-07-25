@@ -1,6 +1,7 @@
 import jsPDF from 'jspdf';
 import { SetListWithSongsAndBand, PDFExportOptions, PDFExportResult } from '@/types/pdf';
 import { formatKeyLabel } from './formatKeyLabel';
+import "../public/fonts/DejaVuSans-normal.js"; // Adjust path as needed
 
 export const exportSetListToPDF = (
   setList: any, // Accepts sets for multi-set support
@@ -20,7 +21,7 @@ export const exportSetListToPDF = (
       unit: 'mm',
       format: pageSize
     });
-    doc.setFont('helvetica');
+    doc.setFont('DejaVuSans', 'normal');
 
     // Detect if this is a full repertoire export
     const isFullRepertoire = setList.name === 'Full Repertoire';
@@ -36,7 +37,7 @@ export const exportSetListToPDF = (
       let yPosition = startY ?? (isFullRepertoire ? 38 : 60);
       if (setHeading) {
         doc.setFontSize(isFullRepertoire ? 13 : 20);
-        doc.setFont('helvetica', 'bold');
+        doc.setFont('open-sans-bold', 'bold');
         doc.text(setHeading, doc.internal.pageSize.width / 2, yPosition - (isFullRepertoire ? 6 : 10), { align: 'center' });
         yPosition += isFullRepertoire ? 6 : 10;
       }
@@ -47,10 +48,10 @@ export const exportSetListToPDF = (
         }
         const songNumber = index + 1;
         doc.setFontSize(isFullRepertoire ? 12 : 18);
-        doc.setFont('helvetica', 'bold');
+        doc.setFont('DejaVuSans', 'normal');
         doc.text(`${songNumber}.`, 20, yPosition);
         doc.setFontSize(isFullRepertoire ? 11 : 16);
-        doc.setFont('helvetica', 'normal');
+        doc.setFont('DejaVuSans', 'normal');
         let songText = song.title;
         if (includeKey || effectiveIncludeArtist) {
           const details = [];
@@ -67,7 +68,7 @@ export const exportSetListToPDF = (
 
     // Band name - large and prominent (only on first page)
     doc.setFontSize(isFullRepertoire ? 16 : 24);
-    doc.setFont('helvetica', 'bold');
+    doc.setFont('open-sans-bold', 'bold');
     doc.text(setList.band.name, doc.internal.pageSize.width / 2, isFullRepertoire ? 18 : 25, { align: 'center' });
     // Set list name (only on first page)
     doc.setFontSize(isFullRepertoire ? 13 : 18);
@@ -84,7 +85,7 @@ export const exportSetListToPDF = (
           // On subsequent pages, set heading at top
           let yPosition = 20;
           doc.setFontSize(20);
-          doc.setFont('helvetica', 'bold');
+          doc.setFont('DejaVuSans', 'normal');
           doc.text(set.name || `Set ${idx + 1}`, doc.internal.pageSize.width / 2, yPosition, { align: 'center' });
           renderSet(set.setSongs.map((s: any) => s.song), undefined, yPosition + 15);
         }
@@ -105,7 +106,7 @@ export const exportSetListToPDF = (
     for (let i = 1; i <= totalPages; i++) {
       doc.setPage(i);
       doc.setFontSize(isFullRepertoire ? 8 : 10);
-      doc.setFont('helvetica', 'normal');
+      doc.setFont('DejaVuSans', 'normal');
       doc.setTextColor(100, 100, 100);
       doc.text(`Page ${i} of ${totalPages}`, doc.internal.pageSize.width / 2, doc.internal.pageSize.height - (isFullRepertoire ? 8 : 15), { align: 'center' });
     }
