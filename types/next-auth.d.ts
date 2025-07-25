@@ -15,13 +15,8 @@ declare module 'next-auth' {
         accessToken?: string;
         refreshToken?: string;
         expiresAt?: number;
-        user: {
-            bands: BandWithRelations[];
-        } & DefaultSession['user'];
-    }
-
-    interface User {
-        bands: BandWithRelations[];
+        user: {} 
+        & DefaultSession['user'];
     }
 }
 

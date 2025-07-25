@@ -2,6 +2,7 @@ import AddBandForm from "@/components/AddBandForm";
 import BandList from "@/components/BandList";
 import getUser from "@/utils/getUser";
 import { isEmpty } from "lodash";
+import prisma from "@/utils/db";
 import Link from "next/link";
 
 const BandsPage = async () => {
@@ -24,7 +25,31 @@ const BandsPage = async () => {
     }
 
     const { user } = session;
-    const { bands } = user;
+    const bands = await prisma.band.findMany({
+        where: {
+          users: {
+                some: { id: user.id }
+            }
+        },
+        include: {
+          setLists: {
+            include: {
+              songs: { include: { song: true }, orderBy: { order: 'asc' } },
+              band: true,
+              sets: {
+                include: {
+                  setSongs: {
+                    include: { song: true },
+                    orderBy: { order: 'asc' }
+                  }
+                },
+                orderBy: { order: 'asc' }
+              }
+            }
+          },
+          songs: true
+        }
+      })
 
     return (
         <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
