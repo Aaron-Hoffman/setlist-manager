@@ -89,7 +89,7 @@ const AddSetListForm = ({bandId, songs}: AddSetListFormProps) => {
                 Create Set List
             </button>
             <Modal show={showModal}>
-                <div className="p-6 bg-white rounded-lg shadow-xl max-w-md w-full mx-4">
+                <div className="p-6 bg-white rounded-lg shadow-xl max-w-md w-full mx-4 max-h-screen overflow-y-scroll">
                     <div className="sm:flex sm:items-start">
                         <div className="mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-indigo-100 sm:mx-0 sm:h-10 sm:w-10">
                             <svg className="h-6 w-6 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
