@@ -209,4 +209,35 @@ describe('serverActions', () => {
       expect(revalidatePath).toHaveBeenCalledWith('/bands/1');
     });
   });
+
+  describe('updateSetListField', () => {
+    it('updates setlist name field', async () => {
+      await serverActions.updateSetListField(1, 'name', 'New Setlist Name');
+      expect(prisma.setList.update).toHaveBeenCalledWith({
+        where: { id: 1 },
+        data: { name: 'New Setlist Name' },
+      });
+    });
+
+    it('updates setlist time field', async () => {
+      const timeValue = '2024-01-01T10:00';
+      await serverActions.updateSetListField(1, 'time', timeValue);
+      expect(prisma.setList.update).toHaveBeenCalledWith({
+        where: { id: 1 },
+        data: { time: new Date(timeValue) },
+      });
+    });
+
+    it('updates setlist location field', async () => {
+      await serverActions.updateSetListField(1, 'location', 'New Venue');
+      expect(prisma.setList.update).toHaveBeenCalledWith({
+        where: { id: 1 },
+        data: { location: 'New Venue' },
+      });
+    });
+
+    it('throws error for unknown field', async () => {
+      await expect(serverActions.updateSetListField(1, 'unknown', 'value')).rejects.toThrow('Unknown field: unknown');
+    });
+  });
 }); 

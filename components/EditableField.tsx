@@ -36,11 +36,13 @@ function formatDateTime(dateString: string) {
 const EditableField = ({ field, value, setListId, type, placeholder, onSave }: EditableFieldProps) => {
     const [isEditing, setIsEditing] = useState(false);
     const [editValue, setEditValue] = useState(value);
+    const [currentValue, setCurrentValue] = useState(value);
     const [isLoading, setIsLoading] = useState(false);
     const inputRef = useRef<HTMLInputElement | HTMLTextAreaElement>(null);
 
     useEffect(() => {
         setEditValue(value);
+        setCurrentValue(value);
     }, [value]);
 
     useEffect(() => {
@@ -58,6 +60,7 @@ const EditableField = ({ field, value, setListId, type, placeholder, onSave }: E
         setIsLoading(true);
         try {
             await updateSetListField(setListId, field, editValue);
+            setCurrentValue(editValue); // Update the displayed value immediately
             setIsEditing(false);
             if (onSave) onSave(editValue);
         } catch (error) {
@@ -123,9 +126,9 @@ const EditableField = ({ field, value, setListId, type, placeholder, onSave }: E
     }
 
     const displayValue =
-        type === 'datetime-local' && value
-            ? <span>{formatDateTime(value)}</span>
-            : value || <span className="text-gray-400 italic">Click to add</span>;
+        type === 'datetime-local' && currentValue
+            ? <span>{formatDateTime(currentValue)}</span>
+            : currentValue || <span className="text-gray-400 italic">Click to add</span>;
 
     return (
         <div className="group inline-flex items-center gap-1">
