@@ -14,6 +14,7 @@ const FilteredRepertoire: React.FC<FilteredRepertoireProps> = ({ songs, bandId }
   const filters = useMemo(() => getBandFilters({ songs } as any), [songs]);
   const [selectedKey, setSelectedKey] = useState<string>("");
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
+  const [searchTerm, setSearchTerm] = useState<string>("");
 
   // Build filter array for filterSongs
   const activeFilters: SongFilter[] = useMemo(() => {
@@ -23,11 +24,37 @@ const FilteredRepertoire: React.FC<FilteredRepertoireProps> = ({ songs, bandId }
     return arr;
   }, [selectedKey, selectedTags]);
 
-  const filteredSongs = useMemo(() => filterSongs(songs, activeFilters), [songs, activeFilters]);
+  // Apply filters first, then search
+  const filteredSongs = useMemo(() => {
+    let result = filterSongs(songs, activeFilters);
+    
+    // Apply search filter if search term exists
+    if (searchTerm.trim()) {
+      const searchLower = searchTerm.toLowerCase();
+      result = result.filter(song => 
+        song.title.toLowerCase().includes(searchLower) ||
+        (song.artist && song.artist.toLowerCase().includes(searchLower))
+      );
+    }
+    
+    return result;
+  }, [songs, activeFilters, searchTerm]);
+
+  const hasActiveFilters = selectedKey || selectedTags.length > 0 || searchTerm.trim();
 
   return (
     <div>
       <div className="flex flex-wrap gap-4 mb-4 items-end ml-2">
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Search</label>
+          <input
+            type="text"
+            placeholder="Search songs, artists..."
+            className="block w-64 rounded border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm"
+            value={searchTerm}
+            onChange={e => setSearchTerm(e.target.value)}
+          />
+        </div>
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">Key</label>
           <select
@@ -63,12 +90,16 @@ const FilteredRepertoire: React.FC<FilteredRepertoireProps> = ({ songs, bandId }
             ))}
           </div>
         </div>
-        {(selectedKey || selectedTags.length > 0) && (
+        {hasActiveFilters && (
           <button
             className="ml-4 px-3 py-1 text-xs rounded bg-gray-200 hover:bg-gray-300"
-            onClick={() => { setSelectedKey(""); setSelectedTags([]); }}
+            onClick={() => { 
+              setSelectedKey(""); 
+              setSelectedTags([]); 
+              setSearchTerm("");
+            }}
           >
-            Clear Filters
+            Clear All
           </button>
         )}
       </div>
