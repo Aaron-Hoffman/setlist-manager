@@ -36,6 +36,11 @@ const LoginPage = async () => {
                         )}
                         
                         <div className="space-y-8">
+                            <div className="bg-yellow-50 border-l-4 border-yellow-400 p-4 rounded mb-2">
+                                <p className="text-sm text-yellow-700 font-medium">
+                                    <span className="font-bold">Note:</span> This app is currently in test mode, so SSO with Google or Spotify will only work if you have been added to the list of users. Either contact the developer to be added or login with Email.
+                                </p>
+                            </div>
                             <div className="bg-green-50 border-l-4 border-green-400 p-4 rounded mb-2">
                               <p className="text-sm text-green-700 font-medium">
                                 <span className="font-bold">Recommended:</span> Please use <span className="font-bold">Spotify</span> to log in. Certain features, like creating Spotify playlists from your setlists, only work with a Spotify account.
