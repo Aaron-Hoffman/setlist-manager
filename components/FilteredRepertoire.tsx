@@ -44,7 +44,7 @@ const FilteredRepertoire: React.FC<FilteredRepertoireProps> = ({ songs, bandId }
 
   return (
     <div>
-      <div className="flex flex-wrap gap-4 mb-4 items-end ml-2">
+      <div className="flex flex-wrap gap-4 mb-4 items-end ml-2 mt-2">
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">Search</label>
           <input
