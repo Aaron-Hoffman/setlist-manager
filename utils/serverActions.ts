@@ -537,6 +537,9 @@ export async function updateSetListField(
     const updateData: any = {};
     
     switch (field) {
+        case 'name':
+            updateData.name = value || null;
+            break;
         case 'time':
             updateData.time = value ? new Date(value) : null;
             break;

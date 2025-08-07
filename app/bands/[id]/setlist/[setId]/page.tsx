@@ -6,6 +6,7 @@ import ExportPDFButton from '@/components/ExportPDFButton';
 import getUser from "@/utils/getUser";
 import AddSongToSetDropdown from "@/components/AddSongToSetDropdown";
 import FilteredRepertoire from "@/components/FilteredRepertoire";
+import EditableField from '@/components/EditableField';
 import SetlistEventDetails from '@/components/SetlistEventDetails';
 
 
@@ -106,7 +107,13 @@ const SetlistPage = async (context: any) => {
                         <svg className="h-5 w-5 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
                         </svg>
-                        <span>{setList.name}</span>
+                        <EditableField
+                            field="name"
+                            value={setList.name}
+                            setListId={setList.id}
+                            type="text"
+                            placeholder="Setlist Name"
+                        />
                     </div>
                 </div>
                 <div className="mt-4 flex md:mt-0 md:ml-4">
