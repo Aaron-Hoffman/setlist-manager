@@ -6,6 +6,7 @@ import SongList from "@/components/SongList";
 import RemoveFromBandButton from "@/components/RemoveFromBandButton";
 import ExportPDFButton from "@/components/ExportPDFButton";
 import CreateSpotifyPlaylistModalButton from '@/components/CreateSpotifyPlaylistModalButton';
+import FilteredRepertoire from "@/components/FilteredRepertoire";
 import prisma from "@/utils/db";
 import getUser from "@/utils/getUser";
 import Link from "next/link";
@@ -137,7 +138,7 @@ const BandPage = async (context: PageProps) => {
           </div>
         </div>
         <div className="border-t border-gray-200">
-          <SongList songList={band.songs} bandId={Number(bandId)} />
+          <FilteredRepertoire songs={band.songs} bandId={Number(bandId)} />
         </div>
       </div>
 
