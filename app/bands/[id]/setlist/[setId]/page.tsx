@@ -1,13 +1,11 @@
 import SongList from "@/components/SongList";
 import prisma from "@/utils/db";
 import Link from "next/link";
-import { editSetList } from "@/utils/serverActions";
-import { Song } from "@prisma/client";
 import CreateSpotifyPlaylistModalButton from '@/components/CreateSpotifyPlaylistModalButton';
 import ExportPDFButton from '@/components/ExportPDFButton';
 import getUser from "@/utils/getUser";
 import AddSongToSetDropdown from "@/components/AddSongToSetDropdown";
-import EditableField from "@/components/EditableField";
+import FilteredRepertoire from "@/components/FilteredRepertoire";
 import SetlistEventDetails from '@/components/SetlistEventDetails';
 
 
@@ -86,10 +84,6 @@ const SetlistPage = async (context: any) => {
     const accessToken = session?.accessToken;
     const hasSpotify = !!accessToken;
 
-    const updateSetList = async (song: Song, add: boolean, setIdOverride?: number) => {
-        return editSetList(setIdOverride ?? setId, song, add)
-    }
-
     const bandMembers = await prisma.user.findMany({
         where: {
             bands: {
@@ -149,7 +143,7 @@ const SetlistPage = async (context: any) => {
                         <h3 className="text-lg leading-6 font-medium text-gray-900">Repertoire</h3>
                     </div>
                     <div className="border-t border-gray-200">
-                        <SongList songList={songs} add={true} bandId={Number(bandId)} />
+                        <FilteredRepertoire songs={songs} bandId={Number(bandId)} />
                     </div>
                 </div>
 
