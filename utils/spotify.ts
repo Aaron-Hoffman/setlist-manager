@@ -119,36 +119,160 @@ async function getValidSpotifyAccessToken(userId: string): Promise<string | null
 }
 
 export async function searchSpotifyTrack(query: string, accessToken: string): Promise<SpotifyTrack | null> {
-    const response = await fetch(
-        `https://api.spotify.com/v1/search?q=${encodeURIComponent(query)}&type=track&limit=1`,
-        {
-            headers: {
-                Authorization: `Bearer ${accessToken}`,
-            },
+    // Debug logging for specific query
+    if (query.includes("Let Me Get By") && query.includes("Tedeschi Trucks Band")) {
+        console.log(`🔍 DEBUG: Searching for "${query}"`);
+    }
+    
+    // Try multiple search strategies for better results
+    const searchQueries = [
+        query, // Original query: "Let Me Get By Tedeschi Trucks Band"
+        query.replace(/\s+/g, ' ').trim(), // Cleaned query
+    ];
+    
+    // Try searching for just the title by removing the artist
+    // We'll try removing different numbers of words from the end
+    const words = query.trim().split(' ');
+    for (let i = 1; i <= Math.min(4, words.length - 1); i++) {
+        const title = words.slice(0, -i).join(' ');
+        if (title.trim()) {
+            searchQueries.push(title); // "Let Me Get By", "Let Me Get By Tedeschi", etc.
+            searchQueries.push(`"${title}"`); // Quoted versions
         }
-    );
-
-    if (!response.ok) {
-        const errorText = await response.text();
-        console.error('Spotify search failed:', errorText);
+    }
+    
+    let bestResult = null;
+    let bestScore = 0;
+    
+    for (const searchQuery of searchQueries) {
+        if (searchQuery.trim() === '') continue;
         
-        // If token is expired, return null to trigger re-authentication
-        if (response.status === 401) {
-            console.error('Spotify token expired');
+        // Debug logging for specific query
+        if (query.includes("Let Me Get By") && query.includes("Tedeschi Trucks Band")) {
+            console.log(`🔍 DEBUG: Trying search query: "${searchQuery}"`);
         }
-        return null;
+        
+        const response = await fetch(
+            `https://api.spotify.com/v1/search?q=${encodeURIComponent(searchQuery)}&type=track&limit=10`,
+            {
+                headers: {
+                    Authorization: `Bearer ${accessToken}`,
+                },
+            }
+        );
+
+        if (!response.ok) {
+            const errorText = await response.text();
+            console.error('Spotify search failed:', errorText);
+            
+            // If token is expired, return null to trigger re-authentication
+            if (response.status === 401) {
+                console.error('Spotify token expired');
+            }
+            continue; // Try next search query
+        }
+
+        const data = await response.json();
+        const tracks = data.tracks?.items || [];
+        
+        // Debug logging for specific query
+        if (query.includes("Let Me Get By") && query.includes("Tedeschi Trucks Band")) {
+            console.log(`📊 DEBUG: Found ${tracks.length} tracks for "${searchQuery}"`);
+            tracks.forEach((track: any, index: number) => {
+                console.log(`   ${index + 1}. "${track.name}" by ${track.artists.map((a: any) => a.name).join(', ')}`);
+            });
+        }
+        
+        if (tracks.length === 0) continue; // Try next search query
+
+        // Score each track and pick the best match for this search query
+        for (const track of tracks) {
+            const score = calculateMatchScore(query, track);
+            
+            // Debug logging for specific query
+            if (query.includes("Let Me Get By") && query.includes("Tedeschi Trucks Band")) {
+                console.log(`   Score for "${track.name}" by ${track.artists.map((a: any) => a.name).join(', ')}: ${score}`);
+            }
+            
+            if (score > bestScore) {
+                bestScore = score;
+                bestResult = {
+                    uri: track.uri,
+                    name: track.name,
+                    artists: track.artists.map((artist: any) => ({ name: artist.name }))
+                };
+            }
+        }
     }
 
-    const data = await response.json();
-    const track = data.tracks?.items[0];
-    
-    if (!track) return null;
+    // Only return if we have a reasonable match (score > 0.5)
+    if (bestScore > 0.5) {
+        // Debug logging for specific query
+        if (query.includes("Let Me Get By") && query.includes("Tedeschi Trucks Band")) {
+            console.log(`✅ DEBUG: Match accepted for "${query}" with score ${bestScore}`);
+        }
+        
+        return bestResult;
+    }
 
-    return {
-        uri: track.uri,
-        name: track.name,
-        artists: track.artists.map((artist: any) => ({ name: artist.name }))
-    };
+    // Debug logging for specific query
+    if (query.includes("Let Me Get By") && query.includes("Tedeschi Trucks Band")) {
+        console.log(`❌ DEBUG: Match rejected for "${query}" with best score ${bestScore} (threshold: 0.5)`);
+    }
+
+    return null;
+}
+
+// Helper function to calculate how well a track matches the search query
+function calculateMatchScore(query: string, track: any): number {
+    const queryLower = query.toLowerCase();
+    const trackNameLower = track.name.toLowerCase();
+    const trackArtistsLower = track.artists.map((artist: any) => artist.name.toLowerCase()).join(' ');
+    
+    let score = 0;
+    
+    // Title match scoring
+    if (trackNameLower === queryLower) {
+        score += 1.0; // Perfect title match
+    } else if (trackNameLower.includes(queryLower) || queryLower.includes(trackNameLower)) {
+        score += 0.8; // Partial title match
+    } else {
+        // Check normalized versions for better matching
+        const normQuery = normalizeForSpotifyMatch(query);
+        const normTitle = normalizeForSpotifyMatch(track.name);
+        if (normQuery === normTitle) {
+            score += 0.9; // Normalized perfect match
+        } else if (normQuery.includes(normTitle) || normTitle.includes(normQuery)) {
+            score += 0.7; // Normalized partial match
+        }
+    }
+    
+    // Artist match scoring
+    const hasArtistMatch = track.artists.some((artist: any) => {
+        const artistName = artist.name.toLowerCase();
+        const queryWords = queryLower.split(' ');
+        
+        // Check if the full artist name is in the query
+        if (queryLower.includes(artistName)) {
+            return true;
+        }
+        
+        // Check if any significant part of the artist name is in the query
+        const artistWords = artistName.split(' ');
+        const hasSignificantMatch = artistWords.some((word: string) => 
+            word.length > 2 && queryWords.includes(word)
+        );
+        
+        return hasSignificantMatch;
+    });
+    
+    if (hasArtistMatch) {
+        score += 0.5; // Artist match bonus
+    }
+    
+      // Removed popularity bonus to focus on title and artist matching only
+    
+    return Math.min(score, 1.0); // Cap at 1.0``
 }
 
 export async function createSpotifyPlaylist(
