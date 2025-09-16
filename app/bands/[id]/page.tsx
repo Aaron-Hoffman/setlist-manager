@@ -107,7 +107,7 @@ const BandPage = async (context: PageProps) => {
       </div>
 
       <div className="bg-white shadow rounded-lg">
-        <div className="px-4 py-5 sm:px-6 flex justify-between items-center">
+        <div className="px-4 py-5 sm:px-6 flex justify-between items-center max-sm:flex-col max-sm:items-start">
           <h3 className="text-lg leading-6 font-medium text-gray-900">Songs</h3>
           <div className="flex items-center gap-2">
             <AddSongForm bandId={bandId} />

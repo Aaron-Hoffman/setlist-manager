@@ -259,7 +259,7 @@ const SongList = ({songList, add, setId, bandId}: SongListProps) => {
                 {sortedLocalSongs.map((setListSong) => (
                     <div
                         key={setListSong.id}
-                        className="bg-white rounded-lg border border-gray-200 p-4 hover:bg-gray-50 transition-colors flex items-center cursor-pointer"
+                        className="bg-white rounded-lg border border-gray-200 p-4 hover:bg-gray-50 transition-colors flex items-center cursor-pointer max-sm:flex-col"
                         onClick={e => {
                             // Only toggle if not clicking on a button or input
                             if (
@@ -273,13 +273,13 @@ const SongList = ({songList, add, setId, bandId}: SongListProps) => {
                         {/* Checkbox for bulk selection */}
                         <input
                             type="checkbox"
-                            className="mr-3"
+                            className="mr-3  max-sm:mr-0  max-sm:mb-2"
                             checked={selectedSongIds.includes(setListSong.song.id)}
                             onChange={() => toggleSongSelection(setListSong.song.id)}
                             onClick={e => e.stopPropagation()}
                         />
-                        <div className="flex-1 min-w-0">
-                            <div className="flex items-center gap-2 mb-1">
+                        <div className="flex-1 min-w-1/3 max-sm:min-w-full">
+                            <div className="flex items-center gap-2 mb-1 max-sm:flex-col">
                                 <h3 className="text-sm font-medium text-gray-900 truncate">
                                     {setListSong.song.title}
                                 </h3>
@@ -302,7 +302,7 @@ const SongList = ({songList, add, setId, bandId}: SongListProps) => {
                                     </div>
                                 )}
                             </div>
-                            <div className="flex flex-wrap items-center gap-4 text-xs text-gray-500">
+                            <div className="flex flex-wrap items-center gap-4 text-xs text-gray-500 max-sm:justify-center">
                                 <span className="truncate">
                                     {setListSong.song.artist || '—'}
                                 </span>
@@ -311,14 +311,14 @@ const SongList = ({songList, add, setId, bandId}: SongListProps) => {
                                 </span>
                             </div>
                             {setListSong.song.chart && (
-                                <div className="mt-2">
+                                <div className="mt-2  max-sm:justify-center  max-sm:flex">
                                     <a href={setListSong.song.chart} target="_blank" rel="noopener noreferrer" className="text-indigo-600 underline text-xs">
                                         View Chart
                                     </a>
                                 </div>
                             )}
                         </div>
-                        <div className="flex items-center justify-end space-x-2 flex-shrink-0">
+                        <div className="flex items-center justify-end space-x-2 flex-shrink-0  max-sm:mt-2">
                             <EditSongForm song={setListSong.song} />
                             {!setId && <DeleteSongButton id={setListSong.song.id} />}
                             {/* Removed per-row Copy to Band button for a cleaner UI */}
