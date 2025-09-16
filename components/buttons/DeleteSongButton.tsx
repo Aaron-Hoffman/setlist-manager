@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from "react";
-import Modal from "./Modal";
+import Modal from "../utility/Modal";
 import { deleteSong } from "@/utils/serverActions";
 
 export type DeleteSongButtonProps = {

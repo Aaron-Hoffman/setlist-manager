@@ -2,7 +2,7 @@
 
 import { Band } from '@prisma/client';
 import { useState, useRef } from 'react';
-import Modal from './Modal';
+import Modal from '../utility/Modal';
 import { shareBand } from '@/utils/serverActions';
 import toast from 'react-hot-toast';
 

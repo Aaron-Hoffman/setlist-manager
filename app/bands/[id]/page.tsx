@@ -1,11 +1,10 @@
 import { PageProps } from "@/.next/types/app/page";
-import AddSetListForm from "@/components/AddSetListForm";
+import AddSetListForm from "@/components/forms/AddSetListForm";
 import AddSongForm from "@/components/forms/AddSongForm";
-import ShareBandForm from "@/components/ShareBandForm";
-import SongList from "@/components/SongList";
+import ShareBandForm from "@/components/forms/ShareBandForm";
 import RemoveFromBandButton from "@/components/buttons/RemoveFromBandButton";
 import ExportPDFButton from "@/components/buttons/ExportPDFButton";
-import CreateSpotifyPlaylistModalButton from '@/components/CreateSpotifyPlaylistModalButton';
+import CreateSpotifyPlaylistModalButton from '@/components/buttons/CreateSpotifyPlaylistModalButton';
 import FilteredRepertoire from "@/components/FilteredRepertoire";
 import prisma from "@/utils/db";
 import getUser from "@/utils/getUser";

@@ -1,7 +1,7 @@
-import RegisterForm from "@/components/RegisterForm";
-import LoginForm from "@/components/LoginForm";
-import LoginWithGoogleButton from "@/components/LoginWithGoogleButton";
-import LoginWithSpotifyButton from "@/components/LoginWithSpotifyButton";
+import RegisterForm from "@/components/forms/RegisterForm";
+import LoginForm from "@/components/forms/LoginForm";
+import LoginWithGoogleButton from "@/components/buttons/LoginWithGoogleButton";
+import LoginWithSpotifyButton from "@/components/buttons/LoginWithSpotifyButton";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/utils/auth";
 import Link from "next/link";

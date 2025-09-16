@@ -2,7 +2,7 @@
 
 import { deleteSetList } from "@/utils/serverActions"
 import { useState } from "react";
-import Modal from "./Modal";
+import Modal from "../utility/Modal";
 
 export type DeleteSetListButtonProps = {
     id: number,
