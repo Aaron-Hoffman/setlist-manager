@@ -2,11 +2,11 @@ import SongList from "@/components/SongList";
 import prisma from "@/utils/db";
 import Link from "next/link";
 import CreateSpotifyPlaylistModalButton from '@/components/CreateSpotifyPlaylistModalButton';
-import ExportPDFButton from '@/components/ExportPDFButton';
+import ExportPDFButton from '@/components/buttons/ExportPDFButton';
 import getUser from "@/utils/getUser";
-import AddSongToSetDropdown from "@/components/AddSongToSetDropdown";
+import AddSongToSetDropdown from "@/components/forms/AddSongToSetDropdown";
 import FilteredRepertoire from "@/components/FilteredRepertoire";
-import EditableField from '@/components/EditableField';
+import EditableField from '@/components/utility/EditableField';
 import SetlistEventDetails from '@/components/SetlistEventDetails';
 
 

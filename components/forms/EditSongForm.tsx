@@ -4,7 +4,7 @@ import KEYS from "@/constants/KEYS";
 import { editSong } from "@/utils/serverActions";
 import Modal from './Modal';
 import { ChangeEvent, useState, useEffect } from 'react';
-import ShowModalButton from './ShowModalButton';
+import ShowModalButton from './buttons/ShowModalButton';
 import { Song } from "@prisma/client";
 import EditableList from "./EditablePersonelList";
 import { formatKeyLabel } from '../utils/formatKeyLabel';

@@ -1,11 +1,11 @@
 'use client'
 
 import { useState, useRef, useEffect } from "react";
-import Modal from "./Modal";
+import Modal from "../utility/Modal";
 import KEYS from "@/constants/KEYS";
 import { addSong } from "@/utils/serverActions";
-import EditableList from "./EditablePersonelList";
-import { formatKeyLabel } from '../utils/formatKeyLabel';
+import EditableList from "../EditablePersonelList";
+import { formatKeyLabel } from '../../utils/formatKeyLabel';
 
 async function uploadChartFile(file: File): Promise<string | null> {
     const formData = new FormData();

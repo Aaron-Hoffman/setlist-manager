@@ -2,7 +2,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/utils/auth";
 import NavMenu from "./NavMenu";
 import Image from "next/image";
-import SignOutButton from "./SignOutButton";
+import SignOutButton from "./buttons/SignOutButton";
 import Link from "next/link";
 
 const Header = async () => {
