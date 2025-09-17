@@ -69,7 +69,7 @@ export const exportSetListToPDF = (
     // Band name - large and prominent (only on first page)
     doc.setFontSize(isFullRepertoire ? 16 : 24);
     doc.setFont('open-sans-bold', 'bold');
-    doc.text(setList.band.name, doc.internal.pageSize.width / 2, isFullRepertoire ? 18 : 25, { align: 'center' });
+    doc.text(setList.bandName, doc.internal.pageSize.width / 2, isFullRepertoire ? 18 : 25, { align: 'center' });
     // Set list name (only on first page)
     doc.setFontSize(isFullRepertoire ? 13 : 18);
     doc.text(setList.name, doc.internal.pageSize.width / 2, isFullRepertoire ? 28 : 40, { align: 'center' });
@@ -112,7 +112,7 @@ export const exportSetListToPDF = (
     }
 
     // Generate filename
-    const filename = `${setList.band.name.replace(/[^a-zA-Z0-9]/g, '_')}_${setList.name.replace(/[^a-zA-Z0-9]/g, '_')}_setlist.pdf`;
+    const filename = `${setList.bandName.replace(/[^a-zA-Z0-9]/g, '_')}_${setList.name.replace(/[^a-zA-Z0-9]/g, '_')}_setlist.pdf`;
     doc.save(filename);
     return {
       filename,

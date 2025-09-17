@@ -98,6 +98,7 @@ const BandPage = async (context: PageProps) => {
               bandId={bandId} 
               setListList={band.setLists.map(sl => ({
                 ...sl,
+                bandName: sl.band.name,
                 songs: Array.isArray(sl.songs) ? sl.songs.map((s: any) => s.song) : [],
                 sets: Array.isArray(sl.sets) ? sl.sets.map((set: any) => ({
                   ...set,

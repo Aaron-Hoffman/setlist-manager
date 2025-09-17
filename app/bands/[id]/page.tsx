@@ -1,14 +1,12 @@
 import { PageProps } from "@/.next/types/app/page";
 import BandInfo from "@/components/BandInfo";
 import BandLinks from "@/components/BandLinks";
-import AddSongForm from "@/components/forms/AddSongForm";
 import RemoveFromBandButton from "@/components/buttons/RemoveFromBandButton";
-import ExportPDFButton from "@/components/buttons/ExportPDFButton";
-import CreateSpotifyPlaylistModalButton from '@/components/buttons/CreateSpotifyPlaylistModalButton';
 import FilteredRepertoire from "@/components/FilteredRepertoire";
 import prisma from "@/utils/db";
 import getUser from "@/utils/getUser";
 import Link from "next/link";
+import SongListActions from "@/components/SongListActions";
 
 const BandPage = async (context: PageProps) => {
   const bandId = context.params.id;
@@ -54,33 +52,7 @@ const BandPage = async (context: PageProps) => {
       <div className="bg-white shadow rounded-lg">
         <div className="px-4 py-5 sm:px-6 flex justify-between items-center max-sm:flex-col max-sm:items-start">
           <h3 className="text-lg leading-6 font-medium text-gray-900">Songs</h3>
-          <div className="flex items-center gap-2 max-[400px]:flex-col max-[400px]:items-start max-[400px]:mt-2">
-            <AddSongForm bandId={bandId} />
-            {band.songs.length > 0 && (
-              <ExportPDFButton
-                setList={{
-                  id: 0, // dummy id for full repertoire
-                  name: "Full Repertoire",
-                  createdAt: new Date(),
-                  updatedAt: new Date(),
-                  bandId: band.id,
-                  songs: band.songs,
-                  band: band,
-                  time: null,
-                  location: null,
-                  details: null,
-                  personel: null,
-                  endTime: null,
-                }}
-                className="ml-2 max-[400px]:ml-0"
-              />
-            )}
-            {band.songs.length > 0 && (
-              <div className="ml-3 max-[400px]:ml-0">
-                <CreateSpotifyPlaylistModalButton setListId={String(bandId)} hasSpotify={hasSpotify} songs={band.songs} isBand={true} />
-              </div>
-            )}
-          </div>
+          <SongListActions bandId={bandId} songs={band.songs} bandName={band.name} hasSpotify={hasSpotify}/>
         </div>
         <div className="border-t border-gray-200">
           <FilteredRepertoire songs={band.songs} bandId={Number(bandId)} />

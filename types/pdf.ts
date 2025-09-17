@@ -2,7 +2,7 @@ import { SetList, Song, Band } from '@prisma/client';
 
 export type SetListWithSongsAndBand = SetList & {
   songs: Song[];
-  band: Band;
+  bandName: string;
 };
 
 export interface PDFExportOptions {
