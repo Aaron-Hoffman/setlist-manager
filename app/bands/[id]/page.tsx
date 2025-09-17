@@ -1,12 +1,12 @@
 import { PageProps } from "@/.next/types/app/page";
 import BandInfo from "@/components/BandInfo";
 import BandLinks from "@/components/BandLinks";
-import RemoveFromBandButton from "@/components/buttons/RemoveFromBandButton";
 import FilteredRepertoire from "@/components/FilteredRepertoire";
 import prisma from "@/utils/db";
 import getUser from "@/utils/getUser";
 import Link from "next/link";
 import SongListActions from "@/components/SongListActions";
+import BandUsers from "@/components/BandUsers";
 
 const BandPage = async (context: PageProps) => {
   const bandId = context.params.id;
@@ -59,40 +59,7 @@ const BandPage = async (context: PageProps) => {
         </div>
       </div>
 
-      <div className="mt-6">
-        <h3 className="text-lg font-semibold text-gray-900 mb-2">Band Members</h3>
-        <ul className="bg-white shadow rounded-lg divide-y divide-gray-200">
-          {band.users.length === 0 ? (
-            <li className="px-4 py-3 text-gray-500">No users in this band.</li>
-          ) : (
-            band.users.map((user) => (
-              <li key={user.id} className="px-4 py-3 flex flex-wrap items-center justify-between gap-y-2">
-                <div className="flex items-center space-x-3">
-                  <span className="font-medium text-gray-800">{user.name || 'Unnamed User'}</span>
-                  {user.email && (
-                    <span className="text-gray-500 text-sm">({user.email})</span>
-                  )}
-                  {session?.user?.id === user.id && (
-                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                      You
-                    </span>
-                  )}
-                </div>
-                {session?.user?.id === user.id && (
-                  <div className="w-full sm:w-auto mt-2 sm:mt-0">
-                    <RemoveFromBandButton 
-                      bandId={band.id}
-                      bandName={band.name}
-                      userId={user.id}
-                      isLastUser={band.users.length === 1}
-                    />
-                  </div>
-                )}
-              </li>
-            ))
-          )}
-        </ul>
-      </div>
+      <BandUsers users={band.users} bandName={band.name} bandId={band.id} currentUserId={String(session?.user?.id)}/>
     </main>
   );
 }
