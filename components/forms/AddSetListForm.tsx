@@ -2,7 +2,7 @@
 
 import { Song } from '@prisma/client';
 import { addSetList } from '@/utils/serverActions';
-import Modal from './Modal';
+import Modal from '../utility/Modal';
 import { useState, useRef } from 'react';
 import { sampleSize } from 'lodash';
 

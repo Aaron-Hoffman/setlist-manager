@@ -1,7 +1,7 @@
 import { SetListWithSongsAndBand } from "@/types/pdf";
 import Link from "next/link";
-import DeleteSetListButton from "./DeleteSetListButton";
-import ExportPDFButton from "./ExportPDFButton";
+import DeleteSetListButton from "@/components/buttons/DeleteSetListButton";
+import ExportPDFButton from "./buttons/ExportPDFButton";
 
 // Extend the type to include sets for new structure
 interface SetSong {

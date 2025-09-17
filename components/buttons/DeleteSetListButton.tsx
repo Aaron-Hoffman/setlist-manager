@@ -1,21 +1,22 @@
 'use client'
 
+import { deleteSetList } from "@/utils/serverActions"
 import { useState } from "react";
-import Modal from "./Modal";
-import { deleteSong } from "@/utils/serverActions";
+import Modal from "../utility/Modal";
 
-export type DeleteSongButtonProps = {
+export type DeleteSetListButtonProps = {
     id: number,
+    className?: string,
 }
 
-const DeleteSongButton = ({id}: DeleteSongButtonProps) => {
+const DeleteSetListButton = ({id, className}: DeleteSetListButtonProps) => {
     const [show, setShow] = useState(false);
 
     return (
         <>
             <button
                 onClick={() => setShow(true)}
-                className="inline-flex items-center px-2.5 py-1.5 border border-gray-300 shadow-sm text-xs font-medium rounded text-red-700 bg-white hover:bg-red-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
+                className={`inline-flex items-center px-2.5 py-1.5 border border-gray-300 shadow-sm text-xs font-medium rounded text-red-700 bg-white hover:bg-red-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 ${className || ''}`}
             >
                 <svg className="h-4 w-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
@@ -31,26 +32,24 @@ const DeleteSongButton = ({id}: DeleteSongButtonProps) => {
                             </svg>
                         </div>
                         <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left flex-1 min-w-0">
-                            <h3 className="text-lg font-medium leading-6 text-gray-900">Delete Song</h3>
+                            <h3 className="text-lg font-medium leading-6 text-gray-900">Delete Set List</h3>
                             <div className="mt-2">
                                 <p className="text-sm text-gray-500 whitespace-normal break-words">
-                                    Are you sure you want to delete this song? This action cannot be undone.
+                                    Are you sure you want to delete this set list? This action cannot be undone.
                                 </p>
                             </div>
                         </div>
                     </div>
                     <div className="mt-5 sm:mt-4 sm:flex sm:flex-row-reverse">
-                        <form action={async () => {
-                            await deleteSong(id);
-                            setShow(false);
-                        }}>
-                            <button
-                                type="submit"
-                                className="inline-flex w-full justify-center rounded-md border border-transparent bg-red-600 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 sm:ml-3 sm:w-auto sm:text-sm"
-                            >
-                                Delete
-                            </button>
-                        </form>
+                        <button
+                            onClick={() => {
+                                deleteSetList(id);
+                                setShow(false);
+                            }}
+                            className="inline-flex w-full justify-center rounded-md border border-transparent bg-red-600 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 sm:ml-3 sm:w-auto sm:text-sm"
+                        >
+                            Delete
+                        </button>
                         <button
                             type="button"
                             onClick={() => setShow(false)}
@@ -65,4 +64,4 @@ const DeleteSongButton = ({id}: DeleteSongButtonProps) => {
     )
 }
 
-export default DeleteSongButton;
+export default DeleteSetListButton;

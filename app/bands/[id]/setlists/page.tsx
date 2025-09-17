@@ -1,5 +1,5 @@
 import { PageProps } from "@/.next/types/app/page";
-import AddSetListForm from "@/components/AddSetListForm";
+import AddSetListForm from "@/components/forms/AddSetListForm";
 import SetListList from "@/components/SetListList";
 import Link from "next/link";
 import prisma from "@/utils/db";

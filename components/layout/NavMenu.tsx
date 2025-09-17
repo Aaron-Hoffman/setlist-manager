@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import { useState } from "react";
-import SignOutButton from "./SignOutButton";
+import SignOutButton from "../buttons/SignOutButton";
 import Image from "next/image";
 
 export default function NavMenu({ isAuthenticated, user }: { isAuthenticated: boolean, user: any }) {

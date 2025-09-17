@@ -2,9 +2,8 @@
 
 import { User } from '@prisma/client';
 import { addBand } from '@/utils/serverActions';
-import Modal from './Modal';
+import Modal from '../utility/Modal';
 import { useState, useRef } from 'react';
-import ShowModalButton from './ShowModalButton';
 
 export type AddBandFormProps = {
     user: User | null

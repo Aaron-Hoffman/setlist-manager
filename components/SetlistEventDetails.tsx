@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import EditableField from './EditableField';
+import EditableField from './utility/EditableField';
 import EditableList from './EditablePersonelList';
 import { updateSetListField } from '@/utils/serverActions';
 

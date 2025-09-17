@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import Modal from "./Modal";
+import Modal from "../utility/Modal";
 import { signIn } from "next-auth/react";
 import { Song } from "@prisma/client";
 

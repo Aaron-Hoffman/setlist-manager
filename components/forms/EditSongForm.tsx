@@ -2,12 +2,11 @@
 
 import KEYS from "@/constants/KEYS";
 import { editSong } from "@/utils/serverActions";
-import Modal from './Modal';
-import { ChangeEvent, useState, useEffect } from 'react';
-import ShowModalButton from './ShowModalButton';
+import Modal from '../utility/Modal';
+import { useState, useEffect } from 'react';
 import { Song } from "@prisma/client";
-import EditableList from "./EditablePersonelList";
-import { formatKeyLabel } from '../utils/formatKeyLabel';
+import EditableList from "../EditablePersonelList";
+import { formatKeyLabel } from '../../utils/formatKeyLabel';
 
 async function uploadChartFile(file: File): Promise<string | null> {
     const formData = new FormData();

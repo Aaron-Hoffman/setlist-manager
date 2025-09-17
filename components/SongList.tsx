@@ -1,10 +1,10 @@
 'use client';
 
 import React from 'react';
-import DeleteSongButton from "./DeleteSongButton";
-import EditSetListButton from "./EditSetListButton";
-import EditSongForm from "./EditSongForm";
-import { SetList, Song } from "@prisma/client";
+import DeleteSongButton from "@/components/buttons/DeleteSongButton";
+import EditSetListButton from "./buttons/EditSetListButton";
+import EditSongForm from "@/components/forms/EditSongForm";
+import { Song } from "@prisma/client";
 import { DragDropContext, Droppable, Draggable, DropResult } from '@hello-pangea/dnd';
 import { reorderSetListSongs } from '@/utils/serverActions';
 import { useTransition } from 'react';
