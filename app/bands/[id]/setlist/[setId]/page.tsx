@@ -117,8 +117,8 @@ const SetlistPage = async (context: any) => {
                     </div>
                 </div>
                 <div className="mt-4 flex md:mt-0 md:ml-4">
-                    <ExportPDFButton setList={{...setList, songs: setList.sets.flatMap(set => set.setSongs.map(s => s.song)), band: setList.band}} />
-                    <div className="ml-3">
+                    <ExportPDFButton setList={{...setList, songs: setList.sets.flatMap(set => set.setSongs.map(s => s.song)), bandName: setList.band.name}} />
+                    <div className="ml-3">B
                         <CreateSpotifyPlaylistModalButton setListId={String(setId)} hasSpotify={hasSpotify} songs={setList.sets.flatMap(set => set.setSongs.map(s => s.song))} />
                     </div>
                     <Link

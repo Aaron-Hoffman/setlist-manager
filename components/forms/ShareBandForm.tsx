@@ -1,16 +1,15 @@
 'use client'
 
-import { Band } from '@prisma/client';
 import { useState, useRef } from 'react';
 import Modal from '../utility/Modal';
 import { shareBand } from '@/utils/serverActions';
 import toast from 'react-hot-toast';
 
 type ShareBandFormProps = {
-    band: Band
+    bandId: number
 }
 
-const ShareBandForm = ({ band }: ShareBandFormProps) => {
+const ShareBandForm = ({ bandId }: ShareBandFormProps) => {
     const [show, setShow] = useState(false);
     const formRef = useRef<HTMLFormElement>(null);
 
@@ -30,7 +29,7 @@ const ShareBandForm = ({ band }: ShareBandFormProps) => {
                     <h3 className="text-lg font-medium text-gray-900 mb-4">Share Band</h3>
                     <form ref={formRef} action={async (formData: FormData) => {
                         try {
-                            await shareBand(band.id, formData);
+                            await shareBand(bandId, formData);
                             toast.success('Band shared successfully!');
                             formRef.current?.reset();
                             setShow(false);
