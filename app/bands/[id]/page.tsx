@@ -1,4 +1,5 @@
 import { PageProps } from "@/.next/types/app/page";
+import BandInfo from "@/components/BandInfo";
 import AddSetListForm from "@/components/forms/AddSetListForm";
 import AddSongForm from "@/components/forms/AddSongForm";
 import ShareBandForm from "@/components/forms/ShareBandForm";
@@ -47,31 +48,7 @@ const BandPage = async (context: PageProps) => {
   return (
     <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
       <div className="md:flex md:items-center md:justify-between mb-8">
-        <div className="flex-1 min-w-0">
-          <h2 className="text-3xl font-bold leading-7 text-gray-900 sm:text-4xl sm:truncate">
-            {band.name}
-          </h2>
-          <div className="mt-2 flex items-center space-x-4 text-sm text-gray-500">
-            <div className="flex items-center">
-              <svg className="h-5 w-5 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3" />
-              </svg>
-              <span>{band.songs.length} Songs</span>
-            </div>
-            <div className="flex items-center">
-              <svg className="h-5 w-5 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-              </svg>
-              <span>{band.setLists.length} Set Lists</span>
-            </div>
-            <div className="flex items-center">
-              <svg className="h-5 w-5 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 20h5v-2a4 4 0 00-3-3.87M9 20H4v-2a4 4 0 013-3.87m9-5a4 4 0 11-8 0 4 4 0 018 0z" />
-              </svg>
-              <span>{band.users.length} User{band.users.length !== 1 ? 's' : ''}</span>
-            </div>
-          </div>
-        </div>
+        <BandInfo bandName={band.name} numberOfSongs={band.songs.length} numberOfSetlists={band.setLists.length} numberOfUsers={band.users.length} />
         <div className="mt-4 flex space-x-3 md:mt-0 md:ml-4">
           <Link
             href={`/bands/${bandId}/setlists`}
