@@ -1,14 +1,13 @@
 import SongList from "@/components/SongList";
 import prisma from "@/utils/db";
 import Link from "next/link";
-import CreateSpotifyPlaylistModalButton from '@/components/buttons/CreateSpotifyPlaylistModalButton';
-import ExportPDFButton from '@/components/buttons/ExportPDFButton';
 import getUser from "@/utils/getUser";
 import AddSongToSetDropdown from "@/components/forms/AddSongToSetDropdown";
 import FilteredRepertoire from "@/components/FilteredRepertoire";
 import EditableField from '@/components/utility/EditableField';
 import SetlistEventDetails from '@/components/SetlistEventDetails';
 import BandLinks from "@/components/BandLinks";
+import BandInfo from "@/components/BandInfo";
 
 
 const SetlistPage = async (context: any) => {
@@ -98,25 +97,7 @@ const SetlistPage = async (context: any) => {
     return (
         <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
             <div className="md:flex md:items-center md:justify-between mb-8">
-                <div className="flex-1 min-w-0">
-                    <h2 className="text-3xl font-bold leading-7 text-gray-900 sm:text-4xl sm:truncate">
-                        <Link href={`/bands/${bandId}`} className="hover:text-indigo-600 transition-colors duration-200">
-                            {band.name}
-                        </Link>
-                    </h2>
-                    <div className="mt-2 flex items-center text-sm text-gray-500">
-                        <svg className="h-5 w-5 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-                        </svg>
-                        <EditableField
-                            field="name"
-                            value={setList.name}
-                            setListId={setList.id}
-                            type="text"
-                            placeholder="Setlist Name"
-                        />
-                    </div>
-                </div>
+                <BandInfo bandName={band.name} numberOfSongs={0} numberOfSetlists={0} numberOfUsers={0} showSongs={false} showUsers={false} showSetlists={false} setListName={setList.name} setListId={setList.id}/>
                 <BandLinks bandId={band.id} songs={songs} showViewSetlists={true} showShare={false} showCreateSet={false} showPDF={true} showSpotify={hasSpotify} setListsLinkText={"Back To Set Lists"} setList={setList}/>
             </div>
 
