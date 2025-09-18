@@ -5,21 +5,25 @@ import { Song } from "@prisma/client";
 
 export type BandLinksProps = {
     bandId: number,
-    songs: Song[]
+    songs: Song[],
+    showViewSetlists: boolean,
+    showShare: boolean
 }
 
-const BandLinks = ({bandId, songs}: BandLinksProps) => {
+const BandLinks = ({bandId, songs, showViewSetlists, showShare}: BandLinksProps) => {
     return (
         <div className="mt-4 flex space-x-3 md:mt-0 md:ml-4">
-          <Link
-            href={`/bands/${bandId}/setlists`}
-            className="inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-          >
-            <svg className="-ml-1 mr-2 h-5 w-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-            </svg>
-            View Set Lists
-          </Link>
+          {showViewSetlists &&
+            <Link
+              href={`/bands/${bandId}/setlists`}
+              className="inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+            >
+              <svg className="-ml-1 mr-2 h-5 w-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+              </svg>
+              View Set Lists
+            </Link>
+          }
           {songs.length === 0 ? (
             <div className="relative group">
               <button
@@ -39,7 +43,8 @@ const BandLinks = ({bandId, songs}: BandLinksProps) => {
           ) : (
             <AddSetListForm songs={songs} bandId={bandId}/>
           )}
-          <ShareBandForm bandId={bandId} />
+
+          {showShare && <ShareBandForm bandId={bandId} />}
         </div>
     )
 }
