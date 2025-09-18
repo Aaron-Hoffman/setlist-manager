@@ -8,6 +8,7 @@ import AddSongToSetDropdown from "@/components/forms/AddSongToSetDropdown";
 import FilteredRepertoire from "@/components/FilteredRepertoire";
 import EditableField from '@/components/utility/EditableField';
 import SetlistEventDetails from '@/components/SetlistEventDetails';
+import BandLinks from "@/components/BandLinks";
 
 
 const SetlistPage = async (context: any) => {
@@ -116,21 +117,7 @@ const SetlistPage = async (context: any) => {
                         />
                     </div>
                 </div>
-                <div className="mt-4 flex md:mt-0 md:ml-4">
-                    <ExportPDFButton setList={{...setList, songs: setList.sets.flatMap(set => set.setSongs.map(s => s.song)), bandName: setList.band.name}} />
-                    <div className="ml-3">B
-                        <CreateSpotifyPlaylistModalButton setListId={String(setId)} hasSpotify={hasSpotify} songs={setList.sets.flatMap(set => set.setSongs.map(s => s.song))} />
-                    </div>
-                    <Link
-                        href={`/bands/${bandId}/setlists`}
-                        className="ml-3 inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                    >
-                        <svg className="-ml-1 mr-2 h-5 w-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-                        </svg>
-                        Back to Set Lists
-                    </Link>
-                </div>
+                <BandLinks bandId={band.id} songs={songs} showViewSetlists={true} showShare={false} showCreateSet={false} showPDF={true} showSpotify={hasSpotify} setListsLinkText={"Back To Set Lists"} setList={setList}/>
             </div>
 
             {/* Event Details Section */}

@@ -1,18 +1,52 @@
 import ShareBandForm from "@/components/forms/ShareBandForm";
 import AddSetListForm from "@/components/forms/AddSetListForm";
+import ExportPDFButton from "./buttons/ExportPDFButton";
+import CreateSpotifyPlaylistModalButton from "./buttons/CreateSpotifyPlaylistModalButton";
 import Link from "next/link";
-import { Song } from "@prisma/client";
+import { SetList, Song } from "@prisma/client";
+
+// Minimal shape needed from the set list passed in by pages that fetch via Prisma
+type BandLinksSetList = Pick<SetList, 'id' | 'createdAt' | 'updatedAt' | 'name' | 'bandId' | 'time' | 'location' | 'details' | 'personel' | 'endTime'> & {
+    band: { name: string },
+    sets: { setSongs: { song: Song }[] }[]
+}
 
 export type BandLinksProps = {
     bandId: number,
     songs: Song[],
     showViewSetlists: boolean,
-    showShare: boolean
+    showShare: boolean,
+    showCreateSet: boolean,
+    showPDF: boolean,
+    showSpotify: boolean
+    setListsLinkText: string,
+    setList?: BandLinksSetList
 }
 
-const BandLinks = ({bandId, songs, showViewSetlists, showShare}: BandLinksProps) => {
+const BandLinks = ({bandId, songs, showViewSetlists, showShare, showCreateSet, setListsLinkText, showPDF, showSpotify, setList }: BandLinksProps) => {
     return (
         <div className="mt-4 flex space-x-3 md:mt-0 md:ml-4">
+          {showPDF && setList &&
+            <ExportPDFButton setList={{
+              id: setList.id,
+              createdAt: setList.createdAt,
+              updatedAt: setList.updatedAt,
+              name: setList.name,
+              bandId: setList.bandId,
+              time: setList.time ?? null,
+              location: setList.location ?? null,
+              details: setList.details ?? null,
+              personel: setList.personel ?? null,
+              endTime: setList.endTime ?? null,
+              songs: setList.sets.flatMap(set => set.setSongs.map(s => s.song)),
+              bandName: setList.band.name
+            }} />
+          }
+          {showSpotify && setList &&
+            <div className="ml-3">
+              <CreateSpotifyPlaylistModalButton setListId={String(setList.id)} hasSpotify={showSpotify} songs={setList.sets.flatMap(set => set.setSongs.map(s => s.song))} />
+            </div>
+          }
           {showViewSetlists &&
             <Link
               href={`/bands/${bandId}/setlists`}
@@ -21,10 +55,10 @@ const BandLinks = ({bandId, songs, showViewSetlists, showShare}: BandLinksProps)
               <svg className="-ml-1 mr-2 h-5 w-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
               </svg>
-              View Set Lists
+              {setListsLinkText}
             </Link>
           }
-          {songs.length === 0 ? (
+          {showCreateSet && songs.length === 0 ? (
             <div className="relative group">
               <button
                 disabled
@@ -41,7 +75,7 @@ const BandLinks = ({bandId, songs, showViewSetlists, showShare}: BandLinksProps)
               </div>
             </div>
           ) : (
-            <AddSetListForm songs={songs} bandId={bandId}/>
+            showCreateSet && <AddSetListForm songs={songs} bandId={bandId}/>
           )}
 
           {showShare && <ShareBandForm bandId={bandId} />}
