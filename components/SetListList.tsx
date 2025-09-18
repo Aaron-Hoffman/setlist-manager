@@ -1,8 +1,6 @@
 import { SetListWithSongsAndBand } from "@/types/pdf";
-import Link from "next/link";
-import DeleteSetListButton from "@/components/buttons/DeleteSetListButton";
-import ExportPDFButton from "./buttons/ExportPDFButton";
 import SetlistInfo from "./SetlistInfo";
+import SetlistActions from "./SetlistActions";
 
 // Extend the type to include sets for new structure
 interface SetSong {
@@ -37,12 +35,7 @@ const SetListList = ({bandId, setListList}: { bandId: number, setListList: SetLi
                 <li key={setList.id} className="px-2 py-4 sm:px-6 hover:bg-gray-50 transition-colors duration-150">
                     <div className="flex flex-col gap-2 items-center sm:flex-row sm:items-center sm:justify-between">
                         <SetlistInfo setlist={setList} bandId={bandId} />
-                        {/* Actions Section */}
-                        <div className="flex flex-col w-full sm:w-auto sm:flex-row items-center gap-2 mt-2 sm:mt-0 sm:ml-4">
-                            <span className="text-sm text-gray-500">{new Date(setList.createdAt).toLocaleDateString()}</span>
-                            <ExportPDFButton setList={setList} className="w-full sm:w-auto" />
-                            <DeleteSetListButton id={setList.id} className="w-full sm:w-auto" />
-                        </div>
+                        <SetlistActions setlist={setList} />
                     </div>
                 </li>
             ))}
