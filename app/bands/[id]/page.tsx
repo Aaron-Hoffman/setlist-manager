@@ -45,8 +45,8 @@ const BandPage = async (context: PageProps) => {
   return (
     <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
       <div className="md:flex md:items-center md:justify-between mb-8">
-        <BandInfo bandName={band.name} numberOfSongs={band.songs.length} numberOfSetlists={band.setLists.length} numberOfUsers={band.users.length} />
-        <BandLinks bandId={band.id} songs={band.songs} />
+        <BandInfo bandName={band.name} numberOfSongs={band.songs.length} numberOfSetlists={band.setLists.length} numberOfUsers={band.users.length} showSongs={true} showUsers={true}/>
+        <BandLinks bandId={band.id} songs={band.songs} showViewSetlists={true} showShare={true} />
       </div>
 
       <div className="bg-white shadow rounded-lg">
