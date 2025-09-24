@@ -6,6 +6,7 @@ import prisma from "@/utils/db";
 import { isEmpty } from "lodash";
 import BandInfo from "@/components/BandInfo";
 import BandLinks from "@/components/BandLinks";
+import BandNotFound from "@/components/BandNotFound";
 
 const BandPage = async (context: PageProps) => {
   const bandId = context.params.id;
@@ -36,26 +37,15 @@ const BandPage = async (context: PageProps) => {
   
   if (!band) {
     return (
-      <div className="min-h-[calc(100vh-4rem)] flex items-center justify-center">
-        <div className="text-center">
-          <h2 className="text-2xl font-semibold text-gray-900 mb-4">Band not found</h2>
-          <p className="text-gray-500 mb-6">This band does not exist or has been deleted.</p>
-          <Link 
-            href="/bands" 
-            className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors duration-200"
-          >
-            Back to Bands
-          </Link>
-        </div>
-      </div>
+      <BandNotFound />
     )
   }
  
   return (
     <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
       <div className="md:flex md:items-center md:justify-between mb-8">
-        <BandInfo bandName={band.name} numberOfSongs={band.songs.length} numberOfSetlists={band.setLists.length} numberOfUsers={0} showSongs={false} showUsers={false}/>
-        <BandLinks bandId={band.id} songs={band.songs} showViewSetlists={false} showShare={false} />
+        <BandInfo bandName={band.name} numberOfSongs={band.songs.length} numberOfSetlists={band.setLists.length} numberOfUsers={0} showSongs={false} showUsers={false} showSetlists={true}/>
+        <BandLinks bandId={band.id} songs={band.songs} showViewSetlists={false} showShare={false} showCreateSet={true} showPDF={false} showSpotify= {false} setListsLinkText={""}/>
       </div>
 
       <div className="bg-white shadow rounded-lg">

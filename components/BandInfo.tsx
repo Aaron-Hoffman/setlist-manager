@@ -1,13 +1,18 @@
+import EditableField from "./utility/EditableField"
+
 export type BandInfoProps = {
     bandName: string,
     numberOfSongs: number,
     numberOfSetlists: number,
     numberOfUsers: number,
     showUsers: boolean,
-    showSongs: boolean
+    showSongs: boolean,
+    showSetlists: boolean,
+    setListName?: string,
+    setListId?: number
 }
 
-const BandInfo = ({bandName, numberOfSongs, numberOfSetlists, numberOfUsers, showSongs, showUsers}: BandInfoProps) => {
+const BandInfo = ({bandName, numberOfSongs, numberOfSetlists, numberOfUsers, showSongs, showUsers, showSetlists, setListName, setListId}: BandInfoProps) => {
 
     return (
         <div className="flex-1 min-w-0">
@@ -15,6 +20,20 @@ const BandInfo = ({bandName, numberOfSongs, numberOfSetlists, numberOfUsers, sho
                 {bandName}
             </h2>
             <div className="mt-2 flex items-center space-x-4 text-sm text-gray-500">
+            {setListName && setListId && 
+                <div className="mt-2 flex items-center text-sm text-gray-500">
+                    <svg className="h-5 w-5 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                    </svg>
+                    <EditableField
+                        field="name"
+                        value={setListName}
+                        setListId={setListId}
+                        type="text"
+                        placeholder="Setlist Name"
+                    />
+                </div>
+            }
             {showSongs && 
                 <div className="flex items-center">
                     <svg className="h-5 w-5 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -23,12 +42,14 @@ const BandInfo = ({bandName, numberOfSongs, numberOfSetlists, numberOfUsers, sho
                     <span>{numberOfSongs} Songs</span>
                 </div>
             }
-            <div className="flex items-center">
-                <svg className="h-5 w-5 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-                </svg>
-                <span>{numberOfSetlists} Set Lists</span>
-            </div>
+            {showSetlists &&
+                <div className="flex items-center">
+                    <svg className="h-5 w-5 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                    </svg>
+                    <span>{numberOfSetlists} Set Lists</span>
+                </div>
+            }
             {showUsers &&
                 <div className="flex items-center">
                     <svg className="h-5 w-5 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
