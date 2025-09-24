@@ -1,6 +1,5 @@
 import SongList from "@/components/SongList";
 import prisma from "@/utils/db";
-import Link from "next/link";
 import getUser from "@/utils/getUser";
 import AddSongToSetDropdown from "@/components/forms/AddSongToSetDropdown";
 import FilteredRepertoire from "@/components/FilteredRepertoire";
@@ -8,6 +7,7 @@ import SetlistEventDetails from '@/components/SetlistEventDetails';
 import BandLinks from "@/components/BandLinks";
 import BandInfo from "@/components/BandInfo";
 import BandNotFound from "@/components/BandNotFound";
+import SetListNotFound from "@/components/SetListNotFound";
 
 
 const SetlistPage = async (context: any) => {
@@ -46,18 +46,7 @@ const SetlistPage = async (context: any) => {
 
     if (!setList) {
         return (
-            <div className="min-h-[calc(100vh-4rem)] flex items-center justify-center">
-                <div className="text-center">
-                    <h2 className="text-2xl font-semibold text-gray-900 mb-4">Set List not found</h2>
-                    <p className="text-gray-500 mb-6">This set list does not exist or has been deleted.</p>
-                    <Link 
-                        href={`/bands/${bandId}/setlists`}
-                        className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors duration-200"
-                    >
-                        Back to Set Lists
-                    </Link>
-                </div>
-            </div>
+            <SetListNotFound bandId={bandId} />
         )
     }
 
