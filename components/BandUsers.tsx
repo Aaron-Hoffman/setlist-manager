@@ -1,5 +1,6 @@
 import RemoveFromBandButton from "@/components/buttons/RemoveFromBandButton";
 import { User } from "@prisma/client";
+import ShareBandForm from "@/components/forms/ShareBandForm";
 
 export type BandUsersProps = {
     users: User[],
@@ -12,7 +13,8 @@ const BandUsers = ({users, bandName, bandId, currentUserId}: BandUsersProps) => 
     return (
         <div className="mt-6">
         <h3 className="text-lg font-semibold text-gray-900 mb-2">Band Members</h3>
-        <ul className="bg-white shadow rounded-lg divide-y divide-gray-200">
+        <ShareBandForm bandId={bandId} />
+        <ul className="bg-white shadow rounded-lg divide-y divide-gray-200 mt-2">
           {users.length === 0 ? (
             <li className="px-4 py-3 text-gray-500">No users in this band.</li>
           ) : (
