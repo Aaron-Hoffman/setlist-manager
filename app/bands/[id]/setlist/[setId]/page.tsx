@@ -2,12 +2,12 @@ import SongList from "@/components/SongList";
 import prisma from "@/utils/db";
 import getUser from "@/utils/getUser";
 import AddSongToSetDropdown from "@/components/forms/AddSongToSetDropdown";
-import FilteredRepertoire from "@/components/FilteredRepertoire";
 import SetlistEventDetails from '@/components/SetlistEventDetails';
 import BandLinks from "@/components/BandLinks";
 import BandInfo from "@/components/BandInfo";
 import BandNotFound from "@/components/BandNotFound";
 import SetListNotFound from "@/components/SetListNotFound";
+import SetlistOtherRepertoire from "@/components/SetlistOtherRepertoire";
 
 
 const SetlistPage = async (context: any) => {
@@ -50,7 +50,7 @@ const SetlistPage = async (context: any) => {
         )
     }
 
-    const songs = await prisma.song.findMany({
+    const songsNotInSetlist = await prisma.song.findMany({
         where: {
             bandId: Number(bandId),
             id: {
@@ -76,7 +76,7 @@ const SetlistPage = async (context: any) => {
         <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
             <div className="md:flex md:items-center md:justify-between mb-8">
                 <BandInfo bandName={band.name} numberOfSongs={0} numberOfSetlists={0} numberOfUsers={0} showSongs={false} showUsers={false} showSetlists={false} setListName={setList.name} setListId={setList.id}/>
-                <BandLinks bandId={band.id} songs={songs} showViewSetlists={true} showShare={false} showCreateSet={false} showPDF={true} showSpotify={hasSpotify} setListsLinkText={"Back To Set Lists"} setList={setList}/>
+                <BandLinks bandId={band.id} songs={songsNotInSetlist} showViewSetlists={true} showShare={false} showCreateSet={false} showPDF={true} showSpotify={hasSpotify} setListsLinkText={"Back To Set Lists"} setList={setList}/>
             </div>
 
             {/* Event Details Section */}
@@ -91,14 +91,7 @@ const SetlistPage = async (context: any) => {
             />
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                <div className="bg-white shadow rounded-lg order-2 lg:order-1">
-                    <div className="px-4 py-5 sm:px-6">
-                        <h3 className="text-lg leading-6 font-medium text-gray-900">Repertoire</h3>
-                    </div>
-                    <div className="border-t border-gray-200">
-                        <FilteredRepertoire songs={songs} bandId={Number(bandId)} />
-                    </div>
-                </div>
+                <SetlistOtherRepertoire songs={songsNotInSetlist} bandId={bandId} />
 
                 <div className="bg-white shadow rounded-lg order-1 lg:order-2">
                     <div className="px-4 py-5 sm:px-6">
@@ -110,7 +103,7 @@ const SetlistPage = async (context: any) => {
                                 <div className="flex items-center">
                                   <h4 className="text-md font-semibold text-gray-700 mb-4 mt-6 ml-4">{set.name}</h4>
                                   {/* Add button for adding repertoire songs to this set */}
-                                  <AddSongToSetDropdown setId={set.id} repertoire={songs} />
+                                  <AddSongToSetDropdown setId={set.id} repertoire={songsNotInSetlist} />
                                 </div>
                                 <SongList songList={set.setSongs.map(s => ({
                                     id: s.id,
