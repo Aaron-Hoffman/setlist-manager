@@ -1,10 +1,6 @@
 import Link from "next/link";
 
-export type BandNotFoundProps = {
-
-}
-
-const BandNotFound = ({}: BandNotFoundProps) => {
+const BandNotFound = () => {
     return (
         <div className="min-h-[calc(100vh-4rem)] flex items-center justify-center">
             <div className="text-center">
