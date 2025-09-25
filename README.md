@@ -2,13 +2,20 @@
 
 ## Getting Started
 
-> The following instructions assume you have Homebrew installed, if not do that first.
+### Docker
 
+1. Copy `.env.example` into a `.env` file and fill in the missing values.
+2. Run `docker compose up` to build and run the docker containers.
+
+### Local
+
+> The following instructions assume you have Homebrew installed, if not do that first.
 1. Copy `.env.example` into a `.env` file and fill in the missing values.
 2. Install postgresql locally with `brew install postgresql`
 3. Run postgresql server with `brew services start postgresql`
-4. Generate the Prisma Client with `npx prisma generate`
-5. Start the development server with `npm run dev`
+4. Initialize the prisma database with `npx prisma migrate dev`
+5. Generate the Prisma Client with `npx prisma generate`
+6. Start the development server with `npm run dev`
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
