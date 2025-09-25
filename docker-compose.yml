@@ -1,0 +1,14 @@
+services: 
+  web:
+    build:
+      dockerfile: docker/web/Dockerfile
+      context: .
+    image: web:latest
+    ports:
+      - 3000:3000
+    environment:
+      - DATABASE_URL="postgresql://aaron:Exitmeno123%233797@db:5432/mydb?schema=public"
+    # command: npm run dev
+  db:
+    build:
+      dockerfile: docker/db/Dockerfile
