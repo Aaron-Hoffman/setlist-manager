@@ -15,31 +15,39 @@ const Footer = () => {
                             Set List Manager helps musicians organize and manage their setlists with ease.
                         </p>
                     </div>
-                    
+
                     <div>
                         <h3 className="text-sm font-semibold text-gray-900 tracking-wider uppercase mb-4">
                             Quick Links
                         </h3>
                         <ul className="space-y-2">
                             <li>
-                                <Link 
-                                    href="/bands" 
+                                <Link
+                                    href="/profile"
+                                    className="text-gray-600 hover:text-gray-900 text-sm transition-colors duration-200"
+                                >
+                                    Profile
+                                </Link>
+                            </li>
+                            <li>
+                                <Link
+                                    href="/bands"
                                     className="text-gray-600 hover:text-gray-900 text-sm transition-colors duration-200"
                                 >
                                     My Bands
                                 </Link>
                             </li>
                             <li>
-                                <Link 
-                                    href="/login" 
+                                <Link
+                                    href="/login"
                                     className="text-gray-600 hover:text-gray-900 text-sm transition-colors duration-200"
                                 >
                                     Sign In
                                 </Link>
                             </li>
                             <li>
-                                <Link 
-                                    href="/faq" 
+                                <Link
+                                    href="/faq"
                                     className="text-gray-600 hover:text-gray-900 text-sm transition-colors duration-200"
                                 >
                                     FAQ
@@ -47,15 +55,15 @@ const Footer = () => {
                             </li>
                         </ul>
                     </div>
-                    
+
                     <div>
                         <h3 className="text-sm font-semibold text-gray-900 tracking-wider uppercase mb-4">
                             Connect
                         </h3>
                         <div className="flex space-x-4">
-                            <a 
-                                href="https://github.com/Aaron-Hoffman/setlist-manager" 
-                                target="_blank" 
+                            <a
+                                href="https://github.com/Aaron-Hoffman/setlist-manager"
+                                target="_blank"
                                 rel="noopener noreferrer"
                                 className="text-gray-600 hover:text-gray-900 transition-colors duration-200"
                             >
@@ -67,7 +75,7 @@ const Footer = () => {
                         </div>
                     </div>
                 </div>
-                
+
                 <div className="mt-8 pt-8 border-t border-gray-200">
                     <p className="text-center text-gray-500 text-sm">
                         &copy; {currentYear} Set List Manager. Developed by Aaron Hoffman.
