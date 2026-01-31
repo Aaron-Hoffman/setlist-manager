@@ -27,12 +27,15 @@ export default function NavMenu({ isAuthenticated, user }: { isAuthenticated: bo
       <div className="hidden md:flex items-center space-x-4">
         {isAuthenticated ? (
           <>
-            {/* User avatar and name */}
-            <div className="flex items-center space-x-2">
+            {/* User avatar and name - clickable link to profile */}
+            <Link
+              href="/profile"
+              className="flex items-center space-x-2 hover:opacity-80 transition-opacity duration-200"
+            >
               {user?.image ? (
-                <Image 
-                  src={user.image} 
-                  alt={user.name || 'User'} 
+                <Image
+                  src={user.image}
+                  alt={user.name || 'User'}
                   width={32}
                   height={32}
                   className="h-8 w-8 rounded-full"
@@ -47,7 +50,7 @@ export default function NavMenu({ isAuthenticated, user }: { isAuthenticated: bo
               <span className="text-sm font-medium text-gray-700">
                 {user?.name || 'User'}
               </span>
-            </div>
+            </Link>
             <Link
               href="/bands"
               className="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200"
@@ -86,12 +89,16 @@ export default function NavMenu({ isAuthenticated, user }: { isAuthenticated: bo
           <div className="flex flex-col items-center w-full max-w-xs mx-auto py-2 space-y-2 overflow-y-auto mt-8">
             {isAuthenticated ? (
               <>
-                {/* User avatar and name at top of mobile menu */}
-                <div className="flex flex-col items-center space-y-2">
+                {/* User avatar and name at top of mobile menu - clickable link to profile */}
+                <Link
+                  href="/profile"
+                  className="flex flex-col items-center space-y-2 hover:opacity-80 transition-opacity duration-200"
+                  onClick={() => setMobileOpen(false)}
+                >
                   {user?.image ? (
-                    <Image 
-                      src={user.image} 
-                      alt={user.name || 'User'} 
+                    <Image
+                      src={user.image}
+                      alt={user.name || 'User'}
                       width={64}
                       height={64}
                       className="h-16 w-16 rounded-full"
@@ -106,7 +113,7 @@ export default function NavMenu({ isAuthenticated, user }: { isAuthenticated: bo
                   <span className="text-base font-semibold text-gray-800">
                     {user?.name || 'User'}
                   </span>
-                </div>
+                </Link>
                 <div className="border-t border-gray-200 w-full my-2" />
                 <Link
                   href="/bands"
