@@ -18,7 +18,7 @@ function createAdapter(): Adapter {
 
   return {
     ...adapter,
-    async linkAccount(account: AdapterAccount) {
+    async linkAccount(account: AdapterAccount): Promise<void> {
       if (account.provider === "spotify" && account.userId) {
         const existing = await prisma.account.findFirst({
           where: { userId: account.userId, provider: "spotify" },
@@ -40,7 +40,7 @@ function createAdapter(): Adapter {
         }
       }
 
-      return adapter.linkAccount!(account);
+      await adapter.linkAccount!(account);
     },
   };
 }
