@@ -157,29 +157,9 @@ export async function createSpotifyPlaylist(
     trackUris: string[],
     accessToken: string
 ): Promise<string | null> {
-    // Get user's Spotify ID
-    const userResponse = await fetch('https://api.spotify.com/v1/me', {
-        headers: {
-            Authorization: `Bearer ${accessToken}`,
-        },
-    });
-
-    if (!userResponse.ok) {
-        const errorText = await userResponse.text();
-        console.error('Failed to get Spotify user:', errorText);
-        
-        if (userResponse.status === 401) {
-            console.error('Spotify token expired during user fetch');
-        }
-        return null;
-    }
-
-    const userData = await userResponse.json();
-    const userId = userData.id;
-
-    // Create playlist
+    // Use /me/playlists (POST /users/{id}/playlists was removed for Dev Mode apps)
     const createResponse = await fetch(
-        `https://api.spotify.com/v1/users/${userId}/playlists`,
+        'https://api.spotify.com/v1/me/playlists',
         {
             method: 'POST',
             headers: {
@@ -207,9 +187,9 @@ export async function createSpotifyPlaylist(
     const playlist = await createResponse.json();
     const playlistId = playlist.id;
 
-    // Add tracks to playlist
+    // /playlists/{id}/tracks was renamed to /items for Dev Mode apps
     const addTracksResponse = await fetch(
-        `https://api.spotify.com/v1/playlists/${playlistId}/tracks`,
+        `https://api.spotify.com/v1/playlists/${playlistId}/items`,
         {
             method: 'POST',
             headers: {

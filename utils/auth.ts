@@ -2,12 +2,51 @@ import { NextAuthOptions } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import CredentialsProvider from "next-auth/providers/credentials";
 import SpotifyProvider from "next-auth/providers/spotify";
-import {PrismaAdapter} from '@next-auth/prisma-adapter';
+import type { SpotifyProfile } from "next-auth/providers/spotify";
+import { PrismaAdapter } from "@next-auth/prisma-adapter";
+import type { Adapter, AdapterAccount } from "next-auth/adapters";
 import prisma from "@/utils/db";
 import bcrypt from "bcryptjs";
 
+/**
+ * Spotify's `id` is no longer guaranteed stable (May 2026). Use `account_id` for
+ * providerAccountId going forward. When a returning user signs in with a new id,
+ * replace their existing Spotify Account row in place instead of creating a duplicate.
+ */
+function createAdapter(): Adapter {
+  const adapter = PrismaAdapter(prisma);
+
+  return {
+    ...adapter,
+    async linkAccount(account: AdapterAccount) {
+      if (account.provider === "spotify" && account.userId) {
+        const existing = await prisma.account.findFirst({
+          where: { userId: account.userId, provider: "spotify" },
+        });
+
+        if (existing && existing.providerAccountId !== account.providerAccountId) {
+          await prisma.$transaction(async (tx) => {
+            await tx.account.delete({
+              where: {
+                provider_providerAccountId: {
+                  provider: "spotify",
+                  providerAccountId: existing.providerAccountId,
+                },
+              },
+            });
+            await tx.account.create({ data: account });
+          });
+          return;
+        }
+      }
+
+      return adapter.linkAccount!(account);
+    },
+  };
+}
+
 export const authOptions: NextAuthOptions = {
-    adapter: PrismaAdapter(prisma),
+    adapter: createAdapter(),
     providers: [
       GoogleProvider({
           clientId: process.env.GOOGLE_CLIENT_ID as string,
@@ -20,7 +59,18 @@ export const authOptions: NextAuthOptions = {
           params: {
             scope: 'playlist-modify-public playlist-modify-private user-read-email'
           }
-        }
+        },
+        // Required so existing users can re-link when Spotify rotates `id` → `account_id`.
+        // Spotify verifies emails; only enabled for this provider.
+        allowDangerousEmailAccountLinking: true,
+        profile(profile: SpotifyProfile & { account_id?: string }) {
+          return {
+            id: profile.account_id ?? profile.id,
+            name: profile.display_name,
+            email: profile.email,
+            image: profile.images?.[0]?.url,
+          };
+        },
       }),
       CredentialsProvider({
         name: "credentials",
